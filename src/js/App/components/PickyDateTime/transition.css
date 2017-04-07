@@ -1,0 +1,131 @@
+:root {
+  --body-container-height-l: 420px;
+  --body-container-height-m: 310px;
+  --body-container-height-s: 240px;
+  --body-container-height-xs: 200px;
+}
+
+.forwardEnter {
+  will-change: transform;
+  transition: opacity .5s ease-in, transform .3s;
+  opacity: 1;
+  transform: translate3d(100%, 0, 0);
+  &.forwardEnterActive {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.forwardLeave {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+  &.forwardLeaveActive {
+    opacity: 0;
+  }
+}
+
+.backwardEnter {
+  &.backwardEnterActive {}
+}
+
+.backwardLeave {
+  will-change: transform, opacity;
+  transition: transform .3s ease-in;
+  transform: translate3d(100%, 0, 0);
+  &.backwardLeaveActive {}
+}
+
+:global .picky-date-time-calendar__title-container {
+  position: relative;
+  display: block;
+  height: 18px;
+  overflow: hidden;
+  text-align: center;
+}
+
+:global .picky-date-time-calendar__selector-panel-year-set-container {
+  position: relative;
+  display: block;
+  height: 34px;
+  overflow: hidden;
+  text-align: center;
+  width: 90%;
+  margin: 0 auto;
+}
+
+:global .picky-date-time-calendar__body-container {
+  position: relative;
+  display: block;
+  transition: height .3s;
+  overflow: hidden;
+  text-align: center;
+  &.l{
+    height: var(--body-container-height-l);
+  }
+  &.m{
+    height: var(--body-container-height-m);
+  }
+  &.s{
+    height: var(--body-container-height-s);
+  }
+  &.xs{
+    height: var(--body-container-height-xs);
+  }
+}
+
+:global .slide {
+  position: absolute;
+}
+
+:global .slide-enter {
+  transform: translateX(100%);
+  transition: 0.3s transform ease-in-out;
+}
+
+:global .slide-enter-active {
+  transform: translateX(0);
+}
+
+:global .slide-leave {
+  transform: translateX(0);
+  transition: 0.3s transform ease-in-out;
+}
+
+:global .slide-leave-active {
+  transform: translateX(-100%);
+}
+
+:global .forward-enter {
+  transform: translateX(100%);
+  transition: 0.3s transform ease-in-out;
+}
+
+:global .forward-enter-active {
+  transform: translateX(0);
+}
+
+:global .forward-leave {
+  transform: translateX(0);
+  transition: 0.3s transform ease-in-out;
+}
+
+:global .forward-leave-active {
+  transform: translateX(-100%);
+}
+
+:global .backward-enter {
+  transform: translateX(-100%);
+  transition: 0.3s transform ease-in-out;
+}
+
+:global .backward-enter-active {
+  transform: translateX(0);
+}
+
+:global .backward-leave {
+  transform: translateX(0);
+  transition: 0.3s transform ease-in-out;
+}
+
+:global .backward-leave-active {
+  transform: translateX(100%);
+}
