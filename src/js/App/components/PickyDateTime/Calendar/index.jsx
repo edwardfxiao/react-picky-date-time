@@ -349,19 +349,27 @@ class Calendar extends React.Component {
                   {selectorPanelMonthHtml}
                 </div>
                 <div style={{'height':'10px'}}></div>
-                <span className={`${STYLE['picky-date-time-calendar__selector-panel-icon']} ${STYLE['picky-date-time-calendar__selector-panel-icon--left']} ${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_left`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER, PREV_TRANSITION)}></span>
-                <ReactCSSTransitionGroup
-                  className="picky-date-time-calendar__selector-panel-year-set-container"
-                  transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
-                  transitionAppearTimeout={500}
-                  transitionEnterTimeout={300}
-                  transitionLeaveTimeout={300}
-                >
-                <div className={`${STYLE['picky-date-time-dropdown-calendar__year']}`} key={yearSelectorPanelList}>
-                  {selectorPanelYearHtml}
+
+                <div className={`${STYLE['col']} ${STYLE['col-0-5']}`}>
+                  <span className={`${STYLE['picky-date-time-calendar__selector-panel-icon']} ${STYLE['picky-date-time-calendar__selector-panel-icon--left']} ${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_left`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER, PREV_TRANSITION)}></span>
                 </div>
-                </ReactCSSTransitionGroup>
-                <span className={`${STYLE['picky-date-time-calendar__selector-panel-icon']} ${STYLE['picky-date-time-calendar__selector-panel-icon--right']} ${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_right`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
+                <div className={`${STYLE['col']} ${STYLE['col-9']}`}>
+                  <ReactCSSTransitionGroup
+                    className="picky-date-time-calendar__selector-panel-year-set-container"
+                    transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
+                    transitionAppearTimeout={500}
+                    transitionEnterTimeout={300}
+                    transitionLeaveTimeout={300}
+                  >
+                  <div className={`${STYLE['picky-date-time-dropdown-calendar__year']}`} key={yearSelectorPanelList}>
+                    {selectorPanelYearHtml}
+                  </div>
+                  </ReactCSSTransitionGroup>
+                </div>
+                <div className={`${STYLE['col']} ${STYLE['col-0-5']}`}>
+                  <span className={`${STYLE['picky-date-time-calendar__selector-panel-icon']} ${STYLE['picky-date-time-calendar__selector-panel-icon--right']} ${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_right`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
+                </div>
+
               </div>
             </div>
             <ReactCSSTransitionGroup

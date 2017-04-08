@@ -96,6 +96,30 @@ var config = module.exports = {
     new ManifestPlugin({
       fileName: 'rev-manifest.json'
     }),
+    new HtmlWebpackPlugin({
+      template: PATH.HTML_PATH + '/layout.html',
+      title: 'react-picky-date-time',
+      page: 'index',
+      filename: 'index.html',
+      hash: false,
+      chunksSortMode: function(chunk1, chunk2) {
+        var orders = ['index'];
+        var order1 = orders.indexOf(chunk1.names[0]);
+        var order2 = orders.indexOf(chunk2.names[0]);
+        if (order1 > order2) {
+          return 1;
+        } else if (order1 < order2) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    }),
+    // new AddAssetHtmlPlugin({
+    //   hash: true,
+    //   filepath: require.resolve(PATH.ASSET_PATH + '/react_vendors.js'),
+    //   includeSourcemap: false,
+    // }),
     // new webpack.DllReferencePlugin({
     //   context: PATH.ROOT_PATH,
     //   manifest: require(path.join(PATH.ASSET_PATH, './react_vendors-manifest.json'))

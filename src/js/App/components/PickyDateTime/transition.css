@@ -36,6 +36,8 @@
 
 :global .picky-date-time-calendar__title-container {
   position: relative;
+  top: 50%;
+  transform: translateY(-50%);
   display: block;
   height: 18px;
   overflow: hidden;
@@ -45,10 +47,10 @@
 :global .picky-date-time-calendar__selector-panel-year-set-container {
   position: relative;
   display: block;
-  height: 34px;
+  height: 30px;
   overflow: hidden;
   text-align: center;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -58,16 +60,16 @@
   transition: height .3s;
   overflow: hidden;
   text-align: center;
-  &.l{
+  &.l {
     height: var(--body-container-height-l);
   }
-  &.m{
+  &.m {
     height: var(--body-container-height-m);
   }
-  &.s{
+  &.s {
     height: var(--body-container-height-s);
   }
-  &.xs{
+  &.xs {
     height: var(--body-container-height-xs);
   }
 }

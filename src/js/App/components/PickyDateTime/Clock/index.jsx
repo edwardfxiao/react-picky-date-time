@@ -252,9 +252,9 @@ class Clock extends React.Component {
   handleMouseWheel(e){
     this.onKeyDown({
       keyCode: e.deltaY > 0 ? '38' : '40',
-      type: event.type || 'unknown',
-      stopPropagation: typeof event.stopPropagation == 'function' ? () => event.stopPropagation(): emptyFn,
-      preventDefault: typeof event.preventDefault == 'function' ? () => event.preventDefault(): emptyFn
+      type: e.type || 'unknown',
+      stopPropagation: typeof e.stopPropagation == 'function' ? () => e.stopPropagation(): emptyFn,
+      preventDefault: typeof e.preventDefault == 'function' ? () => e.preventDefault(): emptyFn
     });
     e.preventDefault();
   }
@@ -286,7 +286,6 @@ class Clock extends React.Component {
     });
 
     let newValue;
-
     if (key == 'ArrowUp' || key == 'ArrowDown') {
       range.start = pos.start;
       range.end = pos.start != pos.end ? pos.start + 2 : pos.start;
@@ -518,21 +517,21 @@ class Clock extends React.Component {
       transform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
       WebkitTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
       MozTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
-      MsTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
+      msTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
       OTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
     };
     let minuteStyle = {
       transform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
       WebkitTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE})`,
       MozTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
-      MsTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
+      msTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
       OTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
     };
     let hourStyle = {
       transform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
       WebkitTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
       MozTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
-      MsTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
+      msTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
       OTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
     };
 
@@ -559,6 +558,10 @@ class Clock extends React.Component {
       let degree = i * 6 + 180;
       let minutesItemStyle = {
         transform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+        WebkitTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+        MozTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+        msTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+        OTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
       };
       minutesItem.push(
         <div key={i} className={minutesItemClass} style={minutesItemStyle}></div>

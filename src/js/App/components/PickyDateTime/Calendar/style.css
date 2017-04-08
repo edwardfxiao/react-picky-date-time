@@ -139,7 +139,7 @@
     font-size: 12px;
     padding: 10px 2px;
   }
-  padding: 10px;
+  padding: 5px 10px;
   margin: 2px;
   font-size: 14px;
   background: var(--oc-white);
@@ -156,17 +156,17 @@
 }
 
 .picky-date-time-calendar__selector-panel-icon {
-  position: absolute;
+  /*  position: absolute;
   bottom: 15px;
-  z-index: 10;
+  z-index: 10;*/
 }
 
 .picky-date-time-calendar__selector-panel-icon--left {
-  left: 5px;
+  /*left: 5px;*/
 }
 
 .picky-date-time-calendar__selector-panel-icon--right {
-  right: 5px;
+  /*right: 5px;*/
 }
 
 
@@ -187,6 +187,7 @@
 
 .col {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .col:before {
@@ -222,7 +223,16 @@
 .picky-date-time-calendar__content {}
 
 .picky-date-time-calendar__icon {
+  cursor: pointer;
   font-size: 20px;
+}
+
+.col-0-5 {
+  width: 5%;
+}
+
+.col-9 {
+  width: 90%;
 }
 
 .col-3 {
@@ -245,7 +255,20 @@
 .picky-date-time-calendar__table {
   display: table;
   border-collapse: collapse;
+  border-collapse: initial!important\9;
   margin: 0 auto;
+}
+
+@media all and (-ms-high-contrast:none) {
+  .picky-date-time-calendar__table {
+    border-collapse: initial;
+  }
+}
+
+@supports (-ms-ime-align:auto) {
+  .picky-date-time-calendar__table {
+    border-collapse: initial;
+  }
 }
 
 .picky-date-time-calendar__table-row {

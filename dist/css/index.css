@@ -312,7 +312,7 @@ clear: both;
 }
 
 .style__picky-date-time-dropdown-calendar__year-item___3zl8q>div {
-  padding: 10px;
+  padding: 5px 10px;
   margin: 2px;
   font-size: 14px;
   background: #ffffff;
@@ -344,17 +344,17 @@ color: #ffffff;
 }
 
 .style__picky-date-time-calendar__selector-panel-icon___grxMq {
-  position: absolute;
+  /*  position: absolute;
   bottom: 15px;
-  z-index: 10;
+  z-index: 10;*/
 }
 
 .style__picky-date-time-calendar__selector-panel-icon--left___2--4m {
-  left: 5px;
+  /*left: 5px;*/
 }
 
 .style__picky-date-time-calendar__selector-panel-icon--right___3xSzk {
-  right: 5px;
+  /*right: 5px;*/
 }
 
 /* end of dropdown section */
@@ -374,6 +374,7 @@ color: #ffffff;
 
 .style__col___Qzohu {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .style__col___Qzohu:before {
@@ -412,7 +413,16 @@ color: #72c3fc;
 .style__picky-date-time-calendar__content___2wzG2 {}
 
 .style__picky-date-time-calendar__icon___3T2wT {
+  cursor: pointer;
   font-size: 20px;
+}
+
+.style__col-0-5___3ge5A {
+  width: 5%;
+}
+
+.style__col-9___8oi64 {
+  width: 90%;
 }
 
 .style__col-3___2dqee {
@@ -435,7 +445,22 @@ color: #72c3fc;
 .style__picky-date-time-calendar__table___21fZc {
   display: table;
   border-collapse: collapse;
+  border-collapse: initial!important\9;
   margin: 0 auto;
+}
+
+@media all and (-ms-high-contrast:none) {
+  .style__picky-date-time-calendar__table___21fZc {
+    border-collapse: separate;
+    border-collapse: initial;
+  }
+}
+
+@supports (-ms-ime-align:auto) {
+  .style__picky-date-time-calendar__table___21fZc {
+    border-collapse: separate;
+    border-collapse: initial;
+  }
 }
 
 .style__picky-date-time-calendar__table-row___345z9 {
@@ -622,6 +647,9 @@ color: #ffffff;
 
 .picky-date-time-calendar__title-container {
   position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
   display: block;
   height: 18px;
   overflow: hidden;
@@ -631,10 +659,10 @@ color: #ffffff;
 .picky-date-time-calendar__selector-panel-year-set-container {
   position: relative;
   display: block;
-  height: 34px;
+  height: 30px;
   overflow: hidden;
   text-align: center;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -1020,6 +1048,7 @@ color: #ffffff;
 
 .style__picky-date-time-clock__icon--schedule___rVJNz,
 .style__picky-date-time-clock__icon--remove_circle_outline___3Bi-u {
+  cursor: pointer;
   color: #868e96;
 }
 

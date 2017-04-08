@@ -35,6 +35,7 @@
 
 .picky-date-time-clock__icon--schedule,
 .picky-date-time-clock__icon--remove_circle_outline {
+  cursor: pointer;
   color: var(--oc-gray-6);
 }
 
