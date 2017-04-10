@@ -33,7 +33,7 @@ npm install react-picky-date-time --save
 Please check the online <a href="https://edwardfhsiao.github.io/react-picky-date-time/">demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
 
 # Donate
-<a href="https://www.paypal.me/XIAOMENGXIAO/0.99" alt="PayPal Donate">donate me a donut</a>
+<a href="https://www.paypal.me/XIAOMENGXIAO/0.99" alt="PayPal Donate">Donate me a donut</a>
 
 # Browser support
 Tested on IE9+ and Chrome
