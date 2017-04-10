@@ -24,8 +24,13 @@ import PickyDateTime from 'react-picky-date-time';
 />
 ```
 
-# demo
-please check the online <a href="https://edwardfhsiao.github.io/react-picky-date-time/">demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
+# Installation
+```sh
+npm install react-picky-date-time --save
+```
+
+# Demo & Examples
+Please check the online <a href="https://edwardfhsiao.github.io/react-picky-date-time/">demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
 
 
 # Browser support
