@@ -23,5 +23,66 @@ import PickyDateTime from 'react-picky-date-time';
   onClearTime={this.onClearTime.bind(this)}
 />
 ```
+
+# demo
 please check the online <a href="https://edwardfhsiao.github.io/react-picky-date-time/">demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
 
+
+# Browser support
+Tested on IE9+ and Chrome
+
+# Event & Usage
+
+Also consoled out on the demo page examples
+
+```js
+onYearPicked(yearInfo) {
+    console.log(yearInfo);
+  }
+
+  onMonthPicked(monthInfo) {
+    console.log(monthInfo);
+  }
+
+  onDatePicked(dateInfo) {
+    console.log(dateInfo);
+  }
+
+  onResetDate(dateInfo) {
+    console.log(dateInfo);
+  }
+
+  onSecondChange(secondInfo){
+    console.log(secondInfo);
+  }
+
+  onMinuteChange(minuteInfo){
+    console.log(minuteInfo);
+  }
+
+  onHourChange(hourInfo){
+    console.log(hourInfo);
+  }
+
+  onMeridiemChange(meridiemInfo){
+    console.log(meridiemInfo);
+  }
+
+  onResetTime(Info){
+    console.log(Info);
+  }
+
+  onClearTime(Info){
+    console.log(Info);
+  }
+
+  // just toggle your outter component state to true or false to show or hide <PickyDateTime/>
+  openPickyDateTime() {
+    this.setState({showPickyDateTime: true});
+  }
+
+  onClose() {
+    this.setState({showPickyDateTime: false});
+  }
+
+```
