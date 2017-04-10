@@ -23,3 +23,5 @@ import PickyDateTime from 'react-picky-date-time';
   onClearTime={this.onClearTime.bind(this)}
 />
 ```
+please check the online <a href="https://edwardfhsiao.github.io/react-picky-date-time/">demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
+
