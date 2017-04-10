@@ -46,9 +46,9 @@
 .picky-date-time__close {
   cursor: pointer;
   position: absolute;
+  top: 20px;
   right: 20px;
   color: var(--oc-gray-5);
-  cursor: pointer;
 }
 
 .picky-date-time__breaker {
