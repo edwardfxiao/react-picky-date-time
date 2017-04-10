@@ -6,13 +6,17 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const stylelintRules = require('../../stylelint.config.js');
+const stylelintRules = require('../stylelint.config.js');
 const styleVariables = require(path.join(PATH.SOURCE_PATH, 'css/variables'));
 
 var config = module.exports = {
   context: PATH.ROOT_PATH,
   entry: {
-    index: PATH.ROOT_PATH + 'src/js/index.js'
+    index_script: PATH.ROOT_PATH + 'src/js/index.js',
+    index_stylesheet: PATH.ROOT_PATH + 'src/css/index.css',
+    reactjs: [
+      'react', 'react-dom'
+    ]
   },
   module: {
     rules: [{
@@ -50,9 +54,9 @@ var config = module.exports = {
         use: [{
           loader: 'css-loader',
           options: {
-            modules: true,
+            modules: false,
             importLoaders: 1,
-            localIdentName: '[name]__[local]___[hash:base64:5]',
+            // localIdentName: '[name]__[local]___[hash:base64:5]',
           }
         }, {
           loader: 'postcss-loader',
@@ -81,16 +85,21 @@ var config = module.exports = {
     }]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.coffee', '.json'],
-    alias: {
-      COMPONENTS: path.join(PATH.SOURCE_PATH, 'js/App/components'),
-      STYLES: path.join(PATH.SOURCE_PATH, '/css'),
-    }
+    extensions: ['.js', '.jsx', '.coffee', '.json']
   },
   output: {
     path: PATH.ASSET_PATH,
     filename: 'js/[name].js'
   },
+  // externals(context, request, callback) {
+  //   console.log('//////');
+  //   console.log(request);
+  //   console.log('//////');
+  //   if (request == 'react' || request == 'react-dom'){
+  //     return callback(null, false);
+  //   }
+  //   return callback(null, true);
+  // },
   plugins: [
     new webpack.ContextReplacementPlugin(/\.\/locale$/, 'empty-module', false, /js$/),
     new ManifestPlugin({
@@ -103,7 +112,7 @@ var config = module.exports = {
       filename: 'index.html',
       hash: false,
       chunksSortMode: function(chunk1, chunk2) {
-        var orders = ['index'];
+        var orders = ['index_script', 'index_stylesheet'];
         var order1 = orders.indexOf(chunk1.names[0]);
         var order2 = orders.indexOf(chunk2.names[0]);
         if (order1 > order2) {
@@ -115,14 +124,12 @@ var config = module.exports = {
         }
       }
     }),
-    // new AddAssetHtmlPlugin({
-    //   hash: true,
-    //   filepath: require.resolve(PATH.ASSET_PATH + '/react_vendors.js'),
-    //   includeSourcemap: false,
-    // }),
-    // new webpack.DllReferencePlugin({
-    //   context: PATH.ROOT_PATH,
-    //   manifest: require(path.join(PATH.ASSET_PATH, './react_vendors-manifest.json'))
-    // }),
+    new webpack.optimize.CommonsChunkPlugin({
+       name: 'reactjs',
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    })
   ]
 };

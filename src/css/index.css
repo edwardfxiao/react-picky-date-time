@@ -1,4 +1,8 @@
 @import 'open-color/open-color.css';
+@import './transition.css';
+@import './calendar.css';
+@import './clock.css';
+@import './icon.css';
 :root {
   --oc-white: #ffffff;
   --breaker-padding-l: 0 5px;
@@ -40,6 +44,7 @@
 .picky-date-time__clock {}
 
 .picky-date-time__close {
+  cursor: pointer;
   position: absolute;
   right: 20px;
   color: var(--oc-gray-5);

@@ -1,17 +1,16 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-import Calendar from 'COMPONENTS/PickyDateTime/Calendar';
-import Clock from 'COMPONENTS/PickyDateTime/Clock';
-import STYLE from 'COMPONENTS/PickyDateTime/index.css';
-import 'COMPONENTS/PickyDateTime/icon.css';
+import Calendar from './Calendar';
+import Clock from './Clock';
 
 import {
   SIZE_RANGE,
   LOCALE_RANGE,
   DEFAULT_LACALE,
   DEFAULT_SIZE,
-} from 'COMPONENTS/PickyDateTime/constValue';
+} from './constValue';
 
 class Index extends React.Component {
   constructor(props) {
@@ -71,8 +70,8 @@ class Index extends React.Component {
       mode,
     } = this.props;
     const componentClass = cx(
-      STYLE['picky-date-time'],
-      show && STYLE['visible'],
+      'picky-date-time',
+      show && 'visible',
     );
     let calendarHtml;
     let breakerHtml;
@@ -90,7 +89,7 @@ class Index extends React.Component {
 
     if (mode == 0){
       calendarHtml = (
-        <div className={`${STYLE['picky-date-time__calendar']}`}>
+        <div className={` picky-date-time__calendar `}>
           <Calendar
             size={size}
             locale={locale}
@@ -104,7 +103,7 @@ class Index extends React.Component {
     }
     if (mode == 1){
       calendarHtml = (
-        <div className={`${STYLE['picky-date-time__calendar']}`}>
+        <div className={` picky-date-time__calendar `}>
           <Calendar
             size={size}
             locale={locale}
@@ -115,9 +114,9 @@ class Index extends React.Component {
           />
         </div>
       );
-      breakerHtml = (<span className={`${STYLE['picky-date-time__breaker']} ${STYLE[size]}`}>&nbsp;&nbsp;</span>);
+      breakerHtml = (<span className={` picky-date-time__breaker ${[size]}`}>&nbsp;&nbsp;</span>);
       clockHtml = (
-        <div className={`${STYLE['picky-date-time__clock']} ${STYLE[size]}`}>
+        <div className={` picky-date-time__clock ${[size]}`}>
           <Clock
             size={size}
             locale={locale}
@@ -133,7 +132,7 @@ class Index extends React.Component {
     }
     if (mode == 2){
       clockHtml = (
-        <div className={`${STYLE['picky-date-time__clock']} ${STYLE[size]}`}>
+        <div className={` picky-date-time__clock ${[size]}`}>
           <Clock
             size={size}
             locale={locale}
@@ -149,7 +148,7 @@ class Index extends React.Component {
     }
     return (
       <div className={`${componentClass}`}>
-        <span className={`${STYLE['picky-date-time__close']} picky-date-time-highlight_off`} onClick={this.onClose.bind(this)}></span>
+        <span className={` picky-date-time__close picky-date-time-highlight_off`} onClick={this.onClose.bind(this)}></span>
         {calendarHtml}
         {breakerHtml}
         {clockHtml}

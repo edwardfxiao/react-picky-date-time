@@ -1,22 +1,21 @@
 const base = require('./base.js');
 const _ = require('lodash');
 const webpack = require('webpack');
+const PATH = require('./build_path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = _.merge(base, {
-  devtool: 'cheap-source-map',
+  devtool: 'cheap-module-eval-source-map',
   output: {
-    publicPath: '/',
-    filename: '[name]-[chunkhash].js'
+    publicPath: '/'
   },
+  devServer: {
+    historyApiFallback: true
+  }
 });
 
 config.plugins.push(
-  new webpack.LoaderOptionsPlugin({
-    minimize: true,
-    debug: false
-  }),
-  new ExtractTextPlugin({ filename: 'css/[name]-[hash].css', disable: false, allChunks: false })
+  new ExtractTextPlugin({ filename: 'css/[name].css', disable: false, allChunks: true })
 );
 
 module.exports = config;

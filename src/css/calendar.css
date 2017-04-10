@@ -22,10 +22,6 @@
   position: relative;
 }
 
-.picky-date-time-dropdown-calendar__menu-no-effect {
-  display: none;
-}
-
 .picky-date-time-dropdown.visible .picky-date-time-dropdown-calendar__menu {
   transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1);
   transform: translate(-50%, 0) scale(1, 1)\9;
@@ -59,7 +55,7 @@
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3),
   0 0 1px 0 rgba(0, 0, 0, 0.12);
   /*z-index: -1;*/
-  margin-top: 25px;
+  margin-top: 40px;
   background: var(--oc-white);
 }
 
@@ -79,15 +75,20 @@
 
 .picky-date-time-dropdown-calendar__month {
   background: var(--oc-white);
-  lost-utility: clearfix;
-  lost-center: 100%;
+  *zoom: 1;
+  &:after {
+    content: "\200B";
+    display: block;
+    height: 0;
+    clear: both;
+  }
 }
 
 .picky-date-time-dropdown-calendar__month-item {
-  lost-waffle: 1/4 0 0;
   background: var(--oc-white);
   cursor: pointer;
   float: left;
+  width: 33.3%;
 }
 
 .picky-date-time-dropdown-calendar__month-item>div {
@@ -110,6 +111,9 @@
   color: var(--oc-white);
 }
 
+.picky-date-time-calendar__previous,
+.picky-date-time-calendar__next {}
+
 .picky-date-time-dropdown .picky-date-time-dropdown-calendar__item:hover {
   background: #eee;
 }
@@ -118,28 +122,25 @@
   position: absolute;
   overflow: hidden;
   width: 100%;
+  height: 100%;
   background: var(--oc-white);
-  lost-utility: clearfix;
-  lost-center: 100%;
 }
 
 .picky-date-time-dropdown-calendar__year-item {
-  lost-column: 1/5 0 0;
   background: var(--oc-white);
   cursor: pointer;
   float: left;
+  height: 100%;
+  display: table;
+  width: 20%;
 }
 
 .picky-date-time-dropdown-calendar__year-item>div {
-  &.xs {
-    font-size: 12px;
-    padding: 10px 2px;
-  }
-  &.s {
-    font-size: 12px;
-    padding: 10px 2px;
-  }
-  padding: 5px 10px;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 12px;
+  /*padding: 10px 2px;*/
   margin: 2px;
   font-size: 14px;
   background: var(--oc-white);
@@ -185,17 +186,19 @@
   cursor: pointer;
 }
 
-.col {
+.picky-date-time__col {
   display: inline-block;
   vertical-align: middle;
 }
 
-.col:before {
+
+/*
+.picky-date-time__col:before {
   content: '';
   display: inline-block;
   height: 100%;
   vertical-align: middle;
-}
+}*/
 
 .picky-date-time-calendar__title {
   cursor: pointer;
@@ -227,19 +230,19 @@
   font-size: 20px;
 }
 
-.col-0-5 {
+.picky-date-time__col-0-5 {
   width: 5%;
 }
 
-.col-9 {
+.picky-date-time__col-9 {
   width: 90%;
 }
 
-.col-3 {
+.picky-date-time__col-3 {
   width: 25%;
 }
 
-.col-6 {
+.picky-date-time__col-6 {
   width: 50%;
 }
 

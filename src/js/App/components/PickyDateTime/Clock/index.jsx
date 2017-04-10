@@ -1,9 +1,8 @@
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import update from 'react-addons-update';
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import STYLE from 'COMPONENTS/PickyDateTime/Clock/style.css';
-import 'COMPONENTS/PickyDateTime/icon.css';
 import cx from 'classnames';
 
 import {
@@ -25,7 +24,7 @@ import {
   TIME_CURSOR_POSITION_OBJECT,
   TIME_TYPE,
   KEY_CODE,
-} from 'COMPONENTS/PickyDateTime/constValue';
+} from '../constValue';
 
 const TRANSLATE_FIRST_SIZE = {
   'l': '-2px, -1px',
@@ -551,9 +550,9 @@ class Clock extends React.Component {
         isFive = true;
       }
       let minutesItemClass = cx(
-        STYLE['picky-date-time-clock__clock-minute'],
-        isQuarter && STYLE['picky-date-time-clock__clock-minute--quarter'],
-        isFive && STYLE['picky-date-time-clock__clock-minute--five'],
+        'picky-date-time-clock__clock-minute',
+        isQuarter && 'picky-date-time-clock__clock-minute--quarter',
+        isFive && 'picky-date-time-clock__clock-minute--five',
       );
       let degree = i * 6 + 180;
       let minutesItemStyle = {
@@ -568,10 +567,10 @@ class Clock extends React.Component {
       );
     }
     return (
-      <div className={`${STYLE['picky-date-time-clock']}`}>
-        <div className={`${STYLE['picky-date-time-clock__circle']} ${STYLE[size]}`} ref={ref => this.clockCircle = ref}>
+      <div className={` picky-date-time-clock `}>
+        <div className={` picky-date-time-clock__circle ${size} `} ref={ref => this.clockCircle = ref}>
           <div
-            className={`${STYLE['picky-date-time-clock__clock-hand']} ${STYLE['picky-date-time-clock__clock-hand--second']}`}
+            className={` picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--second `}
             style={secondStyle}
             onMouseOver={this.onMouseOver.bind(this, 'clockHandSecond')}
             onMouseOut={this.onMouseOut.bind(this, 'clockHandSecond')}
@@ -579,7 +578,7 @@ class Clock extends React.Component {
             ref={ref => this.clockHandSecond = ref}>
             </div>
           <div
-            className={`${STYLE['picky-date-time-clock__clock-hand']} ${STYLE['picky-date-time-clock__clock-hand--minute']}`}
+            className={` picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--minute `}
             style={minuteStyle}
             onMouseOver={this.onMouseOver.bind(this, 'clockHandMinute')}
             onMouseOut={this.onMouseOut.bind(this, 'clockHandMinute')}
@@ -587,7 +586,7 @@ class Clock extends React.Component {
             ref={ref => this.clockHandMinute = ref}>
             </div>
           <div
-            className={`${STYLE['picky-date-time-clock__clock-hand']} ${STYLE['picky-date-time-clock__clock-hand--hour']}`}
+            className={` picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--hour `}
             style={hourStyle}
             onMouseOver={this.onMouseOver.bind(this, 'clockHandHour')}
             onMouseOut={this.onMouseOut.bind(this, 'clockHandHour')}
@@ -595,11 +594,12 @@ class Clock extends React.Component {
             ref={ref => this.clockHandHour = ref}>
             </div>
             {minutesItem}
-          <div className={`${STYLE['picky-date-time-clock__clock-center']}`} ref={ref => this.clockCenter = ref}></div>
+          <div className={` picky-date-time-clock__clock-center `} ref={ref => this.clockCenter = ref}></div>
         </div>
-        <div className={`${STYLE['picky-date-time-clock__inputer-wrapper']}`}>
-          <div className={`${STYLE['picky-date-time-clock__inputer']}`}>
+        <div className={` picky-date-time-clock__inputer-wrapper `}>
+          <div className={` picky-date-time-clock__inputer `}>
             <input
+              className={` picky-date-time-clock__input `}
               value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
               onFocus={this.onFocus.bind(this)}
               onKeyDown={this.onKeyDown.bind(this)}
@@ -608,9 +608,9 @@ class Clock extends React.Component {
               onWheel={this.handleMouseWheel.bind(this)}
               ref={ref => this.timeInput = ref}
             />
-            <span className={`${STYLE['picky-date-time-clock__inline-span']} ${STYLE['picky-date-time-clock__icon']} ${STYLE['picky-date-time-clock__icon--remove_circle_outline']} picky-date-time-remove_circle_outline`} onClick={this.clear.bind(this)} title={LANG[locale]['clear']}></span>
+            <span className={` picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`} onClick={this.clear.bind(this)} title={LANG[locale]['clear']}></span>
           </div>
-          <span className={`${STYLE['picky-date-time-clock__inline-span']} ${STYLE['picky-date-time-clock__icon']} ${STYLE['picky-date-time-clock__icon--schedule']} picky-date-time-schedule`} onClick={this.timeinterval === false ? this.reset.bind(this) : ``} title={LANG[locale]['now']}></span>
+          <span className={` picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`} onClick={this.timeinterval === false ? this.reset.bind(this) : ``} title={LANG[locale]['now']}></span>
         </div>
       </div>
     );

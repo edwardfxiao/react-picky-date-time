@@ -1,4 +1,6 @@
 {
-  "index.css": "css/index.css",
-  "index.js": "js/index.js"
+  "index_script.js": "js/index_script.js",
+  "index_stylesheet.css": "css/index_stylesheet.css",
+  "index_stylesheet.js": "js/index_stylesheet.js",
+  "reactjs.js": "js/reactjs.js"
 }
