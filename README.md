@@ -1,5 +1,5 @@
 # react-picky-date-time
-react date time component
+react date time picker component
 ```js
 import PickyDateTime from 'react-picky-date-time';
 
