@@ -41,7 +41,7 @@ Tested on IE9+ and Chrome
 Also consoled out on the demo page examples
 
 ```js
-onYearPicked(yearInfo) {
+  onYearPicked(yearInfo) {
     console.log(yearInfo);
   }
 
