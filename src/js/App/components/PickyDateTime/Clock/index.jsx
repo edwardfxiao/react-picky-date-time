@@ -146,19 +146,27 @@ class Clock extends React.Component {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.initCoordinates = this.initCoordinates.bind(this);
+  }
+
+  initCoordinates() {
+    const centerPoint = ReactDOM.findDOMNode(this.clockCenter);
+    const centerPointPos = centerPoint.getBoundingClientRect();
+    const top = centerPointPos.top, left = centerPointPos.left, height = centerPointPos.height, width = centerPointPos.width;
+    this.originX = left + (width / 2);
+    this.originY = top + (height / 2);
   }
 
   componentDidMount(){
-    if (!this.originX) {
-      const centerPoint = ReactDOM.findDOMNode(this.clockCenter);
-      const centerPointPos = centerPoint.getBoundingClientRect();
-      this.originX = centerPointPos.left + centerPoint.clientWidth;
-      this.originY = centerPointPos.top + centerPoint.clientWidth;
-    }
+    this.initCoordinates();
     if (document.addEventListener) {
+      document.addEventListener('resize', this.initCoordinates, true);
+      document.addEventListener('scroll', this.initCoordinates, true);
       document.addEventListener('mousemove', this.handleMouseMove, true);
       document.addEventListener('mouseup', this.handleMouseUp, true);
     } else {
+      document.attachEvent('onresize', this.handleMouseMove);
+      document.attachEvent('onscroll', this.handleMouseMove);
       document.attachEvent('onmousemove', this.handleMouseMove);
       document.attachEvent('onmouseup', this.handleMouseUp);
     }
@@ -245,7 +253,7 @@ class Clock extends React.Component {
   }
 
   onClick(e){
-    // debugger;
+
   }
 
   handleMouseWheel(e){
@@ -431,6 +439,7 @@ class Clock extends React.Component {
   }
 
   handleMouseMove(e){
+
     let {
       clockHandSecond,
       clockHandMinute,
@@ -454,6 +463,7 @@ class Clock extends React.Component {
       let x = e.clientX - this.originX;
       let y = e.clientY - this.originY;
       let d = R2D * Math.atan2(y, x);
+
       let rotation = parseInt(d - elObj.startAngle);
       rotation = Math.floor((rotation % 360 + roundingAngle / 2) / roundingAngle) * roundingAngle;
       let degree =  elObj.angle + rotation;
@@ -567,7 +577,7 @@ class Clock extends React.Component {
       );
     }
     return (
-      <div className={` picky-date-time-clock `}>
+      <div className={` picky-date-time-clock ${size} `}>
         <div className={` picky-date-time-clock__circle ${size} `} ref={ref => this.clockCircle = ref}>
           <div
             className={` picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--second `}
@@ -610,7 +620,9 @@ class Clock extends React.Component {
             />
             <span className={` picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`} onClick={this.clear.bind(this)} title={LANG[locale]['clear']}></span>
           </div>
-          <span className={` picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`} onClick={this.timeinterval === false ? this.reset.bind(this) : ``} title={LANG[locale]['now']}></span>
+          <div className={` picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle `}>
+            <span className={` picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`} onClick={this.timeinterval === false ? this.reset.bind(this) : ``} title={LANG[locale]['now']}></span>
+          </div>
         </div>
       </div>
     );

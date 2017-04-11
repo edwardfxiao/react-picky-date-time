@@ -1,6 +1,10 @@
 @import 'open-color/open-color.css';
 :root {
   --oc-white: #ffffff;
+  --clock-container-width-l: 380px;
+  --clock-container-width-m: 320px;
+  --clock-container-width-s: 280px;
+  --clock-container-width-xs: 220px;
   --clock-width-l: 320px;
   --clock-width-m: 260px;
   --clock-width-s: 200px;
@@ -11,31 +15,59 @@
   --clock-height-xs: 180px;
 }
 
-.picky-date-time-clock {}
+.picky-date-time-clock__inline-div {
+  display: inline-block;
+}
+
+.picky-date-time-clock__inline-div--middle {
+  vertical-align: middle;
+}
+
+.picky-date-time-clock {
+  margin: 0 auto;
+  &.l {
+    width: var(--clock-container-width-l);
+  }
+  &.m {
+    width: var(--clock-container-width-m);
+  }
+  &.s {
+    width: var(--clock-container-width-s);
+  }
+  &.xs {
+    width: var(--clock-container-width-xs);
+  }
+}
 
 .picky-date-time-clock__header {}
 
 .picky-date-time-clock__inputer-wrapper {
+  margin-top: 30px;
   text-align: center;
 }
 
 .picky-date-time-clock__inputer {
   position: relative;
   display: inline-block;
+  vertical-align: middle;
   margin-right: 10px;
   text-align: center;
-  margin-top: 38px;
+  margin-top: 3px;
   border: 1px solid var(--oc-gray-5);
+  padding: 5px 10px;
+  width: 75%;
 }
 
-.picky-date-time-clock__inputer input {
-  padding: 10px;
+.picky-date-time-clock__input {
+  height: 20px;
+  line-height: 20px;
+  width: 100%;
   border: none;
   outline: 0;
 }
 
 .picky-date-time-clock__input::-ms-clear {
-  width : 0;
+  width: 0;
   height: 0;
 }
 
@@ -48,8 +80,10 @@
 .picky-date-time-clock__icon--schedule {}
 
 .picky-date-time-clock__icon--remove_circle_outline {
-  position: relative;
+  position: absolute;
   right: 10px;
+  top: 43%;
+  transform: translateY(-50%);
 }
 
 .picky-date-time-clock__circle {
@@ -105,7 +139,6 @@
   box-shadow: var(--shadow5);
   -webkit-font-smoothing: antialiased;
   transform-origin: 50% 50%;
-  /*transition: all .3s;*/
 }
 
 .picky-date-time-clock__clock-center {
@@ -120,7 +153,6 @@
 }
 
 .picky-date-time-clock__clock-hand--second {
-  /*transform: translate(-1.2px, -51%) rotate(0deg) translate(0px, -30%) scale(1, 1);*/
   width: 2px;
   height: 70px;
   background: var(--oc-red-5);
@@ -129,7 +161,6 @@
 }
 
 .picky-date-time-clock__clock-hand--minute {
-  /*transform: translate(0, -51%) rotate(20deg) translate(0px, -30%) scale(1, 1);*/
   width: 2px;
   height: 65px;
   background: var(--oc-gray-6);
@@ -138,7 +169,6 @@
 }
 
 .picky-date-time-clock__clock-hand--hour {
-  /*transform: translate(0, -48%) rotate(100deg) translate(0px, -25%) scale(1, 1);*/
   width: 3px;
   height: 50px;
   background: var(--oc-gray-7);

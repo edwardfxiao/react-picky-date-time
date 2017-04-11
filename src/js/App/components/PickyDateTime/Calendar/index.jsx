@@ -209,6 +209,7 @@ class Calendar extends React.Component {
       direction: direction,
     });
     this.props.onResetDate(pickedDateInfo);
+    this.changeSelectorPanelYearSet(year, direction);
   }
 
   render() {

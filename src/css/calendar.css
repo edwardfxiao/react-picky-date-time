@@ -14,10 +14,6 @@
 
 /* dropdown section */
 
-.picky-date-time-calendar {}
-
-.picky-date-time-calendar__selector-panel {}
-
 .picky-date-time-dropdown {
   position: relative;
 }
@@ -40,12 +36,21 @@
   transform: translate(-50%, 0) scale(1, 0)\9;
   opacity: 0;
   left: 50%;
-  width: 300px;
   &.l {
     width: 380px;
+    margin-top: 40px;
+  }
+  &.m {
+    width: 300px;
+    margin-top: 35px;
+  }
+  &.s {
+    width: 280px;
+    margin-top: 30px;
   }
   &.xs {
     width: 280px;
+    margin-top: 30px;
   }
   text-align: center;
   transform-origin: 0 0;
@@ -55,7 +60,6 @@
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3),
   0 0 1px 0 rgba(0, 0, 0, 0.12);
   /*z-index: -1;*/
-  margin-top: 40px;
   background: var(--oc-white);
 }
 
@@ -140,7 +144,6 @@
   display: table-cell;
   vertical-align: middle;
   font-size: 12px;
-  /*padding: 10px 2px;*/
   margin: 2px;
   font-size: 14px;
   background: var(--oc-white);
@@ -155,21 +158,6 @@
   background: var(--oc-blue-5);
   color: var(--oc-white);
 }
-
-.picky-date-time-calendar__selector-panel-icon {
-  /*  position: absolute;
-  bottom: 15px;
-  z-index: 10;*/
-}
-
-.picky-date-time-calendar__selector-panel-icon--left {
-  /*left: 5px;*/
-}
-
-.picky-date-time-calendar__selector-panel-icon--right {
-  /*right: 5px;*/
-}
-
 
 /* end of dropdown section */
 
@@ -190,15 +178,6 @@
   display: inline-block;
   vertical-align: middle;
 }
-
-
-/*
-.picky-date-time__col:before {
-  content: '';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}*/
 
 .picky-date-time-calendar__title {
   cursor: pointer;
