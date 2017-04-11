@@ -34,29 +34,26 @@
   &.backwardLeaveActive {}
 }
 
- .picky-date-time-calendar__title-container {
+.picky-date-time-calendar__title-container {
   position: relative;
-/*  top: 50%;
-  transform: translateY(-50%);*/
   display: block;
   height: 18px;
   overflow: hidden;
+  width: 100%;
   text-align: center;
 }
 
- .picky-date-time-calendar__selector-panel-year-set-container {
+.picky-date-time-calendar__selector-panel-year-set-container {
   position: relative;
   display: block;
-    height: 24px;
-/*    top: 50%;
-    transform: translateY(-50%);*/
+  height: 24px;
   overflow: hidden;
   text-align: center;
   width: 100%;
   margin: 0 auto;
 }
 
- .picky-date-time-calendar__body-container {
+.picky-date-time-calendar__body-container {
   position: relative;
   display: block;
   transition: height .3s;
@@ -76,60 +73,60 @@
   }
 }
 
- .slide {
+.slide {
   position: absolute;
 }
 
- .slide-enter {
+.slide-enter {
   transform: translateX(100%);
   transition: 0.3s transform ease-in-out;
 }
 
- .slide-enter-active {
+.slide-enter-active {
   transform: translateX(0);
 }
 
- .slide-leave {
+.slide-leave {
   transform: translateX(0);
   transition: 0.3s transform ease-in-out;
 }
 
- .slide-leave-active {
+.slide-leave-active {
   transform: translateX(-100%);
 }
 
- .forward-enter {
+.forward-enter {
   transform: translateX(100%);
   transition: 0.3s transform ease-in-out;
 }
 
- .forward-enter-active {
+.forward-enter-active {
   transform: translateX(0);
 }
 
- .forward-leave {
+.forward-leave {
   transform: translateX(0);
   transition: 0.3s transform ease-in-out;
 }
 
- .forward-leave-active {
+.forward-leave-active {
   transform: translateX(-100%);
 }
 
- .backward-enter {
+.backward-enter {
   transform: translateX(-100%);
   transition: 0.3s transform ease-in-out;
 }
 
- .backward-enter-active {
+.backward-enter-active {
   transform: translateX(0);
 }
 
- .backward-leave {
+.backward-leave {
   transform: translateX(0);
   transition: 0.3s transform ease-in-out;
 }
 
- .backward-leave-active {
+.backward-leave-active {
   transform: translateX(100%);
 }

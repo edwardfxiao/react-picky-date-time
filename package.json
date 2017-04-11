@@ -1,6 +1,6 @@
 {
   "name": "react-picky-date-time",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "a react date time picker component",
   "main": "index.js",
   "repository": {
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/edwardfhsiao/react-picky-date-time#readme",
   "scripts": {
     "babel": "babel ./src/js/App --out-dir ./lib",
-    "build": "rm -rf lib && npm run babel",
+    "build": "rm -rf lib && npm run babel && npm run build_prod",
     "webpack_dev": "rm -rf dist && NODE_ENV=development ./node_modules/.bin/webpack --config ./webpack/development.config.js --progress --watch",
     "webpack_prod": "rm -rf dist && NODE_ENV=production ./node_modules/.bin/webpack --config ./webpack/production.config.js --progress -p",
     "build_dev": "npm run webpack_dev",
