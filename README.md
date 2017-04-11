@@ -36,7 +36,7 @@ Please check the online <a href="https://edwardfhsiao.github.io/react-picky-date
 <a href="https://www.paypal.me/XIAOMENGXIAO/0.99" target="_blank" alt="PayPal Donate">Thanks for donating me a donut!&nbsp;&nbsp;⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄</a>
 
 # Browser support
-Tested on IE9+ and Chrome
+Tested on IE9+ and Chrome and Safari(10.0.3)
 
 # Event & Usage
 
