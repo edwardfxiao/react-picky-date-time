@@ -577,10 +577,10 @@ class Clock extends React.Component {
       );
     }
     return (
-      <div className={` picky-date-time-clock ${size} `}>
-        <div className={` picky-date-time-clock__circle ${size} `} ref={ref => this.clockCircle = ref}>
+      <div className={`picky-date-time-clock ${size}`}>
+        <div className={`picky-date-time-clock__circle ${size}`} ref={ref => this.clockCircle = ref}>
           <div
-            className={` picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--second `}
+            className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--second`}
             style={secondStyle}
             onMouseOver={this.onMouseOver.bind(this, 'clockHandSecond')}
             onMouseOut={this.onMouseOut.bind(this, 'clockHandSecond')}
@@ -588,7 +588,7 @@ class Clock extends React.Component {
             ref={ref => this.clockHandSecond = ref}>
             </div>
           <div
-            className={` picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--minute `}
+            className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--minute`}
             style={minuteStyle}
             onMouseOver={this.onMouseOver.bind(this, 'clockHandMinute')}
             onMouseOut={this.onMouseOut.bind(this, 'clockHandMinute')}
@@ -596,7 +596,7 @@ class Clock extends React.Component {
             ref={ref => this.clockHandMinute = ref}>
             </div>
           <div
-            className={` picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--hour `}
+            className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--hour`}
             style={hourStyle}
             onMouseOver={this.onMouseOver.bind(this, 'clockHandHour')}
             onMouseOut={this.onMouseOut.bind(this, 'clockHandHour')}
@@ -604,12 +604,12 @@ class Clock extends React.Component {
             ref={ref => this.clockHandHour = ref}>
             </div>
             {minutesItem}
-          <div className={` picky-date-time-clock__clock-center `} ref={ref => this.clockCenter = ref}></div>
+          <div className={`picky-date-time-clock__clock-center`} ref={ref => this.clockCenter = ref}></div>
         </div>
-        <div className={` picky-date-time-clock__inputer-wrapper `}>
-          <div className={` picky-date-time-clock__inputer `}>
+        <div className={`picky-date-time-clock__inputer-wrapper`}>
+          <div className={`picky-date-time-clock__inputer`}>
             <input
-              className={` picky-date-time-clock__input `}
+              className={`picky-date-time-clock__input`}
               value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
               onFocus={this.onFocus.bind(this)}
               onKeyDown={this.onKeyDown.bind(this)}
@@ -618,10 +618,10 @@ class Clock extends React.Component {
               onWheel={this.handleMouseWheel.bind(this)}
               ref={ref => this.timeInput = ref}
             />
-            <span className={` picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`} onClick={this.clear.bind(this)} title={LANG[locale]['clear']}></span>
+            <span className={`picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`} onClick={this.clear.bind(this)} title={LANG[locale]['clear']}></span>
           </div>
-          <div className={` picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle `}>
-            <span className={` picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`} onClick={this.timeinterval === false ? this.reset.bind(this) : ``} title={LANG[locale]['now']}></span>
+          <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
+            <span className={`picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`} onClick={this.timeinterval === false ? this.reset.bind(this) : ``} title={LANG[locale]['now']}></span>
           </div>
         </div>
       </div>

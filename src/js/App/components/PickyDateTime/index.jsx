@@ -89,7 +89,7 @@ class Index extends React.Component {
 
     if (mode == 0){
       calendarHtml = (
-        <div className={` picky-date-time__calendar `}>
+        <div className={`picky-date-time__calendar`}>
           <Calendar
             size={size}
             locale={locale}
@@ -103,7 +103,7 @@ class Index extends React.Component {
     }
     if (mode == 1){
       calendarHtml = (
-        <div className={` picky-date-time__calendar `}>
+        <div className={`picky-date-time__calendar`}>
           <Calendar
             size={size}
             locale={locale}
@@ -114,9 +114,9 @@ class Index extends React.Component {
           />
         </div>
       );
-      breakerHtml = (<span className={` picky-date-time__breaker ${[size]}`}>&nbsp;&nbsp;</span>);
+      breakerHtml = (<span className={`picky-date-time__breaker ${[size]}`}>&nbsp;&nbsp;</span>);
       clockHtml = (
-        <div className={` picky-date-time__clock ${[size]}`}>
+        <div className={`picky-date-time__clock ${[size]}`}>
           <Clock
             size={size}
             locale={locale}
@@ -132,7 +132,7 @@ class Index extends React.Component {
     }
     if (mode == 2){
       clockHtml = (
-        <div className={` picky-date-time__clock ${[size]}`}>
+        <div className={`picky-date-time__clock ${[size]}`}>
           <Clock
             size={size}
             locale={locale}
@@ -148,7 +148,7 @@ class Index extends React.Component {
     }
     return (
       <div className={`${componentClass}`}>
-        <span className={` picky-date-time__close picky-date-time-highlight_off`} onClick={this.onClose.bind(this)}></span>
+        <span className={`picky-date-time__close picky-date-time-highlight_off`} onClick={this.onClose.bind(this)}></span>
         {calendarHtml}
         {breakerHtml}
         {clockHtml}

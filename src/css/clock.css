@@ -64,6 +64,7 @@
   width: 100%;
   border: none;
   outline: 0;
+  background: transparent;
 }
 
 .picky-date-time-clock__input::-ms-clear {
