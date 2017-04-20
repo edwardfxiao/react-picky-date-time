@@ -9,80 +9,96 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const stylelintRules = require('../stylelint.config.js');
 const styleVariables = require(path.join(PATH.SOURCE_PATH, 'css/variables'));
 
-var config = module.exports = {
+var config = (module.exports = {
   context: PATH.ROOT_PATH,
   entry: {
     index_script: PATH.ROOT_PATH + 'src/js/index.js',
     index_stylesheet: PATH.ROOT_PATH + 'src/css/index.css',
-    reactjs: [
-      'react', 'react-dom'
-    ]
+    reactjs: ['react', 'react-dom']
   },
   module: {
-    rules: [{
-      enforce: 'pre',
-      test: /\.js?$/,
-      exclude: /node_modules/,
-      use: [{ loader: 'eslint-loader', options: {} }],
-    }, {
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      use: [{ loader: 'babel-loader', options: { presets: ['es2015', 'react', 'stage-2'] } }],
-    }, {
-      test: /\.(woff|woff2|eot|ttf|otf)\??.*$/,
-      use: [{ loader: 'url-loader?limit=8192&name=font/[name].[ext]' }]
-    }, {
-      test: /\.(jpe?g|png|gif|svg)\??.*$/,
-      use: [{ loader: 'url-loader?limit=8192&name=img/[name].[ext]' }]
-    }, {
-      test: /\.scss$/,
-      loader: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [{
-          loader: 'css-loader',
-          options: {
-            importLoaders: 1,
+    rules: [
+      {
+        enforce: 'pre',
+        test: /\.js?$/,
+        exclude: /node_modules/,
+        use: [{ loader: 'eslint-loader', options: {} }]
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: { presets: ['es2015', 'react', 'stage-2'] }
           }
-        }, {
-          loader: 'sass-loader'
-        }]
-      }),
-    }, {
-      test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [{
-          loader: 'css-loader',
-          options: {
-            modules: false,
-            importLoaders: 1,
-            // localIdentName: '[name]__[local]___[hash:base64:5]',
-          }
-        }, {
-          loader: 'postcss-loader',
-          options: {
-            plugins: function(webpack) {
-              return [
-                require('lost'),
-                require('postcss-import')({
-                  addDependencyTo: webpack
-                }),
-                require('postcss-cssnext')({
-                  autoprefixer: {
-                    browsers: "ie >= 9, ..."
-                  },
-                  features: {
-                    customProperties: {
-                      variables: styleVariables
-                    }
-                  }
-                }),
-              ];
+        ]
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)\??.*$/,
+        use: [{ loader: 'url-loader?limit=8192&name=font/[name].[ext]' }]
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)\??.*$/,
+        use: [{ loader: 'url-loader?limit=8192&name=img/[name].[ext]' }]
+      },
+      {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1
+              }
+            },
+            {
+              loader: 'sass-loader'
             }
-          }
-        }]
-      })
-    }]
+          ]
+        })
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                modules: false,
+                importLoaders: 1
+                // localIdentName: '[name]__[local]___[hash:base64:5]',
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: function(webpack) {
+                  return [
+                    require('lost'),
+                    require('postcss-import')({
+                      addDependencyTo: webpack
+                    }),
+                    require('postcss-cssnext')({
+                      autoprefixer: {
+                        browsers: 'ie >= 9, ...'
+                      },
+                      features: {
+                        customProperties: {
+                          variables: styleVariables
+                        }
+                      }
+                    })
+                  ];
+                }
+              }
+            }
+          ]
+        })
+      }
+    ]
   },
   resolve: {
     extensions: ['.js', '.jsx', '.coffee', '.json']
@@ -101,7 +117,12 @@ var config = module.exports = {
   //   return callback(null, true);
   // },
   plugins: [
-    new webpack.ContextReplacementPlugin(/\.\/locale$/, 'empty-module', false, /js$/),
+    new webpack.ContextReplacementPlugin(
+      /\.\/locale$/,
+      'empty-module',
+      false,
+      /js$/
+    ),
     new ManifestPlugin({
       fileName: 'rev-manifest.json'
     }),
@@ -125,11 +146,11 @@ var config = module.exports = {
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
-       name: 'reactjs',
+      name: 'reactjs'
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false
     })
   ]
-};
+});

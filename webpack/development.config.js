@@ -15,7 +15,11 @@ const config = _.merge(base, {
 });
 
 config.plugins.push(
-  new ExtractTextPlugin({ filename: 'css/[name].css', disable: false, allChunks: true })
+  new ExtractTextPlugin({
+    filename: 'css/[name].css',
+    disable: false,
+    allChunks: true
+  })
 );
 
 module.exports = config;

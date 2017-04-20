@@ -8,7 +8,7 @@ const config = _.merge(base, {
   output: {
     publicPath: '/',
     filename: '[name].js'
-  },
+  }
 });
 
 config.plugins.push(
@@ -16,7 +16,11 @@ config.plugins.push(
     minimize: true,
     debug: false
   }),
-  new ExtractTextPlugin({ filename: 'css/[name].css', disable: false, allChunks: true })
+  new ExtractTextPlugin({
+    filename: 'css/[name].css',
+    disable: false,
+    allChunks: true
+  })
 );
 
 module.exports = config;

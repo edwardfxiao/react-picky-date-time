@@ -10,20 +10,20 @@ const DEFAULT_SIZE = 'm';
 
 const LANG = {
   'en-us': {
-    'today': 'Today',
-    'reset': 'Reset',
+    today: 'Today',
+    reset: 'Reset',
     'reset-date': 'Reset Date',
-    'clear': 'Clear',
-    'now': 'Now',
+    clear: 'Clear',
+    now: 'Now'
   },
   'zh-cn': {
-    'today': '今天',
-    'reset': '重置',
+    today: '今天',
+    reset: '重置',
     'reset-date': '重置日期',
-    'clear': '清零',
-    'now': '现在',
-  },
-}
+    clear: '清零',
+    now: '现在'
+  }
+};
 
 // CALENDAR
 
@@ -34,13 +34,39 @@ const SELECTOR_YEAR_SET_NUMBER = 5;
 
 const WEEK_NAME = {
   'en-us': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  'zh-cn': ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-}
+  'zh-cn': ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+};
 
 const MONTH_NAME = {
-  'en-us': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  'zh-cn': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-}
+  'en-us': [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ],
+  'zh-cn': [
+    '一月',
+    '二月',
+    '三月',
+    '四月',
+    '五月',
+    '六月',
+    '七月',
+    '八月',
+    '九月',
+    '十月',
+    '十一月',
+    '十二月'
+  ]
+};
 
 const POINTER_ROTATE = 0;
 
@@ -78,7 +104,11 @@ const getDaysArray = (year, month, locale = 'zh-cn') => {
   let startOffset = date.getDay();
   if (startOffset != 0) {
     prevMonthDate = getDaysListByMonth(prevYear, prevMonth, names, locale);
-    for (let i = prevMonthDate.length - startOffset; i <= prevMonthDate.length - 1; i++) {
+    for (
+      let i = prevMonthDate.length - startOffset;
+      i <= prevMonthDate.length - 1;
+      i++
+    ) {
       res.push(prevMonthDate[i]);
     }
   }
@@ -95,7 +125,7 @@ const getDaysArray = (year, month, locale = 'zh-cn') => {
   }
 
   return res;
-}
+};
 
 const getDaysListByMonth = (year, month) => {
   const date = new Date(year, month - 1, 1);
@@ -106,15 +136,15 @@ const getDaysListByMonth = (year, month) => {
       day: date.getDay(),
       month: month,
       year: year,
-      value: `${year}-${month}-${date.getDate()}`,
-    }
+      value: `${year}-${month}-${date.getDate()}`
+    };
     res.push(item);
     date.setDate(date.getDate() + 1);
   }
   return res;
-}
+};
 
-const getYearSet = (year) => {
+const getYearSet = year => {
   let res = [];
   let itemNumber;
   let startOffset;
@@ -123,7 +153,7 @@ const getYearSet = (year) => {
     itemNumber = (SELECTOR_YEAR_SET_NUMBER - 1) / 2 + 1;
     startOffset = SELECTOR_YEAR_SET_NUMBER - itemNumber;
   } else {
-    itemNumber = (SELECTOR_YEAR_SET_NUMBER / 2) - 1;
+    itemNumber = SELECTOR_YEAR_SET_NUMBER / 2 - 1;
     startOffset = itemNumber - 1;
   }
 
@@ -138,7 +168,7 @@ const getYearSet = (year) => {
     res.push(year);
   }
   return res;
-}
+};
 
 // CLOCK
 
@@ -167,9 +197,14 @@ const TIME_CURSOR_POSITION_OBJECT = {
   8: 'clockHandSecond',
   9: 'meridiem',
   10: 'meridiem',
-  11: 'meridiem',
+  11: 'meridiem'
 };
-const TIME_TYPE = ['clockHandHour', 'clockHandMinute', 'clockHandSecond', 'meridiem'];
+const TIME_TYPE = [
+  'clockHandHour',
+  'clockHandMinute',
+  'clockHandSecond',
+  'meridiem'
+];
 
 let KEY_CODE = {
   '8': 'Backspace',
@@ -187,8 +222,8 @@ let KEY_CODE = {
   '54': '6',
   '55': '7',
   '56': '8',
-  '57': '9',
-}
+  '57': '9'
+};
 
 export {
   // GENERAL
@@ -221,5 +256,5 @@ export {
   TIME_JUMP_CHAR_POS_LIST,
   TIME_CURSOR_POSITION_OBJECT,
   TIME_TYPE,
-  KEY_CODE,
-}
+  KEY_CODE
+};

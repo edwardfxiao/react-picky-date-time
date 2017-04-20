@@ -9,85 +9,77 @@ import {
   SIZE_RANGE,
   LOCALE_RANGE,
   DEFAULT_LACALE,
-  DEFAULT_SIZE,
+  DEFAULT_SIZE
 } from './constValue';
 
 class Index extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
   }
   onClose() {
-    const {onClose} = this.props;
+    const { onClose } = this.props;
     onClose && onClose();
   }
   // CALENDAR
-  onYearPicked(yearInfo){
+  onYearPicked(yearInfo) {
     this.props.onYearPicked(yearInfo);
   }
-  onMonthPicked(monthInfo){
+  onMonthPicked(monthInfo) {
     this.props.onMonthPicked(monthInfo);
   }
-  onDatePicked(dateInfo){
+  onDatePicked(dateInfo) {
     this.props.onDatePicked(dateInfo);
   }
-  onResetDate(dateInfo){
+  onResetDate(dateInfo) {
     this.props.onResetDate(dateInfo);
   }
-  onResetTime(timeInfo){
+  onResetTime(timeInfo) {
     this.props.onResetTime(timeInfo);
   }
   // CLOCK
-  onSecondChange(secondInfo){
+  onSecondChange(secondInfo) {
     this.props.onSecondChange(secondInfo);
   }
 
-  onMinuteChange(minuteInfo){
+  onMinuteChange(minuteInfo) {
     this.props.onMinuteChange(minuteInfo);
   }
 
-  onHourChange(hourInfo){
+  onHourChange(hourInfo) {
     this.props.onHourChange(hourInfo);
   }
 
-  onMeridiemChange(meridiemInfo){
+  onMeridiemChange(meridiemInfo) {
     this.props.onMeridiemChange(meridiemInfo);
   }
 
-  onResetTime(Info){
+  onResetTime(Info) {
     this.props.onResetTime(Info);
   }
 
-  onClearTime(Info){
+  onClearTime(Info) {
     this.props.onClearTime(Info);
   }
 
   render() {
-    let {
-      size,
-      show,
-      locale,
-      mode,
-    } = this.props;
-    const componentClass = cx(
-      'picky-date-time',
-      show && 'visible',
-    );
+    let { size, show, locale, mode } = this.props;
+    const componentClass = cx('picky-date-time', show && 'visible');
     let calendarHtml;
     let breakerHtml;
     let clockHtml;
 
     size = size.toLowerCase();
-    if (SIZE_RANGE.indexOf(size) == -1){
+    if (SIZE_RANGE.indexOf(size) == -1) {
       size = DEFAULT_SIZE;
     }
 
     locale = locale.toLowerCase();
-    if (LOCALE_RANGE.indexOf(locale) == -1){
+    if (LOCALE_RANGE.indexOf(locale) == -1) {
       locale = DEFAULT_LACALE;
     }
 
-    if (mode == 0){
+    if (mode == 0) {
       calendarHtml = (
         <div className={`picky-date-time__calendar`}>
           <Calendar
@@ -101,7 +93,7 @@ class Index extends React.Component {
         </div>
       );
     }
-    if (mode == 1){
+    if (mode == 1) {
       calendarHtml = (
         <div className={`picky-date-time__calendar`}>
           <Calendar
@@ -114,7 +106,11 @@ class Index extends React.Component {
           />
         </div>
       );
-      breakerHtml = (<span className={`picky-date-time__breaker ${[size]}`}>&nbsp;&nbsp;</span>);
+      breakerHtml = (
+        <span className={`picky-date-time__breaker ${[size]}`}>
+          &nbsp;&nbsp;
+        </span>
+      );
       clockHtml = (
         <div className={`picky-date-time__clock ${[size]}`}>
           <Clock
@@ -130,7 +126,7 @@ class Index extends React.Component {
         </div>
       );
     }
-    if (mode == 2){
+    if (mode == 2) {
       clockHtml = (
         <div className={`picky-date-time__clock ${[size]}`}>
           <Clock
@@ -148,7 +144,10 @@ class Index extends React.Component {
     }
     return (
       <div className={`${componentClass}`}>
-        <span className={`picky-date-time__close picky-date-time-highlight_off`} onClick={this.onClose.bind(this)}></span>
+        <span
+          className={`picky-date-time__close picky-date-time-highlight_off`}
+          onClick={this.onClose.bind(this)}
+        />
         {calendarHtml}
         {breakerHtml}
         {clockHtml}
@@ -172,7 +171,7 @@ Index.propTypes = {
   onHourChange: PropTypes.func,
   onMeridiemChange: PropTypes.func,
   onResetTime: PropTypes.func,
-  onClearTime: PropTypes.func,
+  onClearTime: PropTypes.func
 };
 
 Index.defaultProps = {
@@ -193,7 +192,7 @@ Index.defaultProps = {
   onHourChange: () => {},
   onMeridiemChange: () => {},
   onResetTime: () => {},
-  onClearTime: () => {},
-}
+  onClearTime: () => {}
+};
 
 export default Index;
