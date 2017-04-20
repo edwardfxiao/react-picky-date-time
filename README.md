@@ -1,5 +1,7 @@
 # react-picky-date-time
-react date time picker component
+react date time picker component.
+
+NO Jquery, NO Moment.js
 ```js
 import PickyDateTime from 'react-picky-date-time';
 
