@@ -81,7 +81,7 @@ class Calendar extends React.Component {
       pickedYearMonth: {
         year: defaultDateYear,
         month: defaultDateMonth,
-        string: `${defaultDateYear}-${defaultDateMonth}`
+        string: `${formatDateString(defaultDateYear)}-${formatDateString(defaultDateMonth)}`
       },
       defaultDate: {
         date: defaultDateDate,
@@ -234,9 +234,6 @@ class Calendar extends React.Component {
       year = currentYearMonthDate.year;
       month = currentYearMonthDate.month;
       date = currentYearMonthDate.date;
-      if (year == pickedDateInfo.year && month == pickedDateInfo.month && date == pickedDateInfo.date){
-        return;
-      }
     }
     let direction = NEXT_TRANSITION;
     if (year < pickedYearMonth.year) {

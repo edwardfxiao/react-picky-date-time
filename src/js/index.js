@@ -105,13 +105,8 @@ class Index extends Component {
           <div>
             <div style={{ color: '#4a4a4a', margin: '10px' }} />
             <h2>Example 1 DEMO: Calendar and Clock</h2>
+            <span onClick={() => this.setState({ showPickyDateTime: !showPickyDateTime })} style={{ 'textDecoration': 'underline',color: '#4a4a4a', cursor: 'pointer' }}>Click to toggle Picky Date Time</span>
             <div>
-              <input
-                style={{ padding: '10px', width: '140px' }}
-                value={`${month}/${date}/${year} ${hour}:${minute}:${second} ${meridiem}`}
-                onChange={() => {}}
-                onClick={() => this.setState({ showPickyDateTime: true })}
-              />
               <div style={{ marginTop: '10px' }}>
                 <PickyDateTime
                   size="xs"
@@ -142,12 +137,8 @@ class Index extends Component {
               }}
             >
               {nl2br(
-                '<input\n' +
-                  '  value={`${month}/${date}/${year} ${hour}:${minute}:${second} ${meridiem}`}\n' +
-                  '  onChange={() => {}}\n' +
-                  '  onClick={() => this.setState({ showPickyDateTime: true })}\n' +
-                  '/>\n\n' +
-                  "<div style={{ marginTop: '10px' }}>\n" +
+                  '<div onClick={() => this.setState({ showPickyDateTime: !this.props.showPickyDateTime })}>Click to toggle Picky Date Time</div>\n' +
+                  '<div style={{ marginTop: \'10px\' }}>\n' +
                   '  <PickyDateTime \n' +
                   '    size="xs" \n' +
                   '    mode={1} \n' +
