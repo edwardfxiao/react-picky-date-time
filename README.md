@@ -79,44 +79,69 @@ Tested on IE9+ and Chrome and Safari(10.0.3)
 Also consoled out on the demo page examples
 
 ```js
-  onYearPicked(yearInfo) {
-    console.log(yearInfo);
+  onYearPicked(res) {
+    const { year } = res;
+    this.setState({ year: year});
   }
 
-  onMonthPicked(monthInfo) {
-    console.log(monthInfo);
+  onMonthPicked(res) {
+    const { month, year } = res;
+    this.setState({ year: year, month: month});
   }
 
-  onDatePicked(dateInfo) {
-    console.log(dateInfo);
+  onDatePicked(res) {
+    const { date, month, year } = res;
+    this.setState({ year: year, month: month, date: date });
   }
 
-  onResetDate(dateInfo) {
-    console.log(dateInfo);
+  onResetDate(res) {
+    const { date, month, year } = res;
+    this.setState({ year: year, month: month, date: date });
   }
 
-  onSecondChange(secondInfo){
-    console.log(secondInfo);
+  onResetDefaultDate(res) {
+    const { date, month, year } = res;
+    this.setState({ year: year, month: month, date: date });
   }
 
-  onMinuteChange(minuteInfo){
-    console.log(minuteInfo);
+  onSecondChange(res) {
+    this.setState({ second: res.value });
   }
 
-  onHourChange(hourInfo){
-    console.log(hourInfo);
+  onMinuteChange(res) {
+    this.setState({ minute: res.value });
   }
 
-  onMeridiemChange(meridiemInfo){
-    console.log(meridiemInfo);
+  onHourChange(res) {
+    this.setState({ hour: res.value });
   }
 
-  onResetTime(Info){
-    console.log(Info);
+  onMeridiemChange(res) {
+    this.setState({ meridiem: res });
   }
 
-  onClearTime(Info){
-    console.log(Info);
+  onResetTime(res) {
+    this.setState({
+      second: res.clockHandSecond.value,
+      minute: res.clockHandMinute.value,
+      hour: res.clockHandHour.value
+    });
+  }
+
+  onResetDefaultTime(res) {
+    this.setState({
+      second: res.clockHandSecond.value,
+      minute: res.clockHandMinute.value,
+      hour: res.clockHandHour.value
+    });
+  }
+
+  onClearTime(res) {
+    this.setState({
+      second: res.clockHandSecond.value,
+      minute: res.clockHandMinute.value,
+      hour: res.clockHandHour.value
+    });
   }
 
   // just toggle your outter component state to true or false to show or hide <PickyDateTime/>
