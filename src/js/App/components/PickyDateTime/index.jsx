@@ -34,8 +34,8 @@ class Index extends React.Component {
   onResetDate(dateInfo) {
     this.props.onResetDate(dateInfo);
   }
-  onResetTime(timeInfo) {
-    this.props.onResetTime(timeInfo);
+  onResetDefaultDate(dateInfo) {
+    this.props.onResetDefaultDate(dateInfo);
   }
   // CLOCK
   onSecondChange(secondInfo) {
@@ -62,8 +62,12 @@ class Index extends React.Component {
     this.props.onClearTime(Info);
   }
 
+  onResetDefaultTime(Info) {
+    this.props.onResetDefaultTime(Info);
+  }
+
   render() {
-    let { size, show, locale, mode } = this.props;
+    let { size, defaultDate, defaultTime, show, locale, mode } = this.props;
     const componentClass = cx('picky-date-time', show && 'visible');
     let calendarHtml;
     let breakerHtml;
@@ -84,11 +88,13 @@ class Index extends React.Component {
         <div className={`picky-date-time__calendar`}>
           <Calendar
             size={size}
+            defaultDate={defaultDate}
             locale={locale}
             onYearPicked={this.onYearPicked.bind(this)}
             onMonthPicked={this.onMonthPicked.bind(this)}
             onDatePicked={this.onDatePicked.bind(this)}
             onResetDate={this.onResetDate.bind(this)}
+            onResetDefaultDate={this.onResetDefaultDate.bind(this)}
           />
         </div>
       );
@@ -98,11 +104,13 @@ class Index extends React.Component {
         <div className={`picky-date-time__calendar`}>
           <Calendar
             size={size}
+            defaultDate={defaultDate}
             locale={locale}
             onYearPicked={this.onYearPicked.bind(this)}
             onMonthPicked={this.onMonthPicked.bind(this)}
             onDatePicked={this.onDatePicked.bind(this)}
             onResetDate={this.onResetDate.bind(this)}
+            onResetDefaultDate={this.onResetDefaultDate.bind(this)}
           />
         </div>
       );
@@ -116,12 +124,14 @@ class Index extends React.Component {
           <Clock
             size={size}
             locale={locale}
+            defaultTime={defaultTime}
             onSecondChange={this.onSecondChange.bind(this)}
             onMinuteChange={this.onMinuteChange.bind(this)}
             onHourChange={this.onHourChange.bind(this)}
             onMeridiemChange={this.onMeridiemChange.bind(this)}
             onResetTime={this.onResetTime.bind(this)}
             onClearTime={this.onClearTime.bind(this)}
+            onResetDefaultTime={this.onResetDefaultTime.bind(this)}
           />
         </div>
       );
@@ -132,12 +142,14 @@ class Index extends React.Component {
           <Clock
             size={size}
             locale={locale}
+            defaultTime={defaultTime}
             onSecondChange={this.onSecondChange.bind(this)}
             onMinuteChange={this.onMinuteChange.bind(this)}
             onHourChange={this.onHourChange.bind(this)}
             onMeridiemChange={this.onMeridiemChange.bind(this)}
             onResetTime={this.onResetTime.bind(this)}
             onClearTime={this.onClearTime.bind(this)}
+            onResetDefaultTime={this.onResetDefaultTime.bind(this)}
           />
         </div>
       );
@@ -171,7 +183,8 @@ Index.propTypes = {
   onHourChange: PropTypes.func,
   onMeridiemChange: PropTypes.func,
   onResetTime: PropTypes.func,
-  onClearTime: PropTypes.func
+  onClearTime: PropTypes.func,
+  onResetDefaultTime: PropTypes.func,
 };
 
 Index.defaultProps = {
@@ -182,17 +195,21 @@ Index.defaultProps = {
   // GENERAL
   onClose: () => {},
   // CALENDAR
+  defaultDate: '',
   onYearPicked: () => {},
   onMonthPicked: () => {},
   onDatePicked: () => {},
   onResetDate: () => {},
+  onResetDefaultDate: () => {},
   // CLOCK
+  defaultTime: '',
   onSecondChange: () => {},
   onMinuteChange: () => {},
   onHourChange: () => {},
   onMeridiemChange: () => {},
   onResetTime: () => {},
-  onClearTime: () => {}
+  onClearTime: () => {},
+  onResetDefaultTime: () => {},
 };
 
 export default Index;

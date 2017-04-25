@@ -73,6 +73,7 @@ const POINTER_ROTATE = 0;
 const WEEK_NUMBER = 7;
 
 const getDaysArray = (year, month, locale = 'zh-cn') => {
+
   let prevMonth;
   let nextMonth;
   let prevYear;
@@ -123,26 +124,35 @@ const getDaysArray = (year, month, locale = 'zh-cn') => {
       res.push(nextMonthDate[i]);
     }
   }
-
   return res;
 };
 
 const getDaysListByMonth = (year, month) => {
   const date = new Date(year, month - 1, 1);
   let res = [];
+  year = String(year);
+  const monthName = formatDateString(month);
   while (date.getMonth() == month - 1) {
+    const dayName = formatDateString(date.getDate());
     let item = {
-      name: date.getDate(),
+      name: dayName,
       day: date.getDay(),
-      month: month,
+      month: monthName,
       year: year,
-      value: `${year}-${month}-${date.getDate()}`
+      value: `${year}-${monthName}-${dayName}`
     };
     res.push(item);
     date.setDate(date.getDate() + 1);
   }
   return res;
 };
+
+const formatDateString = (val) => {
+  if (Number(val) < 10){
+    return String('0' + Number(val));
+  }
+  return String(val);
+}
 
 const getYearSet = year => {
   let res = [];
@@ -243,6 +253,7 @@ export {
   getDaysArray,
   getDaysListByMonth,
   getYearSet,
+  formatDateString,
   // CLOCK
   R2D,
   SECOND_DEGREE_NUMBER,

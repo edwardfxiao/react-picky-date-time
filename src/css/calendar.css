@@ -159,13 +159,24 @@
   color: var(--oc-white);
 }
 
+
 /* end of dropdown section */
 
+.picky-date-time-calendar__default-day,
 .picky-date-time-calendar__today {
   font-size: 12px;
   margin-top: 10px;
 }
 
+.picky-date-time-calendar__today {
+  left: 0;
+}
+
+.picky-date-time-calendar__default-day {
+  right: 0;
+}
+
+.picky-date-time-calendar__default-day .picky-date-time-calendar__icon,
 .picky-date-time-calendar__today .picky-date-time-calendar__icon {
   font-size: 15px;
 }
@@ -345,7 +356,6 @@
 .picky-date-time-calendar__button {
   position: absolute;
   bottom: -40px;
-  left: 0;
   display: inline-block;
   color: var(--oc-gray-6);
   cursor: pointer;

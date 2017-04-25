@@ -46,8 +46,8 @@
 .picky-date-time__close {
   cursor: pointer;
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
   color: var(--oc-gray-5);
 }
 

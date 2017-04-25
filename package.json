@@ -1,6 +1,6 @@
 {
   "name": "react-picky-date-time",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "a react date time picker component",
   "main": "index.js",
   "repository": {
@@ -38,8 +38,10 @@
     "prop-types": "^15.5.6",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.4.2",
+    "react-addons-shallow-compare": "^15.5.2",
     "react-addons-update": "^15.3.2",
-    "react-dom": "^15.3.2"
+    "react-dom": "^15.3.2",
+    "react-newline-to-break": "^1.0.6"
   },
   "devDependencies": {
     "add-asset-html-webpack-plugin": "^1.0.2",

@@ -14,8 +14,37 @@ import {
   SELECTOR_YEAR_SET_NUMBER,
   getDaysArray,
   getDaysListByMonth,
-  getYearSet
+  getYearSet,
+  formatDateString,
 } from '../constValue';
+
+const isValidDate = function(value, userFormat) {
+  userFormat = userFormat || 'mm/dd/yyyy';
+  const delimiter = /[^mdy]/.exec(userFormat)[0];
+  const theFormat = userFormat.split(delimiter);
+  const theDate = value.split(delimiter);
+
+  function isDate(date, format) {
+    let m, d, y, i = 0, len = format.length, f;
+    for (i; i < len; i++) {
+      f = format[i];
+      if (/m/.test(f)) m = date[i];
+      if (/d/.test(f)) d = date[i];
+      if (/y/.test(f)) y = date[i];
+    }
+    return (
+      m > 0 &&
+      m < 13 &&
+      y &&
+      y.length === 4 &&
+      d > 0 &&
+      // Is it a valid day of the month?
+      d <= new Date(y, m, 0).getDate()
+    );
+  }
+
+  return isDate(theDate, theFormat);
+};
 
 class Calendar extends React.Component {
   constructor(props) {
@@ -26,17 +55,43 @@ class Calendar extends React.Component {
     let date = today.getDate();
     let dates = getDaysArray(year, month);
 
+    let defaultDateDate = date;
+    let defaultDateMonth = month;
+    let defaultDateYear = year;
+
+    let isDefaultDateValid = false;
+    if (isValidDate(props.defaultDate)) {
+      const dateStr = props.defaultDate.split('/');
+      defaultDateMonth = Number(dateStr[0]);
+      defaultDateDate = Number(dateStr[1]);
+      defaultDateYear = Number(dateStr[2]);
+      isDefaultDateValid = true;
+      dates = getDaysArray(defaultDateYear, defaultDateMonth);
+    } else {
+      if (props.defaultDate != '') {
+        console.error(
+          'The date you provide: ' + props.defaultDate + ' is not a valid date'
+        );
+      }
+    }
+
     this.state = {
+      isDefaultDateValid,
       dates: dates,
       pickedYearMonth: {
-        year: year,
-        month: month,
-        string: `${year}-${month}`
+        year: defaultDateYear,
+        month: defaultDateMonth,
+        string: `${defaultDateYear}-${defaultDateMonth}`
+      },
+      defaultDate: {
+        date: defaultDateDate,
+        year: defaultDateYear,
+        month: defaultDateMonth
       },
       pickedDateInfo: {
-        date,
-        year,
-        month
+        date: defaultDateDate,
+        year: defaultDateYear,
+        month: defaultDateMonth
       },
       currentYearMonthDate: {
         date,
@@ -44,11 +99,16 @@ class Calendar extends React.Component {
         month
       },
       direction: NEXT_TRANSITION,
-      yearSelectorPanelList: getYearSet(year),
-      yearSelectorPanel: year,
+      yearSelectorPanelList: getYearSet(defaultDateYear),
+      yearSelectorPanel: defaultDateYear,
       showMask: false,
       showSelectorPanel: false
     };
+
+    this.pickDate = this.pickDate.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.showSelectorPanel = this.showSelectorPanel.bind(this);
   }
 
   componentDidMount() {
@@ -58,8 +118,8 @@ class Calendar extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.pickedYearMonth != this.state.pickedYearMonth) {
       let dates = getDaysArray(
-        this.state.pickedYearMonth.year,
-        this.state.pickedYearMonth.month
+        Number(this.state.pickedYearMonth.year),
+        Number(this.state.pickedYearMonth.month)
       );
       this.setState({ dates });
     }
@@ -91,10 +151,11 @@ class Calendar extends React.Component {
       pickedYearMonth,
       direction
     });
-    this.props.onMonthPicked({ year });
+    this.props.onYearPicked({ year });
   }
 
   pickMonth(month, direction) {
+    month = Number(month);
     let { pickedYearMonth } = this.state;
     let { year } = pickedYearMonth;
     if (direction == PREV_TRANSITION) {
@@ -112,6 +173,8 @@ class Calendar extends React.Component {
         month = month + 1;
       }
     }
+    month = formatDateString(month);
+    year = String(year);
     pickedYearMonth = update(pickedYearMonth, {
       month: { $set: month },
       string: { $set: `${year}-${month}` }
@@ -127,8 +190,8 @@ class Calendar extends React.Component {
     let { pickedDateInfo, pickedYearMonth } = this.state;
     pickedDateInfo = update(pickedDateInfo, {
       year: { $set: pickedYearMonth.year },
-      month: { $set: pickedYearMonth.month },
-      date: { $set: pickedDate }
+      month: { $set: formatDateString(pickedYearMonth.month) },
+      date: { $set: formatDateString(pickedDate) }
     });
     this.setState({ pickedDateInfo });
     this.props.onDatePicked(pickedDateInfo);
@@ -155,9 +218,26 @@ class Calendar extends React.Component {
     this.mouseIsDownOnSelectorPanelClicker = false;
   }
 
-  reset() {
-    let { currentYearMonthDate, pickedDateInfo, pickedYearMonth } = this.state;
-    let { year, month, date } = currentYearMonthDate;
+  reset(today = false) {
+    let {
+      currentYearMonthDate,
+      pickedDateInfo,
+      pickedYearMonth,
+      defaultDate
+    } = this.state;
+    let year, month, date;
+    if (!today) {
+      year = defaultDate.year;
+      month = defaultDate.month;
+      date = defaultDate.date;
+    } else {
+      year = currentYearMonthDate.year;
+      month = currentYearMonthDate.month;
+      date = currentYearMonthDate.date;
+      if (year == pickedDateInfo.year && month == pickedDateInfo.month && date == pickedDateInfo.date){
+        return;
+      }
+    }
     let direction = NEXT_TRANSITION;
     if (year < pickedYearMonth.year) {
       direction = PREV_TRANSITION;
@@ -166,6 +246,8 @@ class Calendar extends React.Component {
         direction = PREV_TRANSITION;
       }
     }
+    month = formatDateString(month);
+    date = formatDateString(date);
     pickedDateInfo = update(pickedDateInfo, {
       year: { $set: year },
       month: { $set: month },
@@ -182,13 +264,18 @@ class Calendar extends React.Component {
       yearSelectorPanel: year,
       direction: direction
     });
-    this.props.onResetDate(pickedDateInfo);
+    if (!today) {
+      this.props.onResetDefaultDate(pickedDateInfo);
+    } else {
+      this.props.onResetDate(pickedDateInfo);
+    }
     this.changeSelectorPanelYearSet(year, direction);
   }
 
   render() {
     let { size, locale } = this.props;
     let {
+      isDefaultDateValid,
       pickedYear,
       pickedMonth,
       pickedDate,
@@ -230,7 +317,7 @@ class Calendar extends React.Component {
           currentYearMonthDate={currentYearMonthDate}
           pickedYearMonth={pickedYearMonth}
           pickedDateInfo={pickedDateInfo}
-          onClick={this.pickDate.bind(this)}
+          onClick={this.pickDate}
           key={pickedYearMonth.string}
         />
       );
@@ -283,7 +370,7 @@ class Calendar extends React.Component {
           className={monthItemClass}
           onClick={
             itemMonth !== pickedYearMonth.month
-              ? this.pickMonth.bind(this, month, direction)
+              ? () => this.pickMonth(month, direction)
               : ``
           }
           key={key}
@@ -310,7 +397,7 @@ class Calendar extends React.Component {
             className={yearItemClass}
             onClick={
               item !== pickedYearMonth.year
-                ? this.pickYear.bind(this, year, direction)
+                ? () => this.pickYear(year, direction)
                 : ``
             }
             key={key}
@@ -326,8 +413,8 @@ class Calendar extends React.Component {
           <div
             className={`${selectorPanelClass}`}
             ref={ref => (this.monthSelectorPanel = ref)}
-            onMouseDown={this.onMouseDown.bind(this)}
-            onMouseUp={this.onMouseUp.bind(this)}
+            onMouseDown={this.onMouseDown}
+            onMouseUp={this.onMouseUp}
           >
             <div
               className={`picky-date-time-dropdown-calendar__menu ${[size]}`}
@@ -340,11 +427,11 @@ class Calendar extends React.Component {
               <div className={`picky-date-time__col picky-date-time__col-0-5`}>
                 <span
                   className={`picky-date-time-calendar__selector-panel-icon picky-date-time-calendar__selector-panel-icon--left picky-date-time-calendar__icon picky-date-time-keyboard_arrow_left`}
-                  onClick={this.changeSelectorPanelYearSet.bind(
-                    this,
-                    yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER,
-                    PREV_TRANSITION
-                  )}
+                  onClick={() =>
+                    this.changeSelectorPanelYearSet(
+                      yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER,
+                      PREV_TRANSITION
+                    )}
                 />
               </div>
               <div className={`picky-date-time__col picky-date-time__col-9`}>
@@ -368,11 +455,11 @@ class Calendar extends React.Component {
               <div className={`picky-date-time__col picky-date-time__col-0-5`}>
                 <span
                   className={`picky-date-time-calendar__selector-panel-icon picky-date-time-calendar__selector-panel-icon--right picky-date-time-calendar__icon picky-date-time-keyboard_arrow_right`}
-                  onClick={this.changeSelectorPanelYearSet.bind(
-                    this,
-                    yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER,
-                    NEXT_TRANSITION
-                  )}
+                  onClick={() =>
+                    this.changeSelectorPanelYearSet(
+                      yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER,
+                      NEXT_TRANSITION
+                    )}
                 />
               </div>
 
@@ -381,11 +468,8 @@ class Calendar extends React.Component {
           <div className={`picky-date-time__col picky-date-time__col-3`}>
             <div
               className={`picky-date-time__col picky-date-time-calendar__previous`}
-              onClick={this.pickYear.bind(
-                this,
-                pickedYearMonth.year,
-                PREV_TRANSITION
-              )}
+              onClick={() =>
+                this.pickYear(pickedYearMonth.year, PREV_TRANSITION)}
             >
               <span
                 className={`picky-date-time-calendar__icon picky-date-time-first_page`}
@@ -393,11 +477,8 @@ class Calendar extends React.Component {
             </div>
             <div
               className={`picky-date-time__col picky-date-time-calendar__sub-previous`}
-              onClick={this.pickMonth.bind(
-                this,
-                pickedYearMonth.month,
-                PREV_TRANSITION
-              )}
+              onClick={() =>
+                this.pickMonth(pickedYearMonth.month, PREV_TRANSITION)}
             >
               <span
                 className={`picky-date-time-calendar__icon picky-date-time-keyboard_arrow_left`}
@@ -420,15 +501,15 @@ class Calendar extends React.Component {
               >
                 <span
                   className={`picky-date-time-calendar__clicker`}
-                  onClick={this.showSelectorPanel.bind(this)}
-                  onMouseDown={this.onMouseDown.bind(this)}
-                  onMouseUp={this.onMouseUp.bind(this)}
+                  onClick={this.showSelectorPanel}
+                  onMouseDown={this.onMouseDown}
+                  onMouseUp={this.onMouseUp}
                 >
                   <span className={`picky-date-time-calendar__clicker`}>
                     <span
                     >{`${MONTH_NAME[locale][pickedYearMonth.month - 1]}`}</span>
                   </span>
-                  <span>&nbsp;&nbsp;</span>
+                  <span>&nbsp;</span>
                   <span className={`picky-date-time-calendar__clicker`}>
                     <span>{`${pickedYearMonth.year}`}</span>
                   </span>
@@ -439,11 +520,8 @@ class Calendar extends React.Component {
           <div className={`picky-date-time__col picky-date-time__col-3`}>
             <div
               className={`picky-date-time__col picky-date-time-calendar__next`}
-              onClick={this.pickMonth.bind(
-                this,
-                pickedYearMonth.month,
-                NEXT_TRANSITION
-              )}
+              onClick={() =>
+                this.pickMonth(pickedYearMonth.month, NEXT_TRANSITION)}
             >
               <span
                 className={`picky-date-time-calendar__icon picky-date-time-keyboard_arrow_right`}
@@ -451,11 +529,8 @@ class Calendar extends React.Component {
             </div>
             <div
               className={`picky-date-time__col picky-date-time-calendar__sub-next`}
-              onClick={this.pickYear.bind(
-                this,
-                pickedYearMonth.year,
-                NEXT_TRANSITION
-              )}
+              onClick={() =>
+                this.pickYear(pickedYearMonth.year, NEXT_TRANSITION)}
             >
               <span
                 className={`picky-date-time-calendar__icon picky-date-time-last_page`}
@@ -484,20 +559,28 @@ class Calendar extends React.Component {
         </div>
         <div
           className={`picky-date-time-calendar__button picky-date-time-calendar__today`}
-          onClick={this.reset.bind(this)}
+          onClick={() => this.reset(true)}
         >
           <span className={`picky-date-time-calendar__inline-span`}>
-            {LANG[locale]['reset-date']}
+            {LANG[locale]['today']}
           </span>
           <span
             className={`picky-date-time-calendar__inline-span picky-date-time-calendar__icon picky-date-time-refresh`}
-            onClick={this.changeSelectorPanelYearSet.bind(
-              this,
-              yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER,
-              NEXT_TRANSITION
-            )}
           />
         </div>
+        {isDefaultDateValid
+          ? <div
+              className={`picky-date-time-calendar__button picky-date-time-calendar__default-day`}
+              onClick={() => this.reset(false)}
+            >
+              <span className={`picky-date-time-calendar__inline-span`}>
+                {LANG[locale]['reset-date']}
+              </span>
+              <span
+                className={`picky-date-time-calendar__inline-span picky-date-time-calendar__icon picky-date-time-refresh`}
+              />
+            </div>
+          : ``}
       </div>
     );
   }
@@ -519,6 +602,7 @@ class CalendarBody extends React.Component {
     let pickedDate = pickedDateInfo.date;
     let pickedYear = pickedYearMonth.year;
     let pickedMonth = pickedYearMonth.month;
+
     let content = Object.keys(data).map(key => {
       let colHtml;
       if (data[key].length) {
@@ -540,20 +624,14 @@ class CalendarBody extends React.Component {
             isPicked && 'active'
           );
           return (
-            <div
-              className={`${datePickerItemClass}`}
+            <CalendarItem
               key={key}
-              onClick={
-                !isDisabled ? this.props.onClick.bind(this, item.name) : ``
-              }
-            >
-              {item.name}
-              {isPicked
-                ? <span
-                    className={`picky-date-time-calendar__icon picky-date-time-check`}
-                  />
-                : ``}
-            </div>
+              item={item}
+              onClick={onClick}
+              isPicked={isPicked}
+              isDisabled={isDisabled}
+              datePickerItemClass={datePickerItemClass}
+            />
           );
         });
       }
@@ -571,30 +649,86 @@ class CalendarBody extends React.Component {
   }
 }
 
+class CalendarItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
+  }
+  onClick() {
+    this.props.onClick(this.props.item.name);
+  }
+  render() {
+    const { item, isPicked, isDisabled, datePickerItemClass } = this.props;
+    return (
+      <div
+        className={`${datePickerItemClass}`}
+        onClick={!isDisabled ? this.onClick : ``}
+      >
+        {item.name}
+        {isPicked
+          ? <span
+              className={`picky-date-time-calendar__icon picky-date-time-check`}
+            />
+          : ``}
+      </div>
+    );
+  }
+}
+
+CalendarItem.propTypes = {
+  item: PropTypes.object,
+  isPicked: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  datePickerItemClass: PropTypes.string,
+  onClick: PropTypes.func
+};
+
+CalendarItem.defaultProps = {
+  item: {},
+  isPicked: false,
+  isDisabled: false,
+  datePickerItemClass: '',
+  onClick: () => {}
+};
+
 CalendarBody.propTypes = {
+  size: PropTypes.string,
+  data: PropTypes.object,
+  currentYearMonthDate: PropTypes.object,
+  pickedDateInfo: PropTypes.object,
+  pickedYearMonth: PropTypes.object,
   onClick: PropTypes.func
 };
 
 CalendarBody.defaultProps = {
+  size: 'm',
+  data: {},
+  currentYearMonthDate: {},
+  pickedDateInfo: {},
+  pickedYearMonth: {},
   onClick: () => {}
 };
 
 Calendar.propTypes = {
   size: PropTypes.string,
   locale: PropTypes.string,
+  defaultDate: PropTypes.string,
   onYearPicked: PropTypes.func,
   onMonthPicked: PropTypes.func,
   onDatePicked: PropTypes.func,
-  onResetDate: PropTypes.func
+  onResetDate: PropTypes.func,
+  onResetDefaultDate: PropTypes.func
 };
 
 Calendar.defaultProps = {
   size: 'm',
   locale: 'en-US',
+  defaultDate: '',
   onYearPicked: () => {},
   onMonthPicked: () => {},
   onDatePicked: () => {},
-  onResetDate: () => {}
+  onResetDate: () => {},
+  onResetDefaultDate: () => {}
 };
 
 export default Calendar;
