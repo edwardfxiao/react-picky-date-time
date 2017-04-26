@@ -1,6 +1,6 @@
 # react-picky-date-time
 A react date time picker component.
-
+# <img src="http://cdn.edwardxiao.com/Apr-26-2017%2009-57-57.gif" />
 NO Jquery, NO Moment.js
 ```js
 import PickyDateTime from 'react-picky-date-time';
