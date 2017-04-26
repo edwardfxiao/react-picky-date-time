@@ -262,7 +262,7 @@ class Clock extends React.Component {
   }
 
   componentDidMount() {
-    this.initCoordinates();
+    setTimeout(() => this.initCoordinates(), 1000);
     if (document.addEventListener) {
       document.addEventListener('resize', this.initCoordinates, true);
       document.addEventListener('scroll', this.initCoordinates, true);

@@ -12,9 +12,9 @@ const styleVariables = require(path.join(PATH.SOURCE_PATH, 'css/variables'));
 var config = (module.exports = {
   context: PATH.ROOT_PATH,
   entry: {
+    reactjs: ['babel-polyfill', 'react', 'react-dom'],
     index_script: PATH.ROOT_PATH + 'src/js/index.js',
-    index_stylesheet: PATH.ROOT_PATH + 'src/css/index.css',
-    reactjs: ['react', 'react-dom']
+    index_stylesheet: PATH.ROOT_PATH + 'src/css/index.css'
   },
   module: {
     rules: [
