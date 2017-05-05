@@ -251,6 +251,9 @@ class Clock extends React.Component {
   }
 
   initCoordinates() {
+    if (this.clockCenter == null) {
+      return;
+    }
     const centerPoint = ReactDOM.findDOMNode(this.clockCenter);
     const centerPointPos = centerPoint.getBoundingClientRect();
     const top = centerPointPos.top,
