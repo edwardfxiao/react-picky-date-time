@@ -105,6 +105,7 @@ class Calendar extends React.Component {
       showSelectorPanel: false
     };
 
+    this.pageClick = this.pageClick.bind(this);
     this.pickDate = this.pickDate.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -112,7 +113,20 @@ class Calendar extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('mousedown', this.pageClick.bind(this), false);
+    if (document.addEventListener) {
+      window.addEventListener('mousedown', this.pageClick, false);
+    }
+    else {
+      document.attachEvent('onmousedown', this.pageClick);
+    }
+  }
+
+  componentWillUnmount() {
+    if (document.removeEventListener) {
+      window.removeEventListener('mousedown', this.pageClick, false);
+    } else {
+      document.detachEvent('onmousedown', this.pageClick);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {

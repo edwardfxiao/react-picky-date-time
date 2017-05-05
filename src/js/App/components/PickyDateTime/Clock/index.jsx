@@ -342,6 +342,9 @@ class Clock extends React.Component {
   }
 
   updateClock() {
+    if (this.clock == null) {
+      return;
+    }
     if (
       this.state.clockHandSecond.isDragging ||
       this.state.clockHandMinute.isDragging ||
@@ -803,7 +806,7 @@ class Clock extends React.Component {
       );
     }
     return (
-      <div className={`picky-date-time-clock ${size}`}>
+      <div className={`picky-date-time-clock ${size}`} ref={(ref) => this.clock = ref}>
         <div
           className={`picky-date-time-clock__circle ${size}`}
           ref={ref => (this.clockCircle = ref)}
