@@ -144,7 +144,7 @@ var config = (module.exports = {
       template: PATH.HTML_PATH + '/layout.html',
       title: 'react-picky-date-time',
       page: 'index',
-      filename: 'index.html',
+      filename: '../index.html',
       hash: false,
       chunksSortMode: function(chunk1, chunk2) {
         var orders = ['common', 'index'];
