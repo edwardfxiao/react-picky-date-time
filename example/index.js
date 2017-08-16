@@ -165,7 +165,7 @@ class Index extends Component {
             >
               <Markdown
                 source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
+import PickyDateTime from 'react-picky-date-time';
 
 <PickyDateTime
   size="xs"
@@ -240,7 +240,7 @@ import PickyDateTime from 'react-inputs-validation';
             >
               <Markdown
                 source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
+import PickyDateTime from 'react-picky-date-time';
 
 <PickyDateTime
   size="xs"
@@ -306,7 +306,7 @@ import PickyDateTime from 'react-inputs-validation';
           >
             <Markdown
               source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
+import PickyDateTime from 'react-picky-date-time';
 
 <PickyDateTime
   size="m"
@@ -369,7 +369,7 @@ import PickyDateTime from 'react-inputs-validation';
           >
             <Markdown
               source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
+import PickyDateTime from 'react-picky-date-time';
 
 <PickyDateTime
   size="xs"
