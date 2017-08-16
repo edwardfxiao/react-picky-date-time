@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'picky-date-time';
-  src:  url('./fonts/picky-date-time.eot?5ce81q');
-  src:  url('./fonts/picky-date-time.eot?5ce81q#iefix') format('embedded-opentype'),
-    url('./fonts/picky-date-time.ttf?5ce81q') format('truetype'),
-    url('./fonts/picky-date-time.woff?5ce81q') format('woff'),
-    url('./fonts/picky-date-time.svg?5ce81q#picky-date-time') format('svg');
+  src:  url('./fonts/picky-date-time.eot');
+  src:  url('./fonts/picky-date-time.eot#iefix') format('embedded-opentype'),
+    url('./fonts/picky-date-time.ttf') format('truetype'),
+    url('./fonts/picky-date-time.woff') format('woff'),
+    url('./fonts/picky-date-time.svg#picky-date-time') format('svg');
   font-weight: normal;
   font-style: normal;
 }

@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-
-import Calendar from './Calendar';
-import Clock from './Clock';
-
+import Calendar from './Calendar/index.js';
+import Clock from './Clock/index.js';
+try {
+  require('../../css/index.css');
+} catch (ex) {}
 import {
   SIZE_RANGE,
   LOCALE_RANGE,
@@ -172,6 +173,8 @@ Index.propTypes = {
   mode: PropTypes.number,
   size: PropTypes.string,
   locale: PropTypes.string,
+  defaultDate: PropTypes.string,
+  defaultTime: PropTypes.string,
   show: PropTypes.bool,
   onClose: PropTypes.func,
   onYearPicked: PropTypes.func,
@@ -184,7 +187,8 @@ Index.propTypes = {
   onMeridiemChange: PropTypes.func,
   onResetTime: PropTypes.func,
   onClearTime: PropTypes.func,
-  onResetDefaultTime: PropTypes.func,
+  onResetDefaultDate: PropTypes.func,
+  onResetDefaultTime: PropTypes.func
 };
 
 Index.defaultProps = {
@@ -209,7 +213,8 @@ Index.defaultProps = {
   onMeridiemChange: () => {},
   onResetTime: () => {},
   onClearTime: () => {},
-  onResetDefaultTime: () => {},
+  onResetDefaultTime: () => {}
 };
 
+window.PickyDateTime = Index;
 export default Index;

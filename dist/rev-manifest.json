@@ -1,10 +1,6 @@
 {
-  "index_script.js": "index_script.js",
-  "index_script.js.map": "index_script.js.map",
-  "index_stylesheet.css": "css/index_stylesheet.css",
-  "index_stylesheet.css.map": "css/index_stylesheet.css.map",
-  "index_stylesheet.js": "index_stylesheet.js",
-  "index_stylesheet.js.map": "index_stylesheet.js.map",
+  "index.js": "index.js",
+  "index.js.map": "index.js.map",
   "reactjs.js": "reactjs.js",
   "reactjs.js.map": "reactjs.js.map"
 }

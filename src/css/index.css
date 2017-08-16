@@ -19,10 +19,11 @@
   transition: all .3s;
   transform: translateY(-1em) perspective(600px) rotateX(10deg);
   padding: 20px;
-  &.visible {
-    opacity: 1;
-    transform: translateY(0) perspective(600px) rotateX(0);
-  }
+}
+
+.picky-date-time.visible {
+  opacity: 1;
+  transform: translateY(0) perspective(600px) rotateX(0);
 }
 
 .picky-date-time__calendar,
@@ -31,12 +32,14 @@
   vertical-align: top;
   margin-bottom: 40px;
   position: relative;
-  &:before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-  }
+}
+
+.picky-date-time__calendar:before,
+.picky-date-time__clock:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }
 
 .picky-date-time__calendar {}
@@ -51,19 +54,20 @@
   color: var(--oc-gray-5);
 }
 
-.picky-date-time__breaker {
-  &.l {
-    padding: var(--breaker-padding-l);
-  }
-  &.m {
-    padding: var(--breaker-padding-m);
-  }
-  &.s {
-    padding: var(--breaker-padding-s);
-  }
-  &.xs {
-    padding: var(--breaker-padding-xs);
-  }
+.picky-date-time__breaker.l {
+  padding: var(--breaker-padding-l);
+}
+
+.picky-date-time__breaker.m {
+  padding: var(--breaker-padding-m);
+}
+
+.picky-date-time__breaker.s {
+  padding: var(--breaker-padding-s);
+}
+
+.picky-date-time__breaker.xs {
+  padding: var(--breaker-padding-xs);
 }
 
 @media only screen and (max-width: 550px) {

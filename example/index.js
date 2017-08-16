@@ -1,7 +1,27 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import PickyDateTime from './App/components/PickyDateTime';
-import nl2br from 'react-newline-to-break';
+import PropTypes from 'prop-types';
+// import PickyDateTime from '../src/js/PickyDateTime';
+import PickyDateTime from '../index.js';
+import Markdown from 'react-markdown';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css';
+
+const CodeBlock = ({ literal, language }) => {
+  var html = Prism.highlight(literal, Prism.languages[language]);
+  var cls = 'language-' + language;
+
+  return (
+    <pre className={cls}>
+      <code dangerouslySetInnerHTML={{ __html: html }} className={cls} />
+    </pre>
+  );
+};
+
+CodeBlock.propTypes = {
+  literal: PropTypes.string,
+  language: PropTypes.string
+};
 
 class Index extends Component {
   constructor(props) {
@@ -20,12 +40,12 @@ class Index extends Component {
 
   onClose() {}
 
-  onYearPicked(res) {
+  onYearPicked() {
     // let { year } = res;
     // this.setState({ year: year});
   }
 
-  onMonthPicked(res) {
+  onMonthPicked() {
     // let { month, year } = res;
     // this.setState({ year: year, month: month});
   }
@@ -96,15 +116,23 @@ class Index extends Component {
       second,
       meridiem
     } = this.state;
-    const example1 =
-      '\n\n \n size="xs" mode={0} \n with defaultTime and defaultDate provided.\n\non this example(Example 1),\n\nyou can click the "close" icon to hide this calendar,\n\nand focus the input to show it.';
     return (
       <div style={{ margin: '0 auto', width: '80%' }}>
         <div>
           <div>
             <div style={{ color: '#4a4a4a', margin: '10px' }} />
             <h2>Example 1 DEMO: Calendar and Clock</h2>
-            <span onClick={() => this.setState({ showPickyDateTime: !showPickyDateTime })} style={{ 'textDecoration': 'underline',color: '#4a4a4a', cursor: 'pointer' }}>Click to toggle Picky Date Time</span>
+            <span
+              onClick={() =>
+                this.setState({ showPickyDateTime: !showPickyDateTime })}
+              style={{
+                textDecoration: 'underline',
+                color: '#4a4a4a',
+                cursor: 'pointer'
+              }}
+            >
+              Click to toggle Picky Date Time
+            </span>
             <div>
               <div style={{ marginTop: '10px' }}>
                 <PickyDateTime
@@ -135,36 +163,37 @@ class Index extends Component {
                 whiteSpace: 'pre'
               }}
             >
-              {nl2br(
-                  '<div onClick={() => this.setState({ showPickyDateTime: !this.props.showPickyDateTime })}>Click to toggle Picky Date Time</div>\n' +
-                  '<div style={{ marginTop: \'10px\' }}>\n' +
-                  '  <PickyDateTime \n' +
-                  '    size="xs" \n' +
-                  '    mode={1} \n' +
-                  '    show={showPickyDateTime} \n' +
-                  '    locale="en-us" \n' +
-                  '    onClose={() => this.setState({ showPickyDateTime: false })} \n' +
-                  '    onYearPicked={res => this.onYearPicked(res)} \n' +
-                  '    onMonthPicked={res => this.onMonthPicked(res)} \n' +
-                  '    onDatePicked={res => this.onDatePicked(res)} \n' +
-                  '    onResetDate={res => this.onResetDate(res)} \n' +
-                  '    onResetDefaultDate={res => this.onResetDefaultDate(res)} \n' +
-                  '    onSecondChange={res => this.onSecondChange(res)} \n' +
-                  '    onMinuteChange={res => this.onMinuteChange(res)} \n' +
-                  '    onHourChange={res => this.onHourChange(res)} \n' +
-                  '    onMeridiemChange={res => this.onMeridiemChange(res)} \n' +
-                  '    onResetTime={res => this.onResetTime(res)} \n' +
-                  '    onResetDefaultTime={res => this.onResetDefaultTime(res)} \n' +
-                  '    onClearTime={res => this.onClearTime(res)} \n' +
-                  '  /> \n' +
-                  '</div>\n'
-              )}
+              <Markdown
+                source={`\`\`\`javascript
+import PickyDateTime from 'react-inputs-validation';
+
+<PickyDateTime
+  size="xs"
+  mode={1}
+  show={showPickyDateTime}
+  locale="en-us"
+  onClose={() => this.setState({ showPickyDateTime: false })}
+  onYearPicked={res => this.onYearPicked(res)}
+  onMonthPicked={res => this.onMonthPicked(res)}
+  onDatePicked={res => this.onDatePicked(res)}
+  onResetDate={res => this.onResetDate(res)}
+  onSecondChange={res => this.onSecondChange(res)}
+  onMinuteChange={res => this.onMinuteChange(res)}
+  onHourChange={res => this.onHourChange(res)}
+  onMeridiemChange={res => this.onMeridiemChange(res)}
+  onResetTime={res => this.onResetTime(res)}
+  onClearTime={res => this.onClearTime(res)}
+/>
+\`\`\``}
+                renderers={{ CodeBlock }}
+              />
             </div>
           </div>
           <div>
             <div style={{ color: '#4a4a4a', margin: '10px' }} />
             <h2>
-              Example 2 DEMO: Calendar and Clock (with DefaultDate and DefaultTime provided)
+              Example 2 DEMO: Calendar and Clock (with DefaultDate and
+              DefaultTime provided)
             </h2>
             <div>
               <input
@@ -198,7 +227,8 @@ class Index extends Component {
               </div>
             </div>
             <h2>
-              Example 2 CODE: Calendar and Clock (with DefaultDate and DefaultTime provided)
+              Example 2 CODE: Calendar and Clock (with DefaultDate and
+              DefaultTime provided)
             </h2>
             <div
               style={{
@@ -208,36 +238,34 @@ class Index extends Component {
                 whiteSpace: 'pre'
               }}
             >
-              {nl2br(
-                '<input\n' +
-                  '  value={`${month}/${date}/${year} ${hour}:${minute}:${second} ${meridiem}`}\n' +
-                  '  onChange={() => {}}\n' +
-                  '  onClick={() => this.setState({ showPickyDateTime: true })}\n' +
-                  '/>\n\n' +
-                  "<div style={{ marginTop: '10px' }}>\n" +
-                  '  <PickyDateTime \n' +
-                  '    size="xs" \n' +
-                  '    mode={1} \n' +
-                  '    show={showPickyDateTime} \n' +
-                  '    locale="en-us" \n' +
-                  '    defaultTime={`${hour}:${minute}:${second} ${meridiem}`} // OPTIONAL "HH:MM:SS AM" \n' +
-                  '    defaultDate={`${month}/${date}/${year}`} // OPTIONAL "MM/DD/YYYY" \n' +
-                  '    onClose={() => this.setState({ showPickyDateTime: false })} \n' +
-                  '    onYearPicked={res => this.onYearPicked(res)} \n' +
-                  '    onMonthPicked={res => this.onMonthPicked(res)} \n' +
-                  '    onDatePicked={res => this.onDatePicked(res)} \n' +
-                  '    onResetDate={res => this.onResetDate(res)} \n' +
-                  '    onResetDefaultDate={res => this.onResetDefaultDate(res)} \n' +
-                  '    onSecondChange={res => this.onSecondChange(res)} \n' +
-                  '    onMinuteChange={res => this.onMinuteChange(res)} \n' +
-                  '    onHourChange={res => this.onHourChange(res)} \n' +
-                  '    onMeridiemChange={res => this.onMeridiemChange(res)} \n' +
-                  '    onResetTime={res => this.onResetTime(res)} \n' +
-                  '    onResetDefaultTime={res => this.onResetDefaultTime(res)} \n' +
-                  '    onClearTime={res => this.onClearTime(res)} \n' +
-                  '  /> \n' +
-                  '</div>\n'
-              )}
+              <Markdown
+                source={`\`\`\`javascript
+import PickyDateTime from 'react-inputs-validation';
+
+<PickyDateTime
+  size="xs"
+  mode={1}
+  show={showPickyDateTime}
+  locale="en-us"
+  defaultTime={hour:minute:second meridiem} // "HH:MM:SS AM"
+  defaultDate={month/date/year} // "MM/DD/YYYY"
+  onClose={() => this.setState({ showPickyDateTime: false })}
+  onYearPicked={res => this.onYearPicked(res)}
+  onMonthPicked={res => this.onMonthPicked(res)}
+  onDatePicked={res => this.onDatePicked(res)}
+  onResetDate={res => this.onResetDate(res)}
+  onResetDefaultDate={res => this.onResetDefaultDate(res)}
+  onSecondChange={res => this.onSecondChange(res)}
+  onMinuteChange={res => this.onMinuteChange(res)}
+  onHourChange={res => this.onHourChange(res)}
+  onMeridiemChange={res => this.onMeridiemChange(res)}
+  onResetTime={res => this.onResetTime(res)}
+  onResetDefaultTime={res => this.onResetDefaultTime(res)}
+  onClearTime={res => this.onClearTime(res)}
+/>
+\`\`\``}
+                renderers={{ CodeBlock }}
+              />
             </div>
           </div>
           <h2>Example 3 DEMO: Calendar only (with size of M)</h2>
@@ -276,29 +304,32 @@ class Index extends Component {
               whiteSpace: 'pre'
             }}
           >
-            {nl2br(
-              "<div style={{ marginTop: '10px' }}>\n" +
-                '  <PickyDateTime \n' +
-                '    size="m" \n' +
-                '    mode={0} \n' +
-                '    show={showPickyDateTime} \n' +
-                '    locale="en-us" \n' +
-                '    onClose={() => this.setState({ showPickyDateTime: false })} \n' +
-                '    onYearPicked={res => this.onYearPicked(res)} \n' +
-                '    onMonthPicked={res => this.onMonthPicked(res)} \n' +
-                '    onDatePicked={res => this.onDatePicked(res)} \n' +
-                '    onResetDate={res => this.onResetDate(res)} \n' +
-                '    onResetDefaultDate={res => this.onResetDefaultDate(res)} \n' +
-                '    onSecondChange={res => this.onSecondChange(res)} \n' +
-                '    onMinuteChange={res => this.onMinuteChange(res)} \n' +
-                '    onHourChange={res => this.onHourChange(res)} \n' +
-                '    onMeridiemChange={res => this.onMeridiemChange(res)} \n' +
-                '    onResetTime={res => this.onResetTime(res)} \n' +
-                '    onResetDefaultTime={res => this.onResetDefaultTime(res)} \n' +
-                '    onClearTime={res => this.onClearTime(res)} \n' +
-                '  /> \n' +
-                '</div>\n'
-            )}
+            <Markdown
+              source={`\`\`\`javascript
+import PickyDateTime from 'react-inputs-validation';
+
+<PickyDateTime
+  size="m"
+  mode={0}
+  locale="en-us"
+  show={true}
+  onClose={() => this.onClose()}
+  onYearPicked={res => this.onYearPicked(res)}
+  onMonthPicked={res => this.onMonthPicked(res)}
+  onDatePicked={res => this.onDatePicked(res)}
+  onResetDate={res => this.onResetDate(res)}
+  onResetDefaultDate={res => this.onResetDefaultDate(res)}
+  onSecondChange={res => this.onSecondChange(res)}
+  onMinuteChange={res => this.onMinuteChange(res)}
+  onHourChange={res => this.onHourChange(res)}
+  onMeridiemChange={res => this.onMeridiemChange(res)}
+  onResetTime={res => this.onResetTime(res)}
+  onResetDefaultTime={res => this.onResetDefaultTime(res)}
+  onClearTime={res => this.onClearTime(res)}
+/>
+\`\`\``}
+              renderers={{ CodeBlock }}
+            />
           </div>
           <h2>Example 4 DEMO: Clock only</h2>
           <div style={{ margin: '10px' }}>
@@ -336,29 +367,32 @@ class Index extends Component {
               whiteSpace: 'pre'
             }}
           >
-            {nl2br(
-              "<div style={{ marginTop: '10px' }}>\n" +
-                '  <PickyDateTime \n' +
-                '    size="xs" \n' +
-                '    mode={2} \n' +
-                '    show={showPickyDateTime} \n' +
-                '    locale="en-us" \n' +
-                '    onClose={() => this.setState({ showPickyDateTime: false })} \n' +
-                '    onYearPicked={res => this.onYearPicked(res)} \n' +
-                '    onMonthPicked={res => this.onMonthPicked(res)} \n' +
-                '    onDatePicked={res => this.onDatePicked(res)} \n' +
-                '    onResetDate={res => this.onResetDate(res)} \n' +
-                '    onResetDefaultDate={res => this.onResetDefaultDate(res)} \n' +
-                '    onSecondChange={res => this.onSecondChange(res)} \n' +
-                '    onMinuteChange={res => this.onMinuteChange(res)} \n' +
-                '    onHourChange={res => this.onHourChange(res)} \n' +
-                '    onMeridiemChange={res => this.onMeridiemChange(res)} \n' +
-                '    onResetTime={res => this.onResetTime(res)} \n' +
-                '    onResetDefaultTime={res => this.onResetDefaultTime(res)} \n' +
-                '    onClearTime={res => this.onClearTime(res)} \n' +
-                '  /> \n' +
-                '</div>\n'
-            )}
+            <Markdown
+              source={`\`\`\`javascript
+import PickyDateTime from 'react-inputs-validation';
+
+<PickyDateTime
+  size="xs"
+  mode={2}
+  locale="en-us"
+  show={true}
+  onClose={() => this.onClose()}
+  onYearPicked={res => this.onYearPicked(res)}
+  onMonthPicked={res => this.onMonthPicked(res)}
+  onDatePicked={res => this.onDatePicked(res)}
+  onResetDate={res => this.onResetDate(res)}
+  onResetDefaultDate={res => this.onResetDefaultDate(res)}
+  onSecondChange={res => this.onSecondChange(res)}
+  onMinuteChange={res => this.onMinuteChange(res)}
+  onHourChange={res => this.onHourChange(res)}
+  onMeridiemChange={res => this.onMeridiemChange(res)}
+  onResetTime={res => this.onResetTime(res)}
+  onResetDefaultTime={res => this.onResetDefaultTime(res)}
+  onClearTime={res => this.onClearTime(res)}
+/>
+\`\`\``}
+              renderers={{ CodeBlock }}
+            />
           </div>
           <div style={{ margin: '10px' }} />
         </div>

@@ -12,9 +12,7 @@ const styleVariables = require(path.join(PATH.SOURCE_PATH, 'css/variables'));
 var config = (module.exports = {
   context: PATH.ROOT_PATH,
   entry: {
-    reactjs: ['babel-polyfill', 'react', 'react-dom'],
-    index_script: PATH.ROOT_PATH + 'src/js/index.js',
-    index_stylesheet: PATH.ROOT_PATH + 'src/css/index.css'
+    index: PATH.ROOT_PATH + 'example/index.js'
   },
   module: {
     rules: [
@@ -36,7 +34,16 @@ var config = (module.exports = {
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)\??.*$/,
-        use: [{ loader: 'url-loader?limit=8192&name=font/[name].[ext]' }]
+        use: [
+          {
+            loader: 'url-loader?limit=8192&name=font/[name].[ext]',
+            query: {
+              // outputPath: 'assets/',
+              // publicPath: 'http://localhost:8080/',
+              // emitFile: true
+            }
+          }
+        ]
       },
       {
         test: /\.(jpe?g|png|gif|svg)\??.*$/,
@@ -69,15 +76,14 @@ var config = (module.exports = {
               options: {
                 modules: false,
                 importLoaders: 1
-                // localIdentName: '[name]__[local]___[hash:base64:5]',
               }
             },
             {
               loader: 'postcss-loader',
               options: {
+                // ident: 'postcss',
                 plugins: function(webpack) {
                   return [
-                    require('lost'),
                     require('postcss-import')({
                       addDependencyTo: webpack
                     }),
@@ -107,15 +113,14 @@ var config = (module.exports = {
     path: PATH.ASSET_PATH,
     filename: 'js/[name].js'
   },
-  // externals(context, request, callback) {
-  //   console.log('//////');
-  //   console.log(request);
-  //   console.log('//////');
-  //   if (request == 'react' || request == 'react-dom'){
-  //     return callback(null, false);
-  //   }
-  //   return callback(null, true);
-  // },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    disableHostCheck: true,
+    // public: 'your-host:8080',
+    host: '192.168.1.121',
+    port: 9001
+  },
   plugins: [
     new webpack.ContextReplacementPlugin(
       /\.\/locale$/,
@@ -123,6 +128,15 @@ var config = (module.exports = {
       false,
       /js$/
     ),
+    new webpack.ProvidePlugin({
+      React: 'React',
+      react: 'React',
+      'window.react': 'React',
+      'window.React': 'React',
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery'
+    }),
     new ManifestPlugin({
       fileName: 'rev-manifest.json'
     }),
@@ -133,7 +147,7 @@ var config = (module.exports = {
       filename: 'index.html',
       hash: false,
       chunksSortMode: function(chunk1, chunk2) {
-        var orders = ['index_script', 'index_stylesheet'];
+        var orders = ['common', 'index'];
         var order1 = orders.indexOf(chunk1.names[0]);
         var order2 = orders.indexOf(chunk2.names[0]);
         if (order1 > order2) {

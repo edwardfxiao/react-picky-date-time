@@ -13,9 +13,8 @@ import {
   NEXT_TRANSITION,
   SELECTOR_YEAR_SET_NUMBER,
   getDaysArray,
-  getDaysListByMonth,
   getYearSet,
-  formatDateString,
+  formatDateString
 } from '../constValue';
 
 const isValidDate = function(value, userFormat) {
@@ -25,7 +24,12 @@ const isValidDate = function(value, userFormat) {
   const theDate = value.split(delimiter);
 
   function isDate(date, format) {
-    let m, d, y, i = 0, len = format.length, f;
+    let m,
+      d,
+      y,
+      i = 0,
+      len = format.length,
+      f;
     for (i; i < len; i++) {
       f = format[i];
       if (/m/.test(f)) m = date[i];
@@ -81,7 +85,9 @@ class Calendar extends React.Component {
       pickedYearMonth: {
         year: defaultDateYear,
         month: defaultDateMonth,
-        string: `${formatDateString(defaultDateYear)}-${formatDateString(defaultDateMonth)}`
+        string: `${formatDateString(defaultDateYear)}-${formatDateString(
+          defaultDateMonth
+        )}`
       },
       defaultDate: {
         date: defaultDateDate,
@@ -115,8 +121,7 @@ class Calendar extends React.Component {
   componentDidMount() {
     if (document.addEventListener) {
       window.addEventListener('mousedown', this.pageClick, false);
-    }
-    else {
+    } else {
       document.attachEvent('onmousedown', this.pageClick);
     }
   }
@@ -139,7 +144,7 @@ class Calendar extends React.Component {
     }
   }
 
-  pageClick(e) {
+  pageClick() {
     if (this.mouseIsDownOnSelectorPanelClicker) {
       return;
     }
@@ -287,9 +292,7 @@ class Calendar extends React.Component {
     let { size, locale } = this.props;
     let {
       isDefaultDateValid,
-      pickedYear,
-      pickedMonth,
-      pickedDate,
+
       dates,
       direction,
       showSelectorPanel,
@@ -297,12 +300,11 @@ class Calendar extends React.Component {
       yearSelectorPanel,
       currentYearMonthDate,
       pickedDateInfo,
-      pickedYearMonth,
-      showMask
+      pickedYearMonth
     } = this.state;
     let transitionContainerStyle;
     let content;
-    let rowHtml;
+
     if (dates.length) {
       let row = dates.length / WEEK_NUMBER;
       let rowIndex = 1;
@@ -386,7 +388,9 @@ class Calendar extends React.Component {
           }
           key={key}
         >
-          <div className={size}>{item}</div>
+          <div className={size}>
+            {item}
+          </div>
         </div>
       );
     });
@@ -413,7 +417,9 @@ class Calendar extends React.Component {
             }
             key={key}
           >
-            <div className={size}>{item}</div>
+            <div className={size}>
+              {item}
+            </div>
           </div>
         );
       });
@@ -473,7 +479,6 @@ class Calendar extends React.Component {
                     )}
                 />
               </div>
-
             </div>
           </div>
           <div className={`picky-date-time__col picky-date-time__col-3`}>
@@ -517,8 +522,9 @@ class Calendar extends React.Component {
                   onMouseUp={this.onMouseUp}
                 >
                   <span className={`picky-date-time-calendar__clicker`}>
-                    <span
-                    >{`${MONTH_NAME[locale][pickedYearMonth.month - 1]}`}</span>
+                    <span>{`${MONTH_NAME[locale][
+                      pickedYearMonth.month - 1
+                    ]}`}</span>
                   </span>
                   <span>&nbsp;</span>
                   <span className={`picky-date-time-calendar__clicker`}>
@@ -611,7 +617,7 @@ class CalendarBody extends React.Component {
     let pickedDateYear = pickedDateInfo.year;
     let pickedDateMonth = pickedDateInfo.month;
     let pickedDate = pickedDateInfo.date;
-    let pickedYear = pickedYearMonth.year;
+    // let pickedYear = pickedYearMonth.year;
     let pickedMonth = pickedYearMonth.month;
 
     let content = Object.keys(data).map(key => {

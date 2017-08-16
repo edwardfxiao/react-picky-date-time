@@ -7,11 +7,13 @@
   // Enable ES6 support. If you want to use custom Babel
   // features, you will need to enable a custom parser
   // as described in a section below.
-  "parserOptions": {
+  "parserOptions":
+  {
     "ecmaVersion": 6,
     "sourceType": "module"
   },
-  "env": {
+  "env":
+  {
     "es6": true,
     "browser": true,
     "node": true,
@@ -21,10 +23,17 @@
   "plugins": [
     "react"
   ],
-  "rules": {
+  "rules":
+  {
     // Disable `no-console` rule
     "no-console": 0,
     // Give a warning if identifiers contain underscores
-    "no-underscore-dangle": 1
+    "no-underscore-dangle": 0,
+    "react/no-find-dom-node": 0,
+    "no-debugger": 0,
+    "no-empty": ["error",
+    {
+      "allowEmptyCatch": true
+    }]
   }
 }
