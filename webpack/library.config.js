@@ -8,7 +8,13 @@ const styleVariables = require(path.join(PATH.SOURCE_PATH, 'css/variables'));
 
 let libraryName = 'react-picky-date-time';
 
-let plugins = [],
+let plugins = [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    })
+  ],
   outputFile;
 
 if (env === 'build') {
