@@ -1,8 +1,12 @@
 # react-picky-date-time
 A react date time picker component.
-# <img src="http://cdn.edwardxiao.com/react-picky-date-time.gif" />
+<img src="http://cdn.edwardxiao.com/react-picky-date-time.gif" />
 
 NO Jquery, NO Moment.js
+
+# Demo & Examples
+Please check the <a href="https://edwardfhsiao.github.io/react-picky-date-time/">online demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
+
 ```js
 import PickyDateTime from 'react-picky-date-time';
 
@@ -65,9 +69,6 @@ class YourOwnComponent extends Component {
 ```sh
 npm install react-picky-date-time --save
 ```
-
-# Demo & Examples
-Please check the online <a href="https://edwardfhsiao.github.io/react-picky-date-time/">demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
 
 # Donate
 <a href="https://www.paypal.me/XIAOMENGXIAO/0.99" target="_blank" alt="PayPal Donate">Thanks for donating me a donut!&nbsp;&nbsp;⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄</a>
