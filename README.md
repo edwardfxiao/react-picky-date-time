@@ -6,7 +6,7 @@ A react date time picker component.
 NO Jquery, NO Moment.js
 
 # Demo & Examples
-Please check the <a href="https://edwardfhsiao.github.io/react-picky-date-time/">online demo example https://edwardfhsiao.github.io/react-picky-date-time/</a>
+Please check the <a href="https://edwardfhsiao.github.io/react-picky-date-time/">online demo example</a>
 
 ```js
 import PickyDateTime from 'react-picky-date-time';
