@@ -3,8 +3,12 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import Calendar from './Calendar/index.js';
 import Clock from './Clock/index.js';
+let STYLES = {};
 try {
-  require('../../css/index.css');
+  STYLES = require('../../css/index.css');
+  if (!STYLES) {
+    console.log('');
+  }
 } catch (ex) {}
 import {
   SIZE_RANGE,
