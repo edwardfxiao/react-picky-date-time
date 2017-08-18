@@ -16,7 +16,7 @@
     },
     "lib":
     {
-
+      "plugins": ["css-modules-transform"]
     },
   }
 }
