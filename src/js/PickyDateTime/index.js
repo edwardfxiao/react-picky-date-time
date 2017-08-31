@@ -219,6 +219,7 @@ Index.defaultProps = {
   onClearTime: () => {},
   onResetDefaultTime: () => {}
 };
-
-window.PickyDateTime = Index;
+if (typeof window !== 'undefined') {
+  window.PickyDateTime = Index;
+}
 export default Index;
