@@ -270,9 +270,6 @@ import PickyDateTime from 'react-picky-date-time';
           </div>
           <h2>Example 3 DEMO: Calendar only (with size of M)</h2>
           <div style={{ margin: '10px' }}>
-            <div style={{ color: '#4a4a4a', margin: '10px' }}>
-              {`//size="m" mode={1}`}
-            </div>
             <div>
               <PickyDateTime
                 size="m"
@@ -333,9 +330,6 @@ import PickyDateTime from 'react-picky-date-time';
           </div>
           <h2>Example 4 DEMO: Clock only</h2>
           <div style={{ margin: '10px' }}>
-            <div style={{ color: '#4a4a4a', margin: '10px' }}>
-              {`//size="xs" mode={2}`}
-            </div>
             <div>
               <PickyDateTime
                 size="xs"
