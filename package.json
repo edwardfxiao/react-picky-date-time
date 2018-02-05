@@ -1,6 +1,6 @@
 {
   "name": "react-picky-date-time",
-  "version": "1.1.11",
+  "version": "1.2.1",
   "description": "a react date time picker component",
   "main": "index.js",
   "repository": {

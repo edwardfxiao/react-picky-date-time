@@ -1,7 +1,7 @@
 /*
  *
  *  𝗖 𝗢 𝗟 𝗢 𝗥
- *  v 1.5.1
+ *  v 1.6.2
  *
  *  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
@@ -354,13 +354,13 @@ padding: 10px 0
 }
 
 .picky-date-time-dropdown-calendar__month-item>div:hover {
-background: #72c3fc;
+background: #74c0fc;
 color: #ffffff
 
 }
 
 .picky-date-time-dropdown-calendar__month-item.active>div {
-  background: #329af0;
+  background: #339af0;
   color: #ffffff;
 }
 
@@ -400,13 +400,13 @@ color: #ffffff
 }
 
 .picky-date-time-dropdown-calendar__year-item>div:hover {
-background: #72c3fc;
+background: #74c0fc;
 color: #ffffff
 
 }
 
 .picky-date-time-dropdown-calendar__year-item.active>div {
-  background: #329af0;
+  background: #339af0;
   color: #ffffff;
 }
 
@@ -448,7 +448,7 @@ color: #ffffff
 }
 
 .picky-date-time-calendar__title:hover {
-color: #72c3fc
+color: #74c0fc
 
 }
 
@@ -577,7 +577,7 @@ color: #ff6b6b
 
 .picky-date-time-calendar__table-cel.active:not(.today) {
 color: #ffffff;
-background: #72c3fc
+background: #74c0fc
 
 }
 
@@ -598,7 +598,7 @@ cursor: pointer
 
 .picky-date-time-calendar__table-cel.picky-date-time-calendar__date-item:not(.disabled):hover {
 color: #ffffff;
-background: #72c3fc
+background: #74c0fc
 
 }
 
@@ -647,8 +647,8 @@ z-index: 1 !important
 }
 
 .picky-date-time-calendar__button:hover {
-border: 1px solid #4dadf7;
-background: #4dadf7;
+border: 1px solid #4dabf7;
+background: #4dabf7;
 color: #ffffff
 
 }
@@ -876,8 +876,8 @@ width: 1px
 }
 
 .picky-date-time-clock__button:hover {
-border: 1px solid #4dadf7;
-background: #4dadf7;
+border: 1px solid #4dabf7;
+background: #4dabf7;
 color: #ffffff
 
 }
