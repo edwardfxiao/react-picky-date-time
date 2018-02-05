@@ -10,17 +10,24 @@ try {
     console.log('');
   }
 } catch (ex) {}
-import {
-  SIZE_RANGE,
-  LOCALE_RANGE,
-  DEFAULT_LACALE,
-  DEFAULT_SIZE
-} from './constValue';
+import { SIZE_RANGE, LOCALE_RANGE, DEFAULT_LACALE, DEFAULT_SIZE } from './constValue';
 
 class Index extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.onYearPicked = this.onYearPicked.bind(this);
+    this.onMonthPicked = this.onMonthPicked.bind(this);
+    this.onDatePicked = this.onDatePicked.bind(this);
+    this.onResetDate = this.onResetDate.bind(this);
+    this.onResetDefaultDate = this.onResetDefaultDate.bind(this);
+    this.onSecondChange = this.onSecondChange.bind(this);
+    this.onMinuteChange = this.onMinuteChange.bind(this);
+    this.onHourChange = this.onHourChange.bind(this);
+    this.onMeridiemChange = this.onMeridiemChange.bind(this);
+    this.onResetTime = this.onResetTime.bind(this);
+    this.onClearTime = this.onClearTime.bind(this);
+    this.onResetDefaultTime = this.onResetDefaultTime.bind(this);
+    this.onClose = this.onClose.bind(this);
   }
   onClose() {
     const { onClose } = this.props;
@@ -95,11 +102,11 @@ class Index extends React.Component {
             size={size}
             defaultDate={defaultDate}
             locale={locale}
-            onYearPicked={this.onYearPicked.bind(this)}
-            onMonthPicked={this.onMonthPicked.bind(this)}
-            onDatePicked={this.onDatePicked.bind(this)}
-            onResetDate={this.onResetDate.bind(this)}
-            onResetDefaultDate={this.onResetDefaultDate.bind(this)}
+            onYearPicked={this.onYearPicked}
+            onMonthPicked={this.onMonthPicked}
+            onDatePicked={this.onDatePicked}
+            onResetDate={this.onResetDate}
+            onResetDefaultDate={this.onResetDefaultDate}
           />
         </div>
       );
@@ -111,32 +118,28 @@ class Index extends React.Component {
             size={size}
             defaultDate={defaultDate}
             locale={locale}
-            onYearPicked={this.onYearPicked.bind(this)}
-            onMonthPicked={this.onMonthPicked.bind(this)}
-            onDatePicked={this.onDatePicked.bind(this)}
-            onResetDate={this.onResetDate.bind(this)}
-            onResetDefaultDate={this.onResetDefaultDate.bind(this)}
+            onYearPicked={this.onYearPicked}
+            onMonthPicked={this.onMonthPicked}
+            onDatePicked={this.onDatePicked}
+            onResetDate={this.onResetDate}
+            onResetDefaultDate={this.onResetDefaultDate}
           />
         </div>
       );
-      breakerHtml = (
-        <span className={`picky-date-time__breaker ${[size]}`}>
-          &nbsp;&nbsp;
-        </span>
-      );
+      breakerHtml = <span className={`picky-date-time__breaker ${[size]}`}>&nbsp;&nbsp;</span>;
       clockHtml = (
         <div className={`picky-date-time__clock ${[size]}`}>
           <Clock
             size={size}
             locale={locale}
             defaultTime={defaultTime}
-            onSecondChange={this.onSecondChange.bind(this)}
-            onMinuteChange={this.onMinuteChange.bind(this)}
-            onHourChange={this.onHourChange.bind(this)}
-            onMeridiemChange={this.onMeridiemChange.bind(this)}
-            onResetTime={this.onResetTime.bind(this)}
-            onClearTime={this.onClearTime.bind(this)}
-            onResetDefaultTime={this.onResetDefaultTime.bind(this)}
+            onSecondChange={this.onSecondChange}
+            onMinuteChange={this.onMinuteChange}
+            onHourChange={this.onHourChange}
+            onMeridiemChange={this.onMeridiemChange}
+            onResetTime={this.onResetTime}
+            onClearTime={this.onClearTime}
+            onResetDefaultTime={this.onResetDefaultTime}
           />
         </div>
       );
@@ -148,23 +151,20 @@ class Index extends React.Component {
             size={size}
             locale={locale}
             defaultTime={defaultTime}
-            onSecondChange={this.onSecondChange.bind(this)}
-            onMinuteChange={this.onMinuteChange.bind(this)}
-            onHourChange={this.onHourChange.bind(this)}
-            onMeridiemChange={this.onMeridiemChange.bind(this)}
-            onResetTime={this.onResetTime.bind(this)}
-            onClearTime={this.onClearTime.bind(this)}
-            onResetDefaultTime={this.onResetDefaultTime.bind(this)}
+            onSecondChange={this.onSecondChange}
+            onMinuteChange={this.onMinuteChange}
+            onHourChange={this.onHourChange}
+            onMeridiemChange={this.onMeridiemChange}
+            onResetTime={this.onResetTime}
+            onClearTime={this.onClearTime}
+            onResetDefaultTime={this.onResetDefaultTime}
           />
         </div>
       );
     }
     return (
       <div className={`${componentClass}`}>
-        <span
-          className={`picky-date-time__close picky-date-time-highlight_off`}
-          onClick={this.onClose.bind(this)}
-        />
+        <span className={`picky-date-time__close picky-date-time-highlight_off`} onClick={this.onClose} />
         {calendarHtml}
         {breakerHtml}
         {clockHtml}
