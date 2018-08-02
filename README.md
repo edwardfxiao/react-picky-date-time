@@ -8,6 +8,8 @@ NO Jquery, NO Moment.js
 # Demo & Examples
 Please check the <a href="https://edwardfhsiao.github.io/react-picky-date-time/">online demo example</a>
 
+Attention: <a href="https://github.com/edwardfhsiao/react-picky-date-time/blob/gh-pages/example/index.js">you can find demo source here :)</a>
+
 ```js
 import PickyDateTime from 'react-picky-date-time';
 
