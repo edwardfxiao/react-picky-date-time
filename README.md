@@ -1,7 +1,7 @@
 # react-picky-date-time
 A react date time picker component.
 
-<img src="http://cdn.edwardxiao.zuhe.me/react-picky-date-time.gif" />
+<img src="https://scontent-hkg3-2.xx.fbcdn.net/v/t58.16807-6/43931062_398561897553944_6936780067494166528_n.mp4?_nc_cat=102&vs=2739084b6af1aaaa&_nc_vs=HBkcFQAYJEdMWlZuZ0lZSUZOc2ZXb0JBQUFBQUFDNFpFUmdicWRCQUFBRhUAAEsBiBJwcm9ncmVzc2l2ZV9yZWNpcGUBMBUAABgPMTAwMDAzMzgyNzMzODI2Fvb0pomD8sYGFQIZBRgCQzMYC3Z0c19wcmV2aWV3HBcAAAAAAAAAABgeZGFzaF9iYXNpY192NF9ocTFfZnJhZ18yX3ZpZGVvEQAYGHZpZGVvcy52dHMuY2FsbGJhY2sucHJvZBkcFQAVvJkCACgSVklERU9fVklFV19SRVFVRVNUGwKIFW9lbV90YXJnZXRfZW5jb2RlX3RhZwZvZXBfaGQTb2VtX3JlcXVlc3RfdGltZV9tcw0xNTQ2NTA1MjgyMTkwAA%3D%3D&efg=eyJ2ZW5jb2RlX3RhZyI6Im9lcF9oZCJ9&_nc_ht=scontent-hkg3-2.xx&oh=386aa0608f4e5a2ef6fe121721f8f449&oe=5C3075D2&_nc_rid=5dc2b446fd0229d" />
 
 NO Jquery, NO Moment.js
 
