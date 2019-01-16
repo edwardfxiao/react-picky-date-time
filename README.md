@@ -13,6 +13,7 @@ Attention: <a href="https://github.com/edwardfhsiao/react-picky-date-time/blob/g
 # Codesandbox Examples
 * <a href="https://codesandbox.io/s/y29w6p6krj">Online demo form example playground</a>
 
+# Usage
 ```js
 import PickyDateTime from 'react-picky-date-time';
 
