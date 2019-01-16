@@ -83,7 +83,7 @@ npm install react-picky-date-time --save
 # Browser support
 Tested on IE9+ and Chrome and Safari(10.0.3)
 
-# Event & Usage
+# Events
 
 Also consoled out on the demo page examples
 
