@@ -118,7 +118,7 @@ var config = (module.exports = {
     compress: true,
     disableHostCheck: true,
     // public: 'your-host:8080',
-    host: '192.168.1.121',
+    host: '0.0.0.0',
     port: 9001
   },
   plugins: [
@@ -134,7 +134,6 @@ var config = (module.exports = {
       'window.react': 'React',
       'window.React': 'React',
       $: 'jquery',
-      jQuery: 'jquery',
       'window.jQuery': 'jquery'
     }),
     new ManifestPlugin({
@@ -144,7 +143,7 @@ var config = (module.exports = {
       template: PATH.HTML_PATH + '/layout.html',
       title: 'react-picky-date-time',
       page: 'index',
-      filename: '../index.html',
+      filename: 'index.html',
       hash: false,
       chunksSortMode: function(chunk1, chunk2) {
         var orders = ['common', 'index'];
