@@ -13,6 +13,9 @@ Attention: <a href="https://github.com/edwardfhsiao/react-picky-date-time/blob/g
 # Codesandbox Examples
 * <a href="https://codesandbox.io/s/y29w6p6krj">Online demo form example playground</a>
 
+# Docs Link
+[Custom Locale Guid(can be multiple locales)](#custom-locale)
+
 # Usage
 ```js
 import PickyDateTime from 'react-picky-date-time';
@@ -162,4 +165,28 @@ Also consoled out on the demo page examples
     this.setState({showPickyDateTime: false});
   }
 
+```
+
+### <a name="custom-locale"></a>Custom Locale (can be multiple locales)
+By providing ```window.REACT_PICKY_DATE_TIME['customLocale']```, you can overwrite the error message.
+**IMPORTANT NOTE: YOU WILL NEED TO PLACE window.REACT_PICKY_DATE_TIME BEFORE YOUR JS SCRIPT**
+<a href="https://codesandbox.io/s/l3n2ypvrzl">codesandbox example</a>(located in index.html)
+
+```html
+        <script type="text/javascript">
+        window.REACT_PICKY_DATE_TIME = {
+            customLocale: {
+                "my-own-locale": {...},//structure must follow below
+                'es': {
+                    today: 'Hoy',
+                    reset: 'Reiniciar',
+                    'reset-date': 'Reiniciar Fecha',
+                    clear: 'Borrar',
+                    now: 'Ahora',
+                    weeks: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+                    months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                }
+            }
+        }
+        </script>
 ```
