@@ -12,6 +12,7 @@ Attention: <a href="https://github.com/edwardfhsiao/react-picky-date-time/blob/g
 
 # Codesandbox Examples
 * <a href="https://codesandbox.io/s/y29w6p6krj">Online demo form example playground</a>
+* <a href="https://codesandbox.io/s/l3n2ypvrzl">Custom locales</a>(when providing ```window.REACT_PICKY_DATE_TIME['customLocale']```)
 
 # Docs Link
 [Custom Locale Guid(can be multiple locales)](#custom-locale)
