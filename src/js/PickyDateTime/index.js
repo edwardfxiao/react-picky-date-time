@@ -10,7 +10,8 @@ try {
     console.log('');
   }
 } catch (ex) {}
-import { SIZE_RANGE, LOCALE_RANGE, DEFAULT_LACALE, DEFAULT_SIZE } from './constValue';
+import { SIZE_RANGE, DEFAULT_SIZE } from './constValue.js';
+import { LOCALE, DEFAULT_LACALE } from './locale.js';
 
 class Index extends React.Component {
   constructor(props) {
@@ -91,10 +92,9 @@ class Index extends React.Component {
     }
 
     locale = locale.toLowerCase();
-    if (LOCALE_RANGE.indexOf(locale) == -1) {
+    if (typeof LOCALE[locale] === 'undefined') {
       locale = DEFAULT_LACALE;
     }
-
     if (mode == 0) {
       calendarHtml = (
         <div className={`picky-date-time__calendar`}>
@@ -192,7 +192,7 @@ Index.propTypes = {
   onResetTime: PropTypes.func,
   onClearTime: PropTypes.func,
   onResetDefaultDate: PropTypes.func,
-  onResetDefaultTime: PropTypes.func
+  onResetDefaultTime: PropTypes.func,
 };
 
 Index.defaultProps = {
@@ -217,7 +217,7 @@ Index.defaultProps = {
   onMeridiemChange: () => {},
   onResetTime: () => {},
   onClearTime: () => {},
-  onResetDefaultTime: () => {}
+  onResetDefaultTime: () => {},
 };
 if (typeof window !== 'undefined') {
   window.PickyDateTime = Index;
