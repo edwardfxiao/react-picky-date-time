@@ -3,9 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
-
+import { LOCALE } from '../locale.js';
 import {
-  LANG,
   R2D,
   SECOND_DEGREE_NUMBER,
   MINUTE_DEGREE_NUMBER,
@@ -755,7 +754,7 @@ class Clock extends React.Component {
             <span
               className={`picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`}
               onClick={() => this.clear()}
-              title={LANG[locale]['clear']}
+              title={LOCALE[locale]['clear']}
             />
           </div>
           <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
@@ -768,7 +767,7 @@ class Clock extends React.Component {
                       return;
                     }
               }
-              title={LANG[locale]['now']}
+              title={LOCALE[locale]['now']}
             />
           </div>
           {defaultTimeObj ? (
@@ -776,7 +775,7 @@ class Clock extends React.Component {
               <span
                 className={`picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--refresh picky-date-time-refresh`}
                 onClick={() => this.defaultTime(true)}
-                title={LANG[locale]['reset']}
+                title={LOCALE[locale]['reset']}
               />
             </div>
           ) : (

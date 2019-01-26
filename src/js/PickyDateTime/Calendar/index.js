@@ -3,8 +3,8 @@ import update from 'react-addons-update';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-
-import { WEEK_NAME, MONTH_NAME, WEEK_NUMBER, LANG, PREV_TRANSITION, NEXT_TRANSITION, SELECTOR_YEAR_SET_NUMBER, getDaysArray, getYearSet, formatDateString } from '../constValue';
+import { LOCALE } from '../locale.js';
+import { WEEK_NUMBER, PREV_TRANSITION, NEXT_TRANSITION, SELECTOR_YEAR_SET_NUMBER, getDaysArray, getYearSet, formatDateString } from '../constValue';
 
 const isValidDate = function(value, userFormat) {
   userFormat = userFormat || 'mm/dd/yyyy';
@@ -125,7 +125,7 @@ class Calendar extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.pickedYearMonth != this.state.pickedYearMonth) {
-      let dates = getDaysArray(Number(this.state.pickedYearMonth.year), Number(this.state.pickedYearMonth.month));
+      const dates = getDaysArray(Number(this.state.pickedYearMonth.year), Number(this.state.pickedYearMonth.month));
       this.setState({ dates });
     }
   }
@@ -332,7 +332,7 @@ class Calendar extends Component {
       }
     }
     let captionHtml;
-    captionHtml = WEEK_NAME[locale].map((item, key) => {
+    captionHtml = LOCALE[locale].weeks.map((item, key) => {
       return (
         <div className={`picky-date-time-calendar__table-caption picky-date-time-calendar__table-cel no-border ${size}`} key={key}>
           {item}
@@ -340,7 +340,7 @@ class Calendar extends Component {
       );
     });
     let selectorPanelClass = cx('picky-date-time-dropdown', 'picky-date-time-calendar__selector-panel', showSelectorPanel && 'visible');
-    let selectorPanelMonthHtml = MONTH_NAME[locale].map((item, key) => {
+    let selectorPanelMonthHtml = LOCALE[locale].months.map((item, key) => {
       let itemMonth = key + 1;
       let monthItemClass = cx('picky-date-time-dropdown-calendar__month-item', itemMonth == pickedYearMonth.month && 'active');
       let month = itemMonth - 1;
@@ -446,7 +446,7 @@ class Calendar extends Component {
               <div className={`picky-date-time-calendar__title`} key={pickedYearMonth.string}>
                 <span className={`picky-date-time-calendar__clicker`} onClick={this.showSelectorPanel} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
                   <span className={`picky-date-time-calendar__clicker`}>
-                    <span>{`${MONTH_NAME[locale][pickedYearMonth.month - 1]}`}</span>
+                    <span>{`${LOCALE[locale].months[pickedYearMonth.month - 1]}`}</span>
                   </span>
                   <span>&nbsp;</span>
                   <span className={`picky-date-time-calendar__clicker`}>
@@ -481,12 +481,12 @@ class Calendar extends Component {
           </ReactCSSTransitionGroup>
         </div>
         <div className={`picky-date-time-calendar__button picky-date-time-calendar__today`} onClick={() => this.reset(true)}>
-          <span className={`picky-date-time-calendar__inline-span`}>{LANG[locale]['today']}</span>
+          <span className={`picky-date-time-calendar__inline-span`}>{LOCALE[locale]['today']}</span>
           <span className={`picky-date-time-calendar__inline-span picky-date-time-calendar__icon picky-date-time-refresh`} />
         </div>
         {isDefaultDateValid ? (
           <div className={`picky-date-time-calendar__button picky-date-time-calendar__default-day`} onClick={() => this.reset(false)}>
-            <span className={`picky-date-time-calendar__inline-span`}>{LANG[locale]['reset-date']}</span>
+            <span className={`picky-date-time-calendar__inline-span`}>{LOCALE[locale]['reset-date']}</span>
             <span className={`picky-date-time-calendar__inline-span picky-date-time-calendar__icon picky-date-time-refresh`} />
           </div>
         ) : (

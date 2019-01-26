@@ -1,30 +1,6 @@
 // GENERAL
-
 const SIZE_RANGE = ['l', 'm', 's', 'xs'];
-
-const LOCALE_RANGE = ['en-us', 'zh-cn'];
-
-const DEFAULT_LACALE = 'en-us';
-
 const DEFAULT_SIZE = 'm';
-
-const LANG = {
-  'en-us': {
-    today: 'Today',
-    reset: 'Reset',
-    'reset-date': 'Reset Date',
-    clear: 'Clear',
-    now: 'Now'
-  },
-  'zh-cn': {
-    today: '今天',
-    reset: '重置',
-    'reset-date': '重置日期',
-    clear: '清零',
-    now: '现在'
-  }
-};
-
 // CALENDAR
 
 const PREV_TRANSITION = 'prev';
@@ -32,48 +8,11 @@ const NEXT_TRANSITION = 'next';
 
 const SELECTOR_YEAR_SET_NUMBER = 5;
 
-const WEEK_NAME = {
-  'en-us': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  'zh-cn': ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-};
-
-const MONTH_NAME = {
-  'en-us': [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ],
-  'zh-cn': [
-    '一月',
-    '二月',
-    '三月',
-    '四月',
-    '五月',
-    '六月',
-    '七月',
-    '八月',
-    '九月',
-    '十月',
-    '十一月',
-    '十二月'
-  ]
-};
-
 const POINTER_ROTATE = 0;
 
 const WEEK_NUMBER = 7;
 
-const getDaysArray = (year, month, locale = 'zh-cn') => {
-
+const getDaysArray = (year, month) => {
   let prevMonth;
   let nextMonth;
   let prevYear;
@@ -95,31 +34,22 @@ const getDaysArray = (year, month, locale = 'zh-cn') => {
     nextYear = year;
   }
   const date = new Date(year, month - 1, 1);
-  const names = WEEK_NAME[locale];
   let prevMonthDate = null;
   let thisMonthDate = null;
   let nextMonthDate = null;
-
   let res = [];
-
   let startOffset = date.getDay();
   if (startOffset != 0) {
-    prevMonthDate = getDaysListByMonth(prevYear, prevMonth, names, locale);
-    for (
-      let i = prevMonthDate.length - startOffset;
-      i <= prevMonthDate.length - 1;
-      i++
-    ) {
+    prevMonthDate = getDaysListByMonth(prevYear, prevMonth);
+    for (let i = prevMonthDate.length - startOffset; i <= prevMonthDate.length - 1; i++) {
       res.push(prevMonthDate[i]);
     }
   }
-
-  thisMonthDate = getDaysListByMonth(year, month, names, locale);
+  thisMonthDate = getDaysListByMonth(year, month);
   res = [...res, ...thisMonthDate];
-
   let endOffset = WEEK_NUMBER - thisMonthDate[thisMonthDate.length - 1].day - 1;
   if (endOffset != 0) {
-    nextMonthDate = getDaysListByMonth(nextYear, nextMonth, names, locale);
+    nextMonthDate = getDaysListByMonth(nextYear, nextMonth);
     for (let i = 0; i <= endOffset - 1; i++) {
       res.push(nextMonthDate[i]);
     }
@@ -139,7 +69,7 @@ const getDaysListByMonth = (year, month) => {
       day: date.getDay(),
       month: monthName,
       year: year,
-      value: `${year}-${monthName}-${dayName}`
+      value: `${year}-${monthName}-${dayName}`,
     };
     res.push(item);
     date.setDate(date.getDate() + 1);
@@ -147,12 +77,12 @@ const getDaysListByMonth = (year, month) => {
   return res;
 };
 
-const formatDateString = (val) => {
-  if (Number(val) < 10){
+const formatDateString = val => {
+  if (Number(val) < 10) {
     return String('0' + Number(val));
   }
   return String(val);
-}
+};
 
 const getYearSet = year => {
   let res = [];
@@ -207,14 +137,9 @@ const TIME_CURSOR_POSITION_OBJECT = {
   8: 'clockHandSecond',
   9: 'meridiem',
   10: 'meridiem',
-  11: 'meridiem'
+  11: 'meridiem',
 };
-const TIME_TYPE = [
-  'clockHandHour',
-  'clockHandMinute',
-  'clockHandSecond',
-  'meridiem'
-];
+const TIME_TYPE = ['clockHandHour', 'clockHandMinute', 'clockHandSecond', 'meridiem'];
 
 let KEY_CODE = {
   '8': 'Backspace',
@@ -232,22 +157,17 @@ let KEY_CODE = {
   '54': '6',
   '55': '7',
   '56': '8',
-  '57': '9'
+  '57': '9',
 };
 
 export {
   // GENERAL
-  LANG,
   SIZE_RANGE,
-  LOCALE_RANGE,
-  DEFAULT_LACALE,
   DEFAULT_SIZE,
   // CALENDAR
   PREV_TRANSITION,
   NEXT_TRANSITION,
   SELECTOR_YEAR_SET_NUMBER,
-  WEEK_NAME,
-  MONTH_NAME,
   WEEK_NUMBER,
   POINTER_ROTATE,
   getDaysArray,
@@ -267,5 +187,5 @@ export {
   TIME_JUMP_CHAR_POS_LIST,
   TIME_CURSOR_POSITION_OBJECT,
   TIME_TYPE,
-  KEY_CODE
+  KEY_CODE,
 };
