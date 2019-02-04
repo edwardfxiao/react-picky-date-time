@@ -11,7 +11,7 @@ Please check the <a href="https://edwardfhsiao.github.io/react-picky-date-time/"
 Attention: <a href="https://github.com/edwardfhsiao/react-picky-date-time/blob/gh-pages/example/index.js">you can find demo source here :)</a>
 
 # Codesandbox Examples
-* <a href="https://codesandbox.io/s/y29w6p6krj">Online demo form example playground</a>
+* <a href="https://codesandbox.io/s/y29w6p6krj">Online demo example playground</a>
 * <a href="https://codesandbox.io/s/l3n2ypvrzl">Custom locales</a>(when providing ```window.REACT_PICKY_DATE_TIME['customLocale']```)
 
 # Docs Link
