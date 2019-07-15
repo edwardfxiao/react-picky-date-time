@@ -5,6 +5,8 @@ A react date time picker component.
 
 NO Jquery, NO Moment.js
 
+###  :tada: For range surpport, please take a look at <a href="https://github.com/edwardfhsiao/react-minimal-datetime-range">react-minimal-datetime-range</a>
+
 # Demo & Examples
 Please check the <a href="https://edwardfhsiao.github.io/react-picky-date-time/">online demo example</a>
 
