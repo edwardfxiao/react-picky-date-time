@@ -35,7 +35,6 @@ const isValidDate = function(value, userFormat) {
       d <= new Date(y, m, 0).getDate()
     );
   }
-
   return isDate(theDate, theFormat);
 };
 
