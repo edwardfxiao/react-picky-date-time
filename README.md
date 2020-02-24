@@ -1,13 +1,25 @@
 # react-picky-date-time
 A react date time picker component.
 
-<img src="http://cdn.edwardxiao.com/react-picky-date-time.gif" />
+<img src="https://raw.githubusercontent.com/edwardfhsiao/react-picky-date-time/master/react-picky-date-time.gif" />
 
 NO Jquery, NO Moment.js
+
+###  :tada: For range surpport, please take a look at <a href="https://github.com/edwardfhsiao/react-minimal-datetime-range">react-minimal-datetime-range</a>
 
 # Demo & Examples
 Please check the <a href="https://edwardfhsiao.github.io/react-picky-date-time/">online demo example</a>
 
+Attention: <a href="https://github.com/edwardfhsiao/react-picky-date-time/blob/gh-pages/example/index.js">you can find demo source here :)</a>
+
+# Codesandbox Examples
+* <a href="https://codesandbox.io/s/y29w6p6krj">Online demo example playground</a>
+* <a href="https://codesandbox.io/s/l3n2ypvrzl">Custom locales</a>(when providing ```window.REACT_PICKY_DATE_TIME['customLocale']```)
+
+# Docs Link
+[Custom Locale Guid(can be multiple locales)](#custom-locale)
+
+# Usage
 ```js
 import PickyDateTime from 'react-picky-date-time';
 
@@ -77,7 +89,7 @@ npm install react-picky-date-time --save
 # Browser support
 Tested on IE9+ and Chrome and Safari(10.0.3)
 
-# Event & Usage
+# Events
 
 Also consoled out on the demo page examples
 
@@ -156,4 +168,29 @@ Also consoled out on the demo page examples
     this.setState({showPickyDateTime: false});
   }
 
+```
+
+### <a name="custom-locale"></a>Custom Locale (can be multiple locales)
+By providing ```window.REACT_PICKY_DATE_TIME['customLocale']```, you can overwrite the current locale if you like or add a new locale.
+
+
+<a href="https://codesandbox.io/s/l3n2ypvrzl">codesandbox example</a>(located in index.html)
+
+```html
+        <script type="text/javascript">
+        window.REACT_PICKY_DATE_TIME = {
+            customLocale: {
+                "my-own-locale": {...},//structure must follow below
+                'es': {
+                    today: 'Hoy',
+                    reset: 'Reiniciar',
+                    'reset-date': 'Reiniciar Fecha',
+                    clear: 'Borrar',
+                    now: 'Ahora',
+                    weeks: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+                    months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                }
+            }
+        }
+        </script>
 ```

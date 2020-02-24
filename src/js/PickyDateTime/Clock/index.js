@@ -251,7 +251,7 @@ class Clock extends React.Component {
       document.attachEvent('onmousemove', this.handleMouseMove);
       document.attachEvent('onmouseup', this.handleMouseUp);
     }
-    if (!this.state.defaultTimeObj) {
+    if (!this.state.defaultTimeObj && !self.PRERENDER) {
       this.initializeClock();
     }
   }

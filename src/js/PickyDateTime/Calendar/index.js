@@ -35,7 +35,6 @@ const isValidDate = function(value, userFormat) {
       d <= new Date(y, m, 0).getDate()
     );
   }
-
   return isDate(theDate, theFormat);
 };
 
@@ -166,14 +165,14 @@ class Calendar extends Component {
     if (direction == PREV_TRANSITION) {
       if (month == 1) {
         month = 12;
-        year = year - 1;
+        year = Number(year) - 1;
       } else {
         month = month - 1;
       }
     } else {
       if (month == 12) {
         month = 1;
-        year = year + 1;
+        year = Number(year) + 1;
       } else {
         month = month + 1;
       }
@@ -181,6 +180,7 @@ class Calendar extends Component {
     month = formatDateString(month);
     year = String(year);
     pickedYearMonth = update(pickedYearMonth, {
+      year: { $set: year },
       month: { $set: month },
       string: { $set: `${year}-${month}` }
     });
