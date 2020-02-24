@@ -1,7 +1,7 @@
 /*
  *
  *  𝗖 𝗢 𝗟 𝗢 𝗥
- *  v 1.6.2
+ *  v 1.7.0
  *
  *  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
@@ -66,17 +66,13 @@
 
 .forwardEnter {
   will-change: transform;
-  transition: opacity .5s ease-in, -webkit-transform .3s;
   transition: opacity .5s ease-in, transform .3s;
-  transition: opacity .5s ease-in, transform .3s, -webkit-transform .3s;
   opacity: 1;
-  -webkit-transform: translate3d(100%, 0, 0);
-          transform: translate3d(100%, 0, 0)
+  transform: translate3d(100%, 0, 0)
 }
 
 .forwardEnter.forwardEnterActive {
--webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0)
+transform: translate3d(0, 0, 0)
 
 }
 
@@ -98,11 +94,8 @@ opacity: 0
 
 .backwardLeave {
   will-change: transform, opacity;
-  transition: -webkit-transform .3s ease-in;
   transition: transform .3s ease-in;
-  transition: transform .3s ease-in, -webkit-transform .3s ease-in;
-  -webkit-transform: translate3d(100%, 0, 0);
-          transform: translate3d(100%, 0, 0)
+  transform: translate3d(100%, 0, 0)
 }
 
 .backwardLeave.backwardLeaveActive {
@@ -160,81 +153,57 @@ height: 200px
 }
 
 .slide-enter {
-  -webkit-transform: translateX(100%);
-          transform: translateX(100%);
-  transition: 0.3s -webkit-transform ease-in-out;
+  transform: translateX(100%);
   transition: 0.3s transform ease-in-out;
-  transition: 0.3s transform ease-in-out, 0.3s -webkit-transform ease-in-out;
 }
 
 .slide-enter-active {
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
+  transform: translateX(0);
 }
 
 .slide-leave {
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
-  transition: 0.3s -webkit-transform ease-in-out;
+  transform: translateX(0);
   transition: 0.3s transform ease-in-out;
-  transition: 0.3s transform ease-in-out, 0.3s -webkit-transform ease-in-out;
 }
 
 .slide-leave-active {
-  -webkit-transform: translateX(-100%);
-          transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 
 .forward-enter {
-  -webkit-transform: translateX(100%);
-          transform: translateX(100%);
-  transition: 0.3s -webkit-transform ease-in-out;
+  transform: translateX(100%);
   transition: 0.3s transform ease-in-out;
-  transition: 0.3s transform ease-in-out, 0.3s -webkit-transform ease-in-out;
 }
 
 .forward-enter-active {
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
+  transform: translateX(0);
 }
 
 .forward-leave {
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
-  transition: 0.3s -webkit-transform ease-in-out;
+  transform: translateX(0);
   transition: 0.3s transform ease-in-out;
-  transition: 0.3s transform ease-in-out, 0.3s -webkit-transform ease-in-out;
 }
 
 .forward-leave-active {
-  -webkit-transform: translateX(-100%);
-          transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 
 .backward-enter {
-  -webkit-transform: translateX(-100%);
-          transform: translateX(-100%);
-  transition: 0.3s -webkit-transform ease-in-out;
+  transform: translateX(-100%);
   transition: 0.3s transform ease-in-out;
-  transition: 0.3s transform ease-in-out, 0.3s -webkit-transform ease-in-out;
 }
 
 .backward-enter-active {
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
+  transform: translateX(0);
 }
 
 .backward-leave {
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
-  transition: 0.3s -webkit-transform ease-in-out;
+  transform: translateX(0);
   transition: 0.3s transform ease-in-out;
-  transition: 0.3s transform ease-in-out, 0.3s -webkit-transform ease-in-out;
 }
 
 .backward-leave-active {
-  -webkit-transform: translateX(100%);
-          transform: translateX(100%);
+  transform: translateX(100%);
 }
 
 /* dropdown section */
@@ -244,10 +213,8 @@ height: 200px
 }
 
 .picky-date-time-dropdown.visible .picky-date-time-dropdown-calendar__menu {
-  -webkit-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1);
-          transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1);
-  -webkit-transform: translate(-50%, 0) scale(1, 1)\9;
-          transform: translate(-50%, 0) scale(1, 1)\9;
+  transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1);
+  transform: translate(-50%, 0) scale(1, 1)\9;
   opacity: 1;
   padding: 10px;
   z-index: 1000;
@@ -259,22 +226,14 @@ height: 200px
 
 .picky-date-time-dropdown .picky-date-time-dropdown-calendar__menu {
   will-change: transform, opacity;
-  -webkit-transform: translate3d(-50%, 0, 0) scale3d(1, 0, 1);
-          transform: translate3d(-50%, 0, 0) scale3d(1, 0, 1);
-  -webkit-transform: translate(-50%, 0) scale(1, 0)\9;
-          transform: translate(-50%, 0) scale(1, 0)\9;
+  transform: translate3d(-50%, 0, 0) scale3d(1, 0, 1);
+  transform: translate(-50%, 0) scale(1, 0)\9;
   opacity: 0;
   left: 50%;
   text-align: center;
-  -webkit-transform-origin: 0 0;
-          transform-origin: 0 0;
-  transition: opacity .2s,
-  -webkit-transform .4s;
+  transform-origin: 0 0;
   transition: transform .4s,
   opacity .2s;
-  transition: transform .4s,
-  opacity .2s,
-  -webkit-transform .4s;
   position: absolute;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .3),
   0 0 1px 0 rgba(0, 0, 0, .12);
@@ -731,8 +690,7 @@ width: 220px
   position: absolute;
   right: 10px;
   top: 43%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 .picky-date-time-clock__circle {
@@ -797,13 +755,11 @@ width: 1px
   top: 50%;
   box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, .2);
   -webkit-font-smoothing: antialiased;
-  -webkit-transform-origin: 50% 50%;
-          transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
 }
 
 .picky-date-time-clock__clock-center {
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -901,8 +857,7 @@ color: #ffffff
   speak: none;
   font-style: normal;
   font-weight: normal;
-  -webkit-font-feature-settings: normal;
-          font-feature-settings: normal;
+  font-feature-settings: normal;
   font-variant: normal;
   text-transform: none;
   line-height: 1;
@@ -1070,15 +1025,13 @@ color: #ffffff
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .10), 0 0 4px 0 rgba(0, 0, 0, .08);
   display: inline-block;
   transition: all .3s;
-  -webkit-transform: translateY(-1em) perspective(600px) rotateX(10deg);
-          transform: translateY(-1em) perspective(600px) rotateX(10deg);
+  transform: translateY(-1em) perspective(600px) rotateX(10deg);
   padding: 20px;
 }
 
 .picky-date-time.visible {
   opacity: 1;
-  -webkit-transform: translateY(0) perspective(600px) rotateX(0);
-          transform: translateY(0) perspective(600px) rotateX(0);
+  transform: translateY(0) perspective(600px) rotateX(0);
 }
 
 .picky-date-time__calendar,

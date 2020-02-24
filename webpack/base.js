@@ -141,6 +141,7 @@ var config = (module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: PATH.HTML_PATH + '/layout.html',
+      // template: `!!prerender-loader?string!${PATH.HTML_PATH}/layout.html`,
       title: 'react-picky-date-time',
       page: 'index',
       filename: 'index.html',
