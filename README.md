@@ -173,7 +173,6 @@ Also consoled out on the demo page examples
 ### <a name="custom-locale"></a>Custom Locale (can be multiple locales)
 By providing ```window.REACT_PICKY_DATE_TIME['customLocale']```, you can overwrite the current locale if you like or add a new locale.
 
-**IMPORTANT NOTE: YOU WILL NEED TO PLACE window.REACT_PICKY_DATE_TIME BEFORE YOUR JS SCRIPT**
 
 <a href="https://codesandbox.io/s/l3n2ypvrzl">codesandbox example</a>(located in index.html)
 
