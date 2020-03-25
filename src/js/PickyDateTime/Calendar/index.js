@@ -141,9 +141,9 @@ class Calendar extends Component {
 
   pickYear(year, direction) {
     if (direction == PREV_TRANSITION) {
-      year = year - 1;
+      year = Number(year) - 1;
     } else {
-      year = year + 1;
+      year = Number(year) + 1;
     }
     let { pickedYearMonth } = this.state;
     let { month } = pickedYearMonth;
