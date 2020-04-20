@@ -165,7 +165,7 @@ class Index extends Component {
             >
               <Markdown
                 source={`\`\`\`javascript
-import PickyDateTime from 'react-picky-date-time';
+import PickyDateTime from 'react-inputs-validation';
 
 <PickyDateTime
   size="xs"
@@ -240,7 +240,7 @@ import PickyDateTime from 'react-picky-date-time';
             >
               <Markdown
                 source={`\`\`\`javascript
-import PickyDateTime from 'react-picky-date-time';
+import PickyDateTime from 'react-inputs-validation';
 
 <PickyDateTime
   size="xs"
@@ -270,6 +270,8 @@ import PickyDateTime from 'react-picky-date-time';
           </div>
           <h2>Example 3 DEMO: Calendar only (with size of M)</h2>
           <div style={{ margin: '10px' }}>
+            <div style={{ color: '#4a4a4a', margin: '10px' }}>
+            </div>
             <div>
               <PickyDateTime
                 size="m"
@@ -303,7 +305,7 @@ import PickyDateTime from 'react-picky-date-time';
           >
             <Markdown
               source={`\`\`\`javascript
-import PickyDateTime from 'react-picky-date-time';
+import PickyDateTime from 'react-inputs-validation';
 
 <PickyDateTime
   size="m"
@@ -330,6 +332,9 @@ import PickyDateTime from 'react-picky-date-time';
           </div>
           <h2>Example 4 DEMO: Clock only</h2>
           <div style={{ margin: '10px' }}>
+            <div style={{ color: '#4a4a4a', margin: '10px' }}>
+              {`//size="xs" mode={2}`}
+            </div>
             <div>
               <PickyDateTime
                 size="xs"
@@ -363,7 +368,7 @@ import PickyDateTime from 'react-picky-date-time';
           >
             <Markdown
               source={`\`\`\`javascript
-import PickyDateTime from 'react-picky-date-time';
+import PickyDateTime from 'react-inputs-validation';
 
 <PickyDateTime
   size="xs"

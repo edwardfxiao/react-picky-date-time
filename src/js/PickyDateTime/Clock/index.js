@@ -2,7 +2,7 @@ import update from 'react-addons-update';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import cx from 'classnames';
+import { cx } from '../utils.js';
 import { LOCALE } from '../locale.js';
 import {
   R2D,
@@ -17,70 +17,70 @@ import {
   TIME_JUMP_CHAR_POS_LIST,
   TIME_CURSOR_POSITION_OBJECT,
   TIME_TYPE,
-  KEY_CODE
+  KEY_CODE,
 } from '../constValue';
 
 const TRANSLATE_FIRST_SIZE = {
   l: '-2px, -1px',
   m: '-2px, -1px',
   s: '-2px, -1px',
-  xs: '0px, -1px'
+  xs: '0px, -1px',
 };
 
 const TRANSLATE_SECOND_SIZE = {
   l: '0px, 155px',
   m: '0px, 125px',
   s: '0px, 95px',
-  xs: '0px, 85px'
+  xs: '0px, 85px',
 };
 
 const TRANSLATE_QUARTER_SECOND_SIZE = {
   l: '0px, -3px',
   m: '0px, -3px',
   s: '0px, -3px',
-  xs: '0px, -3px'
+  xs: '0px, -3px',
 };
 
 const SECONDS_TRANSLATE_FIRST_SIZE = {
   l: '-1px, -34.5px',
   m: '-1px, -34.5px',
   s: '-1px, -34.5px',
-  xs: '-1px, -34.5px'
+  xs: '-1px, -34.5px',
 };
 
 const SECONDS_TRANSLATE_SECOND_SIZE = {
   l: '0px, -22.5px',
   m: '0px, -22.5px',
   s: '0px, -22.5px',
-  xs: '0px, -22.5px'
+  xs: '0px, -22.5px',
 };
 
 const MINUTES_TRANSLATE_FIRST_SIZE = {
   l: '-1px, -32.5px',
   m: '-1px, -32.5px',
   s: '-1px, -32.5px',
-  xs: '-1px, -32.5px'
+  xs: '-1px, -32.5px',
 };
 
 const MINUTES_TRANSLATE_SECOND_SIZE = {
   l: '0px, -20.5px',
   m: '0px, -20.5px',
   s: '0px, -20.5px',
-  xs: '0px, -20.5px'
+  xs: '0px, -20.5px',
 };
 
 const HOURS_TRANSLATE_FIRST_SIZE = {
   l: '-1.5px, -24.5px',
   m: '-1.5px, -24.5px',
   s: '-1.5px, -24.5px',
-  xs: '-1.5px, -24.5px'
+  xs: '-1.5px, -24.5px',
 };
 
 const HOURS_TRANSLATE_SECOND_SIZE = {
   l: '0px, -14.5px',
   m: '0px, -14.5px',
   s: '0px, -14.5px',
-  xs: '0px, -14.5px'
+  xs: '0px, -14.5px',
 };
 
 const emptyFn = () => {};
@@ -138,7 +138,7 @@ const isValidTime = function(value) {
     minute,
     second,
     meridiem,
-    hourText
+    hourText,
   };
 };
 
@@ -206,7 +206,7 @@ class Clock extends React.Component {
       startAngle: '',
       angle: '',
       isMouseOver: false,
-      isDragging: false
+      isDragging: false,
     };
 
     this.state = {
@@ -215,7 +215,7 @@ class Clock extends React.Component {
       clockHandMinute: this.updateClockHandObj(clockHandObj, minute, minuteDegree, minuteDegree, minuteDegree),
       clockHandHour: this.updateClockHandObj(clockHandObj, hourText, hourDegree, hourDegree, hourDegree),
       meridiem,
-      slectionRange: { start: 0, end: 0 }
+      slectionRange: { start: 0, end: 0 },
     };
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -292,14 +292,7 @@ class Clock extends React.Component {
   }
 
   updateClockHandObj(o, value, degree, startAngle, angle, isMouseOver = false, isDragging = false) {
-    o = update(o, {
-      value: { $set: value },
-      degree: { $set: degree },
-      startAngle: { $set: startAngle },
-      angle: { $set: angle },
-      isMouseOver: { $set: isMouseOver },
-      isDragging: { $set: isDragging }
-    });
+    o = { ...o, value, degree, startAngle, angle, isMouseOver, isDragging };
     return o;
   }
 
@@ -358,7 +351,7 @@ class Clock extends React.Component {
       clockHandSecond,
       clockHandMinute,
       clockHandHour,
-      meridiem
+      meridiem,
     });
     return { clockHandSecond, clockHandMinute, clockHandHour, meridiem };
   }
@@ -374,7 +367,7 @@ class Clock extends React.Component {
       keyCode: e.deltaY > 0 ? '38' : '40',
       type: e.type || 'unknown',
       stopPropagation: typeof e.stopPropagation == 'function' ? () => e.stopPropagation() : emptyFn,
-      preventDefault: typeof e.preventDefault == 'function' ? () => e.preventDefault() : emptyFn
+      preventDefault: typeof e.preventDefault == 'function' ? () => e.preventDefault() : emptyFn,
     });
     e.preventDefault();
   }
@@ -500,7 +493,6 @@ class Clock extends React.Component {
     newValue = formatClockNumber(newValue);
 
     let slectionRange = { start: range.start, end: range.end };
-    // debugger;
     if (!isNaN(newValue) && refName != 'meridiem') {
       let newDegree;
       if (refName == 'clockHandSecond') {
@@ -515,12 +507,7 @@ class Clock extends React.Component {
         }
         newDegree = Number(newValue) * HOUR_DEGREE_NUMBER;
       }
-      elObj = update(elObj, {
-        value: { $set: newValue },
-        degree: { $set: newDegree },
-        startAngle: { $set: newDegree },
-        angle: { $set: newDegree }
-      });
+      elObj = { ...elObj, value: newValue, degree: newDegree, startAngle: newDegree, angle: newDegree };
       this.setState({ [refName]: elObj, slectionRange });
     }
 
@@ -542,13 +529,13 @@ class Clock extends React.Component {
 
   onMouseOver(refName) {
     let elObj = this.state[refName];
-    elObj = update(elObj, { isMouseOver: { $set: true } });
+    elObj = { ...elObj, isMouseOver: true };
     this.setState({ [refName]: elObj });
   }
 
   onMouseOut(refName) {
     let elObj = this.state[refName];
-    elObj = update(elObj, { isMouseOver: { $set: false } });
+    elObj = { ...elObj, isMouseOver: false };
     this.setState({ [refName]: elObj });
   }
 
@@ -557,10 +544,7 @@ class Clock extends React.Component {
     let x = e.clientX - this.originX;
     let y = e.clientY - this.originY;
     let startAngle = R2D * Math.atan2(y, x);
-    elObj = update(elObj, {
-      isDragging: { $set: true },
-      startAngle: { $set: startAngle }
-    });
+    elObj = { ...elObj, isDragging: true, startAngle: startAngle };
     this.setState({ [refName]: elObj });
   }
 
@@ -586,7 +570,7 @@ class Clock extends React.Component {
       let d = R2D * Math.atan2(y, x);
 
       let rotation = Number(d - elObj.startAngle);
-      rotation = Math.floor((rotation % 360 + roundingAngle / 2) / roundingAngle) * roundingAngle;
+      rotation = Math.floor(((rotation % 360) + roundingAngle / 2) / roundingAngle) * roundingAngle;
       let degree = elObj.angle + rotation;
       if (degree >= 360) {
         degree = degree - 360;
@@ -601,10 +585,11 @@ class Clock extends React.Component {
           value = 12;
         }
       }
-      elObj = update(elObj, {
-        value: { $set: value },
-        degree: { $set: degree }
-      });
+      // elObj = update(elObj, {
+      //   value: { $set: value },
+      //   degree: { $set: degree },
+      // });
+      elObj = { ...elObj, value, degree };
       this.setState({ [refName]: elObj });
     }
   }
@@ -616,18 +601,21 @@ class Clock extends React.Component {
       let clockHandMinuteDegree = this.state.clockHandMinute.degree;
       let clockHandHourDegree = this.state.clockHandHour.degree;
 
-      clockHandSecond = update(clockHandSecond, {
-        isDragging: { $set: false },
-        angle: { $set: clockHandSecondDegree }
-      });
-      clockHandMinute = update(clockHandMinute, {
-        isDragging: { $set: false },
-        angle: { $set: clockHandMinuteDegree }
-      });
-      clockHandHour = update(clockHandHour, {
-        isDragging: { $set: false },
-        angle: { $set: clockHandHourDegree }
-      });
+      // clockHandSecond = update(clockHandSecond, {
+      //   isDragging: { $set: false },
+      //   angle: { $set: clockHandSecondDegree },
+      // });
+      clockHandSecond = { ...clockHandSecond, isDragging: false, angle: clockHandSecondDegree };
+      // clockHandMinute = update(clockHandMinute, {
+      //   isDragging: { $set: false },
+      //   angle: { $set: clockHandMinuteDegree },
+      // });
+      clockHandMinute = { ...clockHandMinute, isDragging: false, angle: clockHandMinuteDegree };
+      // clockHandHour = update(clockHandHour, {
+      //   isDragging: { $set: false },
+      //   angle: { $set: clockHandHourDegree },
+      // });
+      clockHandHour = { ...clockHandHour, isDragging: false, angle: clockHandHourDegree };
       this.setState({ clockHandSecond, clockHandMinute, clockHandHour });
     }
   }
@@ -666,21 +654,21 @@ class Clock extends React.Component {
       WebkitTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
       MozTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
       msTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
-      OTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`
+      OTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
     };
     let minuteStyle = {
       transform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
       WebkitTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE})`,
       MozTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
       msTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
-      OTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`
+      OTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
     };
     let hourStyle = {
       transform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
       WebkitTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
       MozTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
       msTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
-      OTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`
+      OTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
     };
 
     let minutesItem = [];
@@ -705,7 +693,7 @@ class Clock extends React.Component {
         WebkitTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
         MozTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
         msTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
-        OTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`
+        OTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
       };
       minutesItem.push(<div key={i} className={minutesItemClass} style={minutesItemStyle} />);
     }
@@ -751,15 +739,26 @@ class Clock extends React.Component {
               onWheel={e => this.handleMouseWheel(e)}
               ref={ref => (this.timeInput = ref)}
             />
-            <span
-              className={`picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`}
+            <svg
+              className={`picky-date-time-clock__inline-span picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`}
+              xmlns="http://www.w3.org/2000/svg"
+              height="15"
+              viewBox="0 0 24 24"
+              width="15"
               onClick={() => this.clear()}
               title={LOCALE[locale]['clear']}
-            />
+            >
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="#868e96" d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            </svg>
           </div>
           <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
-            <span
-              className={`picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`}
+            <svg
+              className={`picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`}
+              xmlns="http://www.w3.org/2000/svg"
+              height="15"
+              viewBox="0 0 24 24"
+              width="15"
               onClick={
                 this.timeinterval === false || defaultTimeObj
                   ? () => this.reset(false)
@@ -768,15 +767,30 @@ class Clock extends React.Component {
                     }
               }
               title={LOCALE[locale]['now']}
-            />
+              style={{ verticalAlign: 'middle' }}
+            >
+              <path fill="#868e96" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="#868e96" d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+            </svg>
           </div>
           {defaultTimeObj ? (
             <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
-              <span
-                className={`picky-date-time-clock__inline-span picky-date-time-clock__icon picky-date-time-clock__icon--refresh picky-date-time-refresh`}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="15"
+                viewBox="0 0 24 24"
+                width="15"
+                style={{ verticalAlign: 'middle' }}
                 onClick={() => this.defaultTime(true)}
                 title={LOCALE[locale]['reset']}
-              />
+              >
+                <path
+                  fill="#868e96"
+                  d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+                />
+                <path d="M0 0h24v24H0z" fill="none" />
+              </svg>
             </div>
           ) : (
             ``
@@ -797,7 +811,7 @@ Clock.propTypes = {
   onMeridiemChange: PropTypes.func,
   onResetTime: PropTypes.func,
   onClearTime: PropTypes.func,
-  onResetDefaultTime: PropTypes.func
+  onResetDefaultTime: PropTypes.func,
 };
 
 Clock.defaultProps = {
@@ -810,7 +824,7 @@ Clock.defaultProps = {
   onMeridiemChange: () => {},
   onResetTime: () => {},
   onClearTime: () => {},
-  onResetDefaultTime: () => {}
+  onResetDefaultTime: () => {},
 };
 
 export default Clock;

@@ -2,7 +2,18 @@
 @import './transition.css';
 @import './calendar.css';
 @import './clock.css';
-@import './icon.css';
+[class*=' picky-date-time'],
+[class^='picky-date-time'] {
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-feature-settings: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 :root {
   --oc-white: #ffffff;
   --breaker-padding-l: 0 5px;
@@ -14,9 +25,9 @@
 .picky-date-time {
   opacity: 0;
   position: relative;
-  box-shadow: var(--shadowInput);
+  box-shadow: $shadowInput;
   display: inline-block;
-  transition: all .3s;
+  transition: all 0.3s;
   transform: translateY(-1em) perspective(600px) rotateX(10deg);
   padding: 20px;
 }
@@ -42,9 +53,11 @@
   vertical-align: middle;
 }
 
-.picky-date-time__calendar {}
+.picky-date-time__calendar {
+}
 
-.picky-date-time__clock {}
+.picky-date-time__clock {
+}
 
 .picky-date-time__close {
   cursor: pointer;
