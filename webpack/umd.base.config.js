@@ -2,7 +2,7 @@ const env = require('yargs').argv.env; // use --env with webpack 2
 const path = require('path');
 const PATH = require('./build_path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+const styleVariables = require(path.join(PATH.SOURCE_PATH, 'css/variables'));
 let libraryName = 'react-picky-date-time';
 
 let plugins = [],
@@ -94,6 +94,9 @@ module.exports = {
                 require('postcss-cssnext')(),
                 require('autoprefixer')(),
                 require('cssnano')({ safe: true }),
+                require('postcss-simple-vars')({
+                  variables: styleVariables,
+                }),
               ],
             },
           },

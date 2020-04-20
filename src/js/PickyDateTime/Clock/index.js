@@ -292,14 +292,7 @@ class Clock extends React.Component {
   }
 
   updateClockHandObj(o, value, degree, startAngle, angle, isMouseOver = false, isDragging = false) {
-    o = update(o, {
-      value: { $set: value },
-      degree: { $set: degree },
-      startAngle: { $set: startAngle },
-      angle: { $set: angle },
-      isMouseOver: { $set: isMouseOver },
-      isDragging: { $set: isDragging },
-    });
+    o = { ...o, value, degree, startAngle, angle, isMouseOver, isDragging };
     return o;
   }
 
@@ -500,7 +493,6 @@ class Clock extends React.Component {
     newValue = formatClockNumber(newValue);
 
     let slectionRange = { start: range.start, end: range.end };
-    // debugger;
     if (!isNaN(newValue) && refName != 'meridiem') {
       let newDegree;
       if (refName == 'clockHandSecond') {
@@ -515,12 +507,7 @@ class Clock extends React.Component {
         }
         newDegree = Number(newValue) * HOUR_DEGREE_NUMBER;
       }
-      elObj = update(elObj, {
-        value: { $set: newValue },
-        degree: { $set: newDegree },
-        startAngle: { $set: newDegree },
-        angle: { $set: newDegree },
-      });
+      elObj = { ...elObj, value: newValue, degree: newDegree, startAngle: newDegree, angle: newDegree };
       this.setState({ [refName]: elObj, slectionRange });
     }
 
@@ -542,13 +529,13 @@ class Clock extends React.Component {
 
   onMouseOver(refName) {
     let elObj = this.state[refName];
-    elObj = update(elObj, { isMouseOver: { $set: true } });
+    elObj = { ...elObj, isMouseOver: true };
     this.setState({ [refName]: elObj });
   }
 
   onMouseOut(refName) {
     let elObj = this.state[refName];
-    elObj = update(elObj, { isMouseOver: { $set: false } });
+    elObj = { ...elObj, isMouseOver: false };
     this.setState({ [refName]: elObj });
   }
 
@@ -557,10 +544,7 @@ class Clock extends React.Component {
     let x = e.clientX - this.originX;
     let y = e.clientY - this.originY;
     let startAngle = R2D * Math.atan2(y, x);
-    elObj = update(elObj, {
-      isDragging: { $set: true },
-      startAngle: { $set: startAngle },
-    });
+    elObj = { ...elObj, isDragging: true, startAngle: startAngle };
     this.setState({ [refName]: elObj });
   }
 
@@ -601,10 +585,11 @@ class Clock extends React.Component {
           value = 12;
         }
       }
-      elObj = update(elObj, {
-        value: { $set: value },
-        degree: { $set: degree },
-      });
+      // elObj = update(elObj, {
+      //   value: { $set: value },
+      //   degree: { $set: degree },
+      // });
+      elObj = { ...elObj, value, degree };
       this.setState({ [refName]: elObj });
     }
   }
@@ -616,18 +601,21 @@ class Clock extends React.Component {
       let clockHandMinuteDegree = this.state.clockHandMinute.degree;
       let clockHandHourDegree = this.state.clockHandHour.degree;
 
-      clockHandSecond = update(clockHandSecond, {
-        isDragging: { $set: false },
-        angle: { $set: clockHandSecondDegree },
-      });
-      clockHandMinute = update(clockHandMinute, {
-        isDragging: { $set: false },
-        angle: { $set: clockHandMinuteDegree },
-      });
-      clockHandHour = update(clockHandHour, {
-        isDragging: { $set: false },
-        angle: { $set: clockHandHourDegree },
-      });
+      // clockHandSecond = update(clockHandSecond, {
+      //   isDragging: { $set: false },
+      //   angle: { $set: clockHandSecondDegree },
+      // });
+      clockHandSecond = { ...clockHandSecond, isDragging: false, angle: clockHandSecondDegree };
+      // clockHandMinute = update(clockHandMinute, {
+      //   isDragging: { $set: false },
+      //   angle: { $set: clockHandMinuteDegree },
+      // });
+      clockHandMinute = { ...clockHandMinute, isDragging: false, angle: clockHandMinuteDegree };
+      // clockHandHour = update(clockHandHour, {
+      //   isDragging: { $set: false },
+      //   angle: { $set: clockHandHourDegree },
+      // });
+      clockHandHour = { ...clockHandHour, isDragging: false, angle: clockHandHourDegree };
       this.setState({ clockHandSecond, clockHandMinute, clockHandHour });
     }
   }

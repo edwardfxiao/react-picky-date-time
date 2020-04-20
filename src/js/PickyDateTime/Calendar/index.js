@@ -1,5 +1,4 @@
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import update from 'react-addons-update';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { cx } from '../utils.js';
@@ -147,10 +146,7 @@ class Calendar extends Component {
     }
     let { pickedYearMonth } = this.state;
     let { month } = pickedYearMonth;
-    pickedYearMonth = update(pickedYearMonth, {
-      year: { $set: year },
-      string: { $set: `${year}-${month}` },
-    });
+    pickedYearMonth = { ...pickedYearMonth, year: year, string: `${year}-${month}` };
     this.setState({
       pickedYearMonth,
       direction,
@@ -179,11 +175,7 @@ class Calendar extends Component {
     }
     month = formatDateString(month);
     year = String(year);
-    pickedYearMonth = update(pickedYearMonth, {
-      year: { $set: year },
-      month: { $set: month },
-      string: { $set: `${year}-${month}` },
-    });
+    pickedYearMonth = { ...pickedYearMonth, year, month, string: `${year}-${month}` };
     this.setState({
       pickedYearMonth,
       direction,
@@ -193,11 +185,7 @@ class Calendar extends Component {
 
   pickDate(pickedDate) {
     let { pickedDateInfo, pickedYearMonth } = this.state;
-    pickedDateInfo = update(pickedDateInfo, {
-      year: { $set: pickedYearMonth.year },
-      month: { $set: formatDateString(pickedYearMonth.month) },
-      date: { $set: formatDateString(pickedDate) },
-    });
+    pickedDateInfo = { ...pickedDateInfo, year: pickedYearMonth.year, month: formatDateString(pickedYearMonth.month), date: formatDateString(pickedDate) };
     this.setState({ pickedDateInfo });
     this.props.onDatePicked(pickedDateInfo);
   }
@@ -245,16 +233,8 @@ class Calendar extends Component {
     }
     month = formatDateString(month);
     date = formatDateString(date);
-    pickedDateInfo = update(pickedDateInfo, {
-      year: { $set: year },
-      month: { $set: month },
-      date: { $set: date },
-    });
-    pickedYearMonth = update(pickedYearMonth, {
-      year: { $set: year },
-      month: { $set: month },
-      string: { $set: `${year}-${month}` },
-    });
+    pickedDateInfo = { ...pickedDateInfo, year: year, month: month, date: date };
+    pickedYearMonth = { ...pickedYearMonth, year: year, month: month, string: `${year}-${month}` };
     this.setState({
       pickedYearMonth: pickedYearMonth,
       pickedDateInfo: pickedDateInfo,
