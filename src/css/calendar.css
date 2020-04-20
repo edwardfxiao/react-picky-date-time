@@ -11,7 +11,6 @@
   --item-height-xs: 25px;
 }
 
-
 /* dropdown section */
 
 .picky-date-time-dropdown {
@@ -20,7 +19,7 @@
 
 .picky-date-time-dropdown.visible .picky-date-time-dropdown-calendar__menu {
   transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1);
-  transform: translate(-50%, 0) scale(1, 1)\9;
+  transform: translate(-50%, 0) scale(1, 1) \9;
   opacity: 1;
   padding: 10px;
   z-index: 1000;
@@ -33,7 +32,7 @@
 .picky-date-time-dropdown .picky-date-time-dropdown-calendar__menu {
   will-change: transform, opacity;
   transform: translate3d(-50%, 0, 0) scale3d(1, 0, 1);
-  transform: translate(-50%, 0) scale(1, 0)\9;
+  transform: translate(-50%, 0) scale(1, 0) \9;
   opacity: 0;
   left: 50%;
   &.l {
@@ -54,11 +53,9 @@
   }
   text-align: center;
   transform-origin: 0 0;
-  transition: transform .4s,
-  opacity .2s;
+  transition: transform 0.4s, opacity 0.2s;
   position: absolute;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3),
-  0 0 1px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3), 0 0 1px 0 rgba(0, 0, 0, 0.12);
   /*z-index: -1;*/
   background: var(--oc-white);
 }
@@ -72,7 +69,7 @@
 .picky-date-time-dropdown .picky-date-time-dropdown-calendar__item {
   padding: 1px 4px;
   line-height: 20px;
-  transition: background .4s;
+  transition: background 0.4s;
   cursor: pointer;
   display: block;
 }
@@ -81,7 +78,7 @@
   background: var(--oc-white);
   *zoom: 1;
   &:after {
-    content: "\200B";
+    content: '\200B';
     display: block;
     height: 0;
     clear: both;
@@ -95,7 +92,7 @@
   width: 33.3%;
 }
 
-.picky-date-time-dropdown-calendar__month-item>div {
+.picky-date-time-dropdown-calendar__month-item > div {
   &.xs {
     padding: 10px 0;
   }
@@ -103,20 +100,21 @@
   font-size: 12px;
   margin: 5px;
   background: var(--oc-white);
-  transition: all .3s;
+  transition: all 0.3s;
   &:hover {
     background: var(--oc-blue-3);
     color: var(--oc-white);
   }
 }
 
-.picky-date-time-dropdown-calendar__month-item.active>div {
+.picky-date-time-dropdown-calendar__month-item.active > div {
   background: var(--oc-blue-5);
   color: var(--oc-white);
 }
 
 .picky-date-time-calendar__previous,
-.picky-date-time-calendar__next {}
+.picky-date-time-calendar__next {
+}
 
 .picky-date-time-dropdown .picky-date-time-dropdown-calendar__item:hover {
   background: #eee;
@@ -139,7 +137,7 @@
   width: 20%;
 }
 
-.picky-date-time-dropdown-calendar__year-item>div {
+.picky-date-time-dropdown-calendar__year-item > div {
   height: 100%;
   display: table-cell;
   vertical-align: middle;
@@ -147,18 +145,17 @@
   margin: 2px;
   font-size: 14px;
   background: var(--oc-white);
-  transition: all .3s;
+  transition: all 0.3s;
   &:hover {
     background: var(--oc-blue-3);
     color: var(--oc-white);
   }
 }
 
-.picky-date-time-dropdown-calendar__year-item.active>div {
+.picky-date-time-dropdown-calendar__year-item.active > div {
   background: var(--oc-blue-5);
   color: var(--oc-white);
 }
-
 
 /* end of dropdown section */
 
@@ -212,7 +209,8 @@
   vertical-align: middle;
 }
 
-.picky-date-time-calendar__content {}
+.picky-date-time-calendar__content {
+}
 
 .picky-date-time-calendar__icon {
   cursor: pointer;
@@ -251,13 +249,13 @@
   margin: 0 auto;
 }
 
-@media all and (-ms-high-contrast:none) {
+@media all and (-ms-high-contrast: none) {
   .picky-date-time-calendar__table {
     border-collapse: initial;
   }
 }
 
-@supports (-ms-ime-align:auto) {
+@supports (-ms-ime-align: auto) {
   .picky-date-time-calendar__table {
     border-collapse: initial;
   }
@@ -277,9 +275,16 @@
   height: 40px;
   padding: 10px;
   cursor: default;
-  transition: all .3s;
+  transition: all 0.3s;
   background: var(--oc-white);
   color: var(--oc-gray-7);
+  fill: var(--oc-gray-7);
+  & svg {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 12px;
+  }
   &.l {
     font-size: 14px;
     width: var(--item-width-l);
@@ -300,13 +305,16 @@
   }
   &.disabled {
     color: var(--oc-gray-5);
+    fill: var(--oc-gray-5);
   }
   &.today {
     color: var(--oc-red-5);
+    fill: var(--oc-red-5);
   }
   &.active {
     &:not(.today) {
       color: var(--oc-white);
+      fill: var(--oc-white);
       background: var(--oc-blue-3);
     }
   }
@@ -319,6 +327,7 @@
       cursor: pointer;
       &:hover {
         color: var(--oc-white);
+        fill: var(--oc-white);
         background: var(--oc-blue-3);
       }
     }
@@ -361,7 +370,7 @@
   cursor: pointer;
   padding: 5px 10px;
   border: 1px solid var(--oc-gray-4);
-  transition: all .3s;
+  transition: all 0.3s;
   background: var(--oc-white);
   &:hover {
     border: 1px solid var(--oc-blue-4);

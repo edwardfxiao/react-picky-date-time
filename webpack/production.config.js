@@ -1,26 +1,53 @@
 const base = require('./base.js');
-const _ = require('lodash');
+const PATH = require('./build_path');
+const objectAssign = require('object-assign');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-const config = _.merge(base, {
+const config = objectAssign(base, {
+  mode: 'production',
   devtool: 'cheap-source-map',
   output: {
-    publicPath: '/',
-    filename: '[name].js'
-  }
+    publicPath: '/react-picky-date-time/dist/',
+    filename: '[name]-[chunkhash].js',
+  },
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        uglifyOptions: {
+          output: {
+            comments: false,
+          },
+          warnings: false,
+        },
+      }),
+    ],
+  },
 });
 
 config.plugins.push(
-  new webpack.LoaderOptionsPlugin({
-    minimize: true,
-    debug: false
+  new MiniCssExtractPlugin({ filename: 'css/[name]-[hash].css' }),
+  new HtmlWebpackPlugin({
+    template: PATH.HTML_PATH + '/layout.html',
+    title: 'react-picky-date-time',
+    page: 'index',
+    filename: '../index.html',
+    hash: false,
+    chunksSortMode: function(chunk1, chunk2) {
+      var orders = ['index'];
+      var order1 = orders.indexOf(chunk1.names[0]);
+      var order2 = orders.indexOf(chunk2.names[0]);
+      if (order1 > order2) {
+        return 1;
+      } else if (order1 < order2) {
+        return -1;
+      } else {
+        return 0;
+      }
+    },
   }),
-  new ExtractTextPlugin({
-    filename: 'css/[name].css',
-    disable: false,
-    allChunks: true
-  })
 );
 
 module.exports = config;
