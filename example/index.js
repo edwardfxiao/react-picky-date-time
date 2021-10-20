@@ -178,6 +178,7 @@ import PickyDateTime from 'react-inputs-validation';
   onMeridiemChange={res => this.onMeridiemChange(res)}
   onResetTime={res => this.onResetTime(res)}
   onClearTime={res => this.onClearTime(res)}
+  markedDates={[todayM + '/' + (todayD - 1) + '/' + todayY, todayM + '/' + todayD + '/' + todayY,, todayM + '/' + (todayD + 1) + '/' + todayY,]}
 />
 \`\`\``}
                 renderers={{ CodeBlock }}
