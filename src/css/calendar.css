@@ -311,6 +311,20 @@
     color: var(--oc-red-5);
     fill: var(--oc-red-5);
   }
+  &.marked {
+    position: relative;
+    &:after {
+      position: absolute;
+      content: '';
+      width: 5px;
+      height: 5px;
+      background-color: var(--oc-gray-4);
+      border-radius: 50%;
+      left: 50%;
+      bottom: 3px;
+      transform: translateX(-50%);
+    }
+  }
   &.active {
     &:not(.today) {
       color: var(--oc-white);

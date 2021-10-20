@@ -80,7 +80,7 @@ class Index extends React.Component {
   }
 
   render() {
-    let { size, defaultDate, defaultTime, show, locale, mode } = this.props;
+    let { size, defaultDate, defaultTime, show, locale, mode, markedDates } = this.props;
     const componentClass = cx('picky-date-time', show && 'visible');
     let calendarHtml;
     let breakerHtml;
@@ -118,6 +118,7 @@ class Index extends React.Component {
             size={size}
             defaultDate={defaultDate}
             locale={locale}
+            markedDates={markedDates}
             onYearPicked={this.onYearPicked}
             onMonthPicked={this.onMonthPicked}
             onDatePicked={this.onDatePicked}
@@ -182,6 +183,7 @@ Index.propTypes = {
   mode: PropTypes.number,
   size: PropTypes.string,
   locale: PropTypes.string,
+  markedDates: PropTypes.array,
   defaultDate: PropTypes.string,
   defaultTime: PropTypes.string,
   show: PropTypes.bool,
@@ -203,6 +205,7 @@ Index.propTypes = {
 Index.defaultProps = {
   locale: DEFAULT_LACALE,
   size: DEFAULT_SIZE,
+  markedDates: [],
   show: false,
   mode: 0,
   // GENERAL
