@@ -1,11 +1,11 @@
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { cx } from '../utils.js';
+import { cx, isValidDates } from '../utils.js';
 import { LOCALE } from '../locale.js';
 import { WEEK_NUMBER, PREV_TRANSITION, NEXT_TRANSITION, SELECTOR_YEAR_SET_NUMBER, getDaysArray, getYearSet, formatDateString } from '../constValue';
 
-const isValidDate = function(value, userFormat) {
+const isValidDate = function (value, userFormat) {
   userFormat = userFormat || 'mm/dd/yyyy';
   const delimiter = /[^mdy]/.exec(userFormat)[0];
   const theFormat = userFormat.split(delimiter);
@@ -250,10 +250,15 @@ class Calendar extends Component {
   }
 
   render() {
-    let { size, locale } = this.props;
+    let { size, locale, markedDates } = this.props;
+    const markedDatesHash = {};
+    if (markedDates && isValidDates(markedDates)) {
+      markedDates.forEach(d => {
+        markedDatesHash[d] = true;
+      });
+    }
     let {
       isDefaultDateValid,
-
       dates,
       direction,
       showSelectorPanel,
@@ -293,6 +298,7 @@ class Calendar extends Component {
           pickedDateInfo={pickedDateInfo}
           onClick={this.pickDate}
           key={pickedYearMonth.string}
+          markedDatesHash={markedDatesHash}
         />
       );
       if (row == 6) {
@@ -522,7 +528,7 @@ class Calendar extends Component {
 
 class CalendarBody extends Component {
   render() {
-    let { size, data, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick } = this.props;
+    let { size, data, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick , markedDatesHash} = this.props;
     let { year, month, date } = currentYearMonthDate;
     let pickedDateYear = pickedDateInfo.year;
     let pickedDateMonth = pickedDateInfo.month;
@@ -541,6 +547,7 @@ class CalendarBody extends Component {
             size,
             isDisabled && 'disabled',
             date == item.name && month == item.month && year == item.year && 'today',
+            markedDatesHash[`${item.month}/${item.name}/${item.year}`] && 'marked',
             isPicked && 'active',
           );
           return <CalendarItem key={key} item={item} onClick={onClick} isPicked={isPicked} isDisabled={isDisabled} datePickerItemClass={datePickerItemClass} />;

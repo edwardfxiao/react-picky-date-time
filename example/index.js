@@ -20,7 +20,7 @@ const CodeBlock = ({ literal, language }) => {
 
 CodeBlock.propTypes = {
   literal: PropTypes.string,
-  language: PropTypes.string
+  language: PropTypes.string,
 };
 
 class Index extends Component {
@@ -34,7 +34,7 @@ class Index extends Component {
       hour: '03',
       minute: '10',
       second: '40',
-      meridiem: 'PM'
+      meridiem: 'PM',
     };
   }
 
@@ -85,7 +85,7 @@ class Index extends Component {
     this.setState({
       second: res.clockHandSecond.value,
       minute: res.clockHandMinute.value,
-      hour: res.clockHandHour.value
+      hour: res.clockHandHour.value,
     });
   }
 
@@ -93,7 +93,7 @@ class Index extends Component {
     this.setState({
       second: res.clockHandSecond.value,
       minute: res.clockHandMinute.value,
-      hour: res.clockHandHour.value
+      hour: res.clockHandHour.value,
     });
   }
 
@@ -101,21 +101,16 @@ class Index extends Component {
     this.setState({
       second: res.clockHandSecond.value,
       minute: res.clockHandMinute.value,
-      hour: res.clockHandHour.value
+      hour: res.clockHandHour.value,
     });
   }
 
   render() {
-    let {
-      showPickyDateTime,
-      date,
-      month,
-      year,
-      hour,
-      minute,
-      second,
-      meridiem
-    } = this.state;
+    let { showPickyDateTime, date, month, year, hour, minute, second, meridiem } = this.state;
+    const today = new Date();
+    const todayY = today.getFullYear();
+    const todayM = today.getMonth() + 1;
+    const todayD = today.getDate();
     return (
       <div style={{ margin: '0 auto', width: '80%' }}>
         <div>
@@ -123,12 +118,11 @@ class Index extends Component {
             <div style={{ color: '#4a4a4a', margin: '10px' }} />
             <h2>Example 1 DEMO: Calendar and Clock</h2>
             <span
-              onClick={() =>
-                this.setState({ showPickyDateTime: !showPickyDateTime })}
+              onClick={() => this.setState({ showPickyDateTime: !showPickyDateTime })}
               style={{
                 textDecoration: 'underline',
                 color: '#4a4a4a',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               Click to toggle Picky Date Time
@@ -151,6 +145,7 @@ class Index extends Component {
                   onMeridiemChange={res => this.onMeridiemChange(res)}
                   onResetTime={res => this.onResetTime(res)}
                   onClearTime={res => this.onClearTime(res)}
+                  markedDates={[`${todayM}/${todayD - 1}/${todayY}`, `${todayM}/${todayD}/${todayY}`, `${todayM}/${todayD + 1}/${todayY}`]}
                 />
               </div>
             </div>
@@ -160,7 +155,7 @@ class Index extends Component {
                 background: '#f8f8f8',
                 color: '#4a4a4a',
                 padding: '20px',
-                whiteSpace: 'pre'
+                whiteSpace: 'pre',
               }}
             >
               <Markdown
@@ -191,10 +186,7 @@ import PickyDateTime from 'react-inputs-validation';
           </div>
           <div>
             <div style={{ color: '#4a4a4a', margin: '10px' }} />
-            <h2>
-              Example 2 DEMO: Calendar and Clock (with DefaultDate and
-              DefaultTime provided)
-            </h2>
+            <h2>Example 2 DEMO: Calendar and Clock (with DefaultDate and DefaultTime provided)</h2>
             <div>
               <input
                 style={{ padding: '10px', width: '140px' }}
@@ -226,16 +218,13 @@ import PickyDateTime from 'react-inputs-validation';
                 />
               </div>
             </div>
-            <h2>
-              Example 2 CODE: Calendar and Clock (with DefaultDate and
-              DefaultTime provided)
-            </h2>
+            <h2>Example 2 CODE: Calendar and Clock (with DefaultDate and DefaultTime provided)</h2>
             <div
               style={{
                 background: '#f8f8f8',
                 color: '#4a4a4a',
                 padding: '20px',
-                whiteSpace: 'pre'
+                whiteSpace: 'pre',
               }}
             >
               <Markdown
@@ -270,8 +259,7 @@ import PickyDateTime from 'react-inputs-validation';
           </div>
           <h2>Example 3 DEMO: Calendar only (with size of M)</h2>
           <div style={{ margin: '10px' }}>
-            <div style={{ color: '#4a4a4a', margin: '10px' }}>
-            </div>
+            <div style={{ color: '#4a4a4a', margin: '10px' }}></div>
             <div>
               <PickyDateTime
                 size="m"
@@ -300,7 +288,7 @@ import PickyDateTime from 'react-inputs-validation';
               background: '#f8f8f8',
               color: '#4a4a4a',
               padding: '20px',
-              whiteSpace: 'pre'
+              whiteSpace: 'pre',
             }}
           >
             <Markdown
@@ -332,9 +320,7 @@ import PickyDateTime from 'react-inputs-validation';
           </div>
           <h2>Example 4 DEMO: Clock only</h2>
           <div style={{ margin: '10px' }}>
-            <div style={{ color: '#4a4a4a', margin: '10px' }}>
-              {`//size="xs" mode={2}`}
-            </div>
+            <div style={{ color: '#4a4a4a', margin: '10px' }}>{`//size="xs" mode={2}`}</div>
             <div>
               <PickyDateTime
                 size="xs"
@@ -363,7 +349,7 @@ import PickyDateTime from 'react-inputs-validation';
               background: '#f8f8f8',
               color: '#4a4a4a',
               padding: '20px',
-              whiteSpace: 'pre'
+              whiteSpace: 'pre',
             }}
           >
             <Markdown

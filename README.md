@@ -59,7 +59,7 @@ class YourOwnComponent extends Component {
         mode={0} //0: calendar only, 1: calendar and clock, 2: clock only; default is 0
         locale={`zh-cn`}// 'en-us' or 'zh-cn'; default is en-us
         show={showPickyDateTime} //default is false
-        onClose={() => this.setState({ showPickyDateTime: false })} 
+        onClose={() => this.setState({ showPickyDateTime: false })}
         defaultTime={`${hour}:${minute}:${second} ${meridiem}`} // OPTIONAL. format: "HH:MM:SS AM"
         defaultDate={`${month}/${date}/${year}`} // OPTIONAL. format: "MM/DD/YYYY"
         onYearPicked={res => this.onYearPicked(res)}
@@ -74,6 +74,7 @@ class YourOwnComponent extends Component {
         onResetTime={res => this.onResetTime(res)}
         onResetDefaultTime={res => this.onResetDefaultTime(res)}
         onClearTime={res => this.onClearTime(res)}
+        // markedDates={['10/19/2021']} // OPTIONAL. format: "MM/DD/YYYY"
       />
     );
   }
