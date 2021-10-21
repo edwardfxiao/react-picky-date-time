@@ -35,7 +35,7 @@ export const isValidDate = str => {
 };
 export const isValidDates = arr => {
   let isValid = false;
-  if (arr.length > 1) {
+  if (arr.length) {
     isValid = true;
     arr.forEach(v => {
       if (!isValidDate(v)) {
