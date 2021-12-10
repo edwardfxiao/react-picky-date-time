@@ -1,18 +1,18 @@
 # react-picky-date-time
-[![npm version](https://badge.fury.io/js/react-picky-date-time.svg)](https://badge.fury.io/js/react-picky-date-time) ![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-picky-date-time.svg) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/edwardxiao/react-picky-date-time/master/LICENSE)[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![npm version](https://badge.fury.io/js/react-picky-date-time.svg)](https://badge.fury.io/js/react-picky-date-time) ![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-picky-date-time.svg) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/edwardfxiao/react-picky-date-time/master/LICENSE)[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
 A react component for date time picker.
 
-<img src="https://raw.githubusercontent.com/edwardxiao/react-picky-date-time/master/react-picky-date-time.gif" />
+<img src="https://raw.githubusercontent.com/edwardfxiao/react-picky-date-time/master/react-picky-date-time.gif" />
 
 NO Jquery, NO Moment.js
 
-###  :tada: For range surpport, please take a look at <a href="https://github.com/edwardxiao/react-minimal-datetime-range">react-minimal-datetime-range</a>
+###  :tada: For range surpport, please take a look at <a href="https://github.com/edwardfxiao/react-minimal-datetime-range">react-minimal-datetime-range</a>
 
 # Demo & Examples
-Please check the <a href="https://edwardxiao.github.io/react-picky-date-time/">online demo example</a>
+Please check the <a href="https://edwardfxiao.github.io/react-picky-date-time/">online demo example</a>
 
-Attention: <a href="https://github.com/edwardxiao/react-picky-date-time/blob/gh-pages/example/index.js">you can find demo source here :)</a>
+Attention: <a href="https://github.com/edwardfxiao/react-picky-date-time/blob/gh-pages/example/index.js">you can find demo source here :)</a>
 
 # Codesandbox Examples
 * <a href="https://codesandbox.io/s/y29w6p6krj">Online demo example playground</a>
