@@ -1,11 +1,11 @@
 {
   "name": "react-picky-date-time",
-  "version": "1.7.0",
+  "version": "1.7.2",
   "description": "A react component for date time picker.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edwardfhsiao/react-picky-date-time.git"
+    "url": "git+https://github.com/edwardxiao/react-picky-date-time.git"
   },
   "keywords": [
     "react",
@@ -22,9 +22,9 @@
   "author": "Edward Xiao",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/edwardfhsiao/react-picky-date-time/issues"
+    "url": "https://github.com/edwardxiao/react-picky-date-time/issues"
   },
-  "homepage": "https://github.com/edwardfhsiao/react-picky-date-time#readme",
+  "homepage": "https://github.com/edwardxiao/react-picky-date-time#readme",
   "scripts": {
     "babel": "BABEL_ENV=lib babel ./src/js/PickyDateTime --out-dir ./lib/components",
     "build": "rm -rf lib && npm run babel && npm run build_prod",

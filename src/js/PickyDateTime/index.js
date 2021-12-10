@@ -101,6 +101,7 @@ class Index extends React.Component {
           <Calendar
             size={size}
             defaultDate={defaultDate}
+            markedDates={markedDates}
             locale={locale}
             onYearPicked={this.onYearPicked}
             onMonthPicked={this.onMonthPicked}
