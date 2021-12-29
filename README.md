@@ -75,6 +75,7 @@ class YourOwnComponent extends Component {
         onResetDefaultTime={res => this.onResetDefaultTime(res)}
         onClearTime={res => this.onClearTime(res)}
         // markedDates={['10/19/2021']} // OPTIONAL. format: "MM/DD/YYYY"
+        // supportDateRange={['12/03/2021', '12/05/2021']} // OPTIONAL. min date and max date. format: "MM/DD/YYYY"
       />
     );
   }
