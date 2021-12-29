@@ -146,7 +146,7 @@ class Index extends Component {
                   onResetTime={res => this.onResetTime(res)}
                   onClearTime={res => this.onClearTime(res)}
                   markedDates={[`${todayM}/${todayD - 1}/${todayY}`, `${todayM}/${todayD}/${todayY}`, `${todayM}/${todayD + 1}/${todayY}`]}
-                  supportDateRange={[`12/03/2021`, `12/05/2021`]} // "MM/DD/YYYY"
+                  // supportDateRange={[`12/03/2021`, `12/05/2021`]} // "MM/DD/YYYY"
                 />
               </div>
             </div>
@@ -180,7 +180,7 @@ import PickyDateTime from 'react-inputs-validation';
   onResetTime={res => this.onResetTime(res)}
   onClearTime={res => this.onClearTime(res)}
   markedDates={[todayM + '/' + (todayD - 1) + '/' + todayY, todayM + '/' + todayD + '/' + todayY,, todayM + '/' + (todayD + 1) + '/' + todayY,]}
-  supportDateRange={['12/03/2021', '12/05/2021']} // OPTIONAL. min date and max date. format: "MM/DD/YYYY"
+  // supportDateRange={['12/03/2021', '12/05/2021']} // OPTIONAL. min date and max date. format: "MM/DD/YYYY"
 />
 \`\`\``}
                 renderers={{ CodeBlock }}
