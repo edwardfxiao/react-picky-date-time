@@ -250,13 +250,15 @@ class Calendar extends Component {
   }
 
   render() {
-    let { size, locale, markedDates } = this.props;
+    let { size, locale, markedDates, supportDateRange } = this.props;
     const markedDatesHash = {};
     if (markedDates && isValidDates(markedDates)) {
       markedDates.forEach(d => {
         markedDatesHash[d] = true;
       });
     }
+    const minSupportDate = supportDateRange.length > 0 && isValidDate(supportDateRange[0]) ? supportDateRange[0] : '';
+    const maxSupportDate = supportDateRange.length > 1 && isValidDate(supportDateRange[1]) ? supportDateRange[1] : '';
     let {
       isDefaultDateValid,
       dates,
@@ -299,6 +301,8 @@ class Calendar extends Component {
           onClick={this.pickDate}
           key={pickedYearMonth.string}
           markedDatesHash={markedDatesHash}
+          minSupportDate={minSupportDate}
+          maxSupportDate={maxSupportDate}
         />
       );
       if (row == 6) {
@@ -528,7 +532,7 @@ class Calendar extends Component {
 
 class CalendarBody extends Component {
   render() {
-    let { size, data, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick , markedDatesHash} = this.props;
+    let { size, data, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick , markedDatesHash, minSupportDate, maxSupportDate} = this.props;
     let { year, month, date } = currentYearMonthDate;
     let pickedDateYear = pickedDateInfo.year;
     let pickedDateMonth = pickedDateInfo.month;
@@ -539,15 +543,26 @@ class CalendarBody extends Component {
       let colHtml;
       if (data[key].length) {
         colHtml = data[key].map((item, key) => {
+          const itemDate = `${item.month}/${item.name}/${item.year}`
           let isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
           let isDisabled = pickedMonth != item.month;
+          if (minSupportDate) {
+            if (new Date(itemDate) < new Date(minSupportDate)){
+              isDisabled = true;
+            }
+          }
+          if (maxSupportDate){
+            if (new Date(itemDate) > new Date(maxSupportDate)){
+              isDisabled = true;
+            }
+          }
           const datePickerItemClass = cx(
             'picky-date-time-calendar__table-cel',
             'picky-date-time-calendar__date-item',
             size,
             isDisabled && 'disabled',
             date == item.name && month == item.month && year == item.year && 'today',
-            markedDatesHash[`${item.month}/${item.name}/${item.year}`] && 'marked',
+            markedDatesHash[itemDate] && 'marked',
             isPicked && 'active',
           );
           return <CalendarItem key={key} item={item} onClick={onClick} isPicked={isPicked} isDisabled={isDisabled} datePickerItemClass={datePickerItemClass} />;
