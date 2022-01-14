@@ -1,6 +1,6 @@
 {
   "name": "react-picky-date-time",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A react component for date time picker.",
   "main": "index.js",
   "repository": {
@@ -41,8 +41,8 @@
     "compile": "npm run clean && npm run compile_webpack && npm run babel"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.8.6 || react@^17.0.0",
+    "react-dom": "^16.8.6 || react@^17.0.0",
     "react-addons-css-transition-group": "^15.6.2"
   },
   "devDependencies": {
