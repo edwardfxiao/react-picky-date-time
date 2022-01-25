@@ -1,4 +1,3 @@
-import update from 'react-addons-update';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
@@ -585,10 +584,6 @@ class Clock extends React.Component {
           value = 12;
         }
       }
-      // elObj = update(elObj, {
-      //   value: { $set: value },
-      //   degree: { $set: degree },
-      // });
       elObj = { ...elObj, value, degree };
       this.setState({ [refName]: elObj });
     }
@@ -600,21 +595,8 @@ class Clock extends React.Component {
       let clockHandSecondDegree = this.state.clockHandSecond.degree;
       let clockHandMinuteDegree = this.state.clockHandMinute.degree;
       let clockHandHourDegree = this.state.clockHandHour.degree;
-
-      // clockHandSecond = update(clockHandSecond, {
-      //   isDragging: { $set: false },
-      //   angle: { $set: clockHandSecondDegree },
-      // });
       clockHandSecond = { ...clockHandSecond, isDragging: false, angle: clockHandSecondDegree };
-      // clockHandMinute = update(clockHandMinute, {
-      //   isDragging: { $set: false },
-      //   angle: { $set: clockHandMinuteDegree },
-      // });
       clockHandMinute = { ...clockHandMinute, isDragging: false, angle: clockHandMinuteDegree };
-      // clockHandHour = update(clockHandHour, {
-      //   isDragging: { $set: false },
-      //   angle: { $set: clockHandHourDegree },
-      // });
       clockHandHour = { ...clockHandHour, isDragging: false, angle: clockHandHourDegree };
       this.setState({ clockHandSecond, clockHandMinute, clockHandHour });
     }
