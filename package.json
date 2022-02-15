@@ -1,8 +1,9 @@
 {
   "name": "react-picky-date-time",
-  "version": "1.9.1",
+  "version": "2.0.0",
   "description": "A react component for date time picker.",
   "main": "index.js",
+  "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/edwardfxiao/react-picky-date-time.git"
@@ -17,7 +18,8 @@
     "date-picker",
     "timepicker",
     "time-picker",
-    "calendar"
+    "calendar",
+    "react-picky-date-time"
   ],
   "author": "Edward Xiao",
   "license": "MIT",
