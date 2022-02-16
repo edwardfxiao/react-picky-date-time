@@ -141,25 +141,6 @@ const TIME_CURSOR_POSITION_OBJECT = {
 };
 const TIME_TYPE = ['clockHandHour', 'clockHandMinute', 'clockHandSecond', 'meridiem'];
 
-let KEY_CODE = {
-  '8': 'Backspace',
-  '46': 'Delete',
-  '38': 'ArrowUp',
-  '37': 'ArrowLeft',
-  '39': 'ArrowRight',
-  '40': 'ArrowDown',
-  '48': '0',
-  '49': '1',
-  '50': '2',
-  '51': '3',
-  '52': '4',
-  '53': '5',
-  '54': '6',
-  '55': '7',
-  '56': '8',
-  '57': '9',
-};
-
 export {
   // GENERAL
   SIZE_RANGE,
@@ -187,5 +168,4 @@ export {
   TIME_JUMP_CHAR_POS_LIST,
   TIME_CURSOR_POSITION_OBJECT,
   TIME_TYPE,
-  KEY_CODE,
 };

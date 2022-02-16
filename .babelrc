@@ -1,25 +1,18 @@
 {
   "presets": ["@babel/preset-env", "@babel/preset-react"],
-  "env":
-  {
-    "development":
-    {
-
+  "env": {
+    "development": {
+      "comments": false
     },
-    "production":
-    {
-
+    "production": {
+      "comments": false
     },
-    "lib":
-    {
-      "plugins": [
-        ["css-modules-transform",
-        {
-          "generateScopedName": "[name]__[local]"
-        }],
-        "@babel/proposal-class-properties",
-        "@babel/proposal-object-rest-spread"
-      ],
+    "lib": {
+      "plugins": ["css-modules-transform", "@babel/proposal-class-properties", "@babel/proposal-object-rest-spread"],
+      "comments": false
     },
+    "test": {
+      "plugins": ["babel-plugin-rewire"]
+    }
   }
 }

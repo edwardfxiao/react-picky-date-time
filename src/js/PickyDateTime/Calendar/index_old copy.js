@@ -1,13 +1,10 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { cx, isValidDates, useWillUnmount } from '../utils.js';
+import { cx, isValidDates } from '../utils.js';
 import { LOCALE } from '../locale.js';
 import { WEEK_NUMBER, PREV_TRANSITION, NEXT_TRANSITION, SELECTOR_YEAR_SET_NUMBER, getDaysArray, getYearSet, formatDateString } from '../constValue';
-const TODAY = new Date();
-const YEAR = TODAY.getFullYear();
-const MONTH = TODAY.getMonth() + 1;
-const DATE = TODAY.getDate();
+
 const isValidDate = function (value, userFormat) {
   userFormat = userFormat || 'mm/dd/yyyy';
   const delimiter = /[^mdy]/.exec(userFormat)[0];
@@ -39,175 +36,230 @@ const isValidDate = function (value, userFormat) {
   }
   return isDate(theDate, theFormat);
 };
-const Calendar = memo(
-  ({ size, locale, defaultDate, markedDates, supportDateRange, onYearPicked = () => {}, onMonthPicked = () => {}, onDatePicked = () => {}, onResetDate = () => {}, onResetDefaultDate = () => {} }) => {
-    const isMouseIsDownOnSelectorPanelClicker = useRef(false);
-    let defaultDateDate = DATE;
-    let defaultDateMonth = MONTH;
-    let defaultDateYear = YEAR;
-    let defaultDates = getDaysArray(YEAR, MONTH);
-    const isDefaultDateValid = useMemo(() => isValidDate(defaultDate), [defaultDate]);
-    if (isDefaultDateValid) {
-      const dateStr = defaultDate.split('/');
-      // MM/DD/YYYY
-      defaultDateYear = Number(dateStr[2]);
+
+class Calendar extends Component {
+  constructor(props) {
+    super(props);
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let date = today.getDate();
+    let dates = getDaysArray(year, month);
+
+    let defaultDateDate = date;
+    let defaultDateMonth = month;
+    let defaultDateYear = year;
+
+    let isDefaultDateValid = false;
+    if (isValidDate(props.defaultDate)) {
+      const dateStr = props.defaultDate.split('/');
       defaultDateMonth = Number(dateStr[0]);
       defaultDateDate = Number(dateStr[1]);
-      defaultDates = getDaysArray(defaultDateYear, defaultDateMonth);
+      defaultDateYear = Number(dateStr[2]);
+      isDefaultDateValid = true;
+      dates = getDaysArray(defaultDateYear, defaultDateMonth);
+    } else {
+      if (props.defaultDate != '') {
+        console.error('The date you provide: ' + props.defaultDate + ' is not a valid date');
+      }
     }
-    const defaultYearStr = String(defaultDateYear);
-    const defaultMonthStr = formatDateString(defaultDateMonth);
-    const defaultDateStr = formatDateString(defaultDateDate);
-    const [dates, setDates] = useState(defaultDates);
 
-    const [pickedYearMonth, setPickedYearMonth] = useState({
-      year: defaultYearStr,
-      month: defaultMonthStr,
-      string: `${defaultYearStr}-${defaultMonthStr}`,
-    });
-    const [pickedDateInfo, setPickedDateInfo] = useState({
-      year: defaultYearStr,
-      month: defaultMonthStr,
-      date: defaultDateStr,
-    });
-    const [currentYearMonthDate] = useState({
-      year: String(YEAR),
-      month: String(MONTH),
-      date: String(DATE),
-    });
-    const [direction, setDirection] = useState(NEXT_TRANSITION);
-    const [yearSelectorPanelList, setYearSelectorPanelList] = useState(getYearSet(defaultDateYear));
-    const [yearSelectorPanel, setYearSelectorPanel] = useState(defaultDateYear);
-    const [showMask, setShowMask] = useState(false);
-    const [showSelectorPanel, setShowSelectorPanel] = useState(false);
+    this.state = {
+      isDefaultDateValid,
+      dates: dates,
+      pickedYearMonth: {
+        year: defaultDateYear,
+        month: defaultDateMonth,
+        string: `${formatDateString(defaultDateYear)}-${formatDateString(defaultDateMonth)}`,
+      },
+      defaultDate: {
+        date: defaultDateDate,
+        year: defaultDateYear,
+        month: defaultDateMonth,
+      },
+      pickedDateInfo: {
+        date: defaultDateDate,
+        year: defaultDateYear,
+        month: defaultDateMonth,
+      },
+      currentYearMonthDate: {
+        date,
+        year,
+        month,
+      },
+      direction: NEXT_TRANSITION,
+      yearSelectorPanelList: getYearSet(defaultDateYear),
+      yearSelectorPanel: defaultDateYear,
+      showMask: false,
+      showSelectorPanel: false,
+    };
 
+    this.pageClick = this.pageClick.bind(this);
+    this.pickDate = this.pickDate.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.showSelectorPanel = this.showSelectorPanel.bind(this);
+  }
+
+  componentDidMount() {
+    if (document.addEventListener) {
+      window.addEventListener('mousedown', this.pageClick, false);
+      window.addEventListener('touchend', this.pageClick, false);
+    } else {
+      document.attachEvent('onmousedown', this.pageClick);
+      document.attachEvent('touchend', this.pageClick);
+    }
+  }
+
+  componentWillUnmount() {
+    if (document.removeEventListener) {
+      window.removeEventListener('mousedown', this.pageClick, false);
+      window.removeEventListener('touchend', this.pageClick, false);
+    } else {
+      document.detachEvent('onmousedown', this.pageClick);
+      document.detachEvent('touchend', this.pageClick);
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.pickedYearMonth != this.state.pickedYearMonth) {
+      const dates = getDaysArray(Number(this.state.pickedYearMonth.year), Number(this.state.pickedYearMonth.month));
+      this.setState({ dates });
+    }
+  }
+
+  pageClick() {
+    if (this.mouseIsDownOnSelectorPanelClicker) {
+      return;
+    }
+    this.setState({
+      showSelectorPanel: false,
+      showMask: false,
+    });
+  }
+
+  pickYear(year, direction) {
+    if (direction == PREV_TRANSITION) {
+      year = Number(year) - 1;
+    } else {
+      year = Number(year) + 1;
+    }
+    let { pickedYearMonth } = this.state;
+    let { month } = pickedYearMonth;
+    pickedYearMonth = { ...pickedYearMonth, year: year, string: `${year}-${month}` };
+    this.setState({
+      pickedYearMonth,
+      direction,
+    });
+    this.props.onYearPicked({ year });
+  }
+
+  pickMonth(month, direction) {
+    month = Number(month);
+    let { pickedYearMonth } = this.state;
+    let { year } = pickedYearMonth;
+    if (direction == PREV_TRANSITION) {
+      if (month == 1) {
+        month = 12;
+        year = Number(year) - 1;
+      } else {
+        month = month - 1;
+      }
+    } else {
+      if (month == 12) {
+        month = 1;
+        year = Number(year) + 1;
+      } else {
+        month = month + 1;
+      }
+    }
+    month = formatDateString(month);
+    year = String(year);
+    pickedYearMonth = { ...pickedYearMonth, year, month, string: `${year}-${month}` };
+    this.setState({
+      pickedYearMonth,
+      direction,
+    });
+    this.props.onMonthPicked({ year, month });
+  }
+
+  pickDate(pickedDate) {
+    let { pickedDateInfo, pickedYearMonth } = this.state;
+    pickedDateInfo = { ...pickedDateInfo, year: pickedYearMonth.year, month: formatDateString(pickedYearMonth.month), date: formatDateString(pickedDate) };
+    this.setState({ pickedDateInfo });
+    this.props.onDatePicked(pickedDateInfo);
+  }
+
+  changeSelectorPanelYearSet(yearSelectorPanel, direction) {
+    let yearSelectorPanelList = getYearSet(yearSelectorPanel);
+    this.setState({ yearSelectorPanel, yearSelectorPanelList, direction });
+  }
+
+  showSelectorPanel() {
+    let { showSelectorPanel, showMask } = this.state;
+    this.setState({
+      showSelectorPanel: !showSelectorPanel,
+      showMask: !showMask,
+    });
+  }
+
+  onMouseDown() {
+    this.mouseIsDownOnSelectorPanelClicker = true;
+  }
+
+  onMouseUp() {
+    this.mouseIsDownOnSelectorPanelClicker = false;
+  }
+
+  reset(today = false) {
+    let { currentYearMonthDate, pickedDateInfo, pickedYearMonth, defaultDate } = this.state;
+    let year, month, date;
+    if (!today) {
+      year = defaultDate.year;
+      month = defaultDate.month;
+      date = defaultDate.date;
+    } else {
+      year = currentYearMonthDate.year;
+      month = currentYearMonthDate.month;
+      date = currentYearMonthDate.date;
+    }
+    let direction = NEXT_TRANSITION;
+    if (year < pickedYearMonth.year) {
+      direction = PREV_TRANSITION;
+    } else if (year == pickedYearMonth.year) {
+      if (month < pickedYearMonth.month) {
+        direction = PREV_TRANSITION;
+      }
+    }
+    month = formatDateString(month);
+    date = formatDateString(date);
+    pickedDateInfo = { ...pickedDateInfo, year: year, month: month, date: date };
+    pickedYearMonth = { ...pickedYearMonth, year: year, month: month, string: `${year}-${month}` };
+    this.setState({
+      pickedYearMonth: pickedYearMonth,
+      pickedDateInfo: pickedDateInfo,
+      yearSelectorPanel: year,
+      direction: direction,
+    });
+    if (!today) {
+      this.props.onResetDefaultDate(pickedDateInfo);
+    } else {
+      this.props.onResetDate(pickedDateInfo);
+    }
+    this.changeSelectorPanelYearSet(year, direction);
+  }
+
+  render() {
+    let { size, locale, markedDates, supportDateRange } = this.props;
     const markedDatesHash = {};
     if (markedDates && isValidDates(markedDates)) {
       markedDates.forEach(d => {
         markedDatesHash[d] = true;
       });
     }
-    const onMouseDown = useCallback(() => {
-      isMouseIsDownOnSelectorPanelClicker.current = true;
-    }, []);
-    const onMouseUp = useCallback(() => {
-      isMouseIsDownOnSelectorPanelClicker.current = false;
-    }, []);
-    const $monthSelectorPanel = useRef(null);
-    useEffect(() => {
-      setDates(getDaysArray(Number(pickedYearMonth.year), Number(pickedYearMonth.month)));
-    }, [pickedYearMonth]);
     const minSupportDate = supportDateRange.length > 0 && isValidDate(supportDateRange[0]) ? supportDateRange[0] : '';
     const maxSupportDate = supportDateRange.length > 1 && isValidDate(supportDateRange[1]) ? supportDateRange[1] : '';
-
-    const pickYear = useCallback(
-      (year, direction) => {
-        year = Number(year);
-        if (direction === PREV_TRANSITION) {
-          year = year - 1;
-        } else {
-          year = year + 1;
-        }
-        setPickedYearMonth({ ...pickedYearMonth, year, string: `${year}-${pickedYearMonth.month}` });
-        setDirection(direction);
-        onYearPicked({ year });
-      },
-      [pickedYearMonth],
-    );
-    const pickMonth = useCallback(
-      (month, direction) => {
-        month = Number(month);
-        let year = Number(pickedYearMonth.year);
-        if (direction === PREV_TRANSITION) {
-          if (month === 1) {
-            month = 12;
-            year = year - 1;
-          } else {
-            month = month - 1;
-          }
-        } else {
-          if (month === 12) {
-            month = 1;
-            year = year + 1;
-          } else {
-            month = month + 1;
-          }
-        }
-        const yearStr = String(year);
-        const monthStr = formatDateString(month);
-        setPickedYearMonth({ ...pickedYearMonth, year: yearStr, month: monthStr, string: `${yearStr}-${monthStr}` });
-        setDirection(direction);
-        onMonthPicked({ year: yearStr, month: monthStr });
-      },
-      [pickedYearMonth],
-    );
-    const pickDate = useCallback(
-      pickedDate => {
-        const newPickedDateInfo = {
-          ...pickedDateInfo,
-          year: pickedYearMonth.year,
-          month: pickedYearMonth.month,
-          date: formatDateString(Number(pickedDate)),
-        };
-        setPickedDateInfo(newPickedDateInfo);
-        onDatePicked(newPickedDateInfo);
-      },
-      [pickedYearMonth, pickedDateInfo],
-    );
-    const reset = useCallback(
-      (today = false) => {
-        let year = YEAR;
-        let month = MONTH;
-        let date = DATE;
-        if (!today) {
-          const dateStr = defaultDate.split('/');
-          // MM/DD/YYYY
-          year = Number(dateStr[2]);
-          month = Number(dateStr[0]);
-          date = Number(dateStr[1]);
-        }
-        let direction = NEXT_TRANSITION;
-        if (year < Number(pickedYearMonth.year)) {
-          direction = PREV_TRANSITION;
-        } else if (year === Number(pickedYearMonth.year)) {
-          if (month < Number(pickedYearMonth.month)) {
-            direction = PREV_TRANSITION;
-          }
-        }
-        const yearStr = formatDateString(year);
-        const monthStr = formatDateString(month);
-        const dateStr = formatDateString(date);
-        setPickedDateInfo({
-          ...pickedDateInfo,
-          year: yearStr,
-          month: monthStr,
-          date: dateStr,
-        });
-        setPickedYearMonth({
-          ...pickedYearMonth,
-          year: yearStr,
-          month: monthStr,
-          string: `${yearStr}-${monthStr}`,
-        });
-        changeSelectorPanelYearSet(year, direction);
-        if (!today) {
-          onResetDefaultDate(pickedDateInfo);
-        } else {
-          onResetDate(pickedDateInfo);
-        }
-      },
-      [pickedYearMonth],
-    );
-    const changeSelectorPanelYearSet = useCallback((yearSelectorPanel, direction) => {
-      setDirection(direction);
-      setYearSelectorPanel(yearSelectorPanel);
-      setYearSelectorPanelList(getYearSet(yearSelectorPanel));
-    }, []);
-    const handleShowSelectorPanel = useCallback(() => {
-      setShowSelectorPanel(!showSelectorPanel);
-      setShowMask(!showMask);
-    }, [showSelectorPanel, showMask]);
-
+    let { isDefaultDateValid, dates, direction, showSelectorPanel, yearSelectorPanelList, yearSelectorPanel, currentYearMonthDate, pickedDateInfo, pickedYearMonth } = this.state;
     let transitionContainerStyle;
     let content;
 
@@ -236,7 +288,7 @@ const Calendar = memo(
           currentYearMonthDate={currentYearMonthDate}
           pickedYearMonth={pickedYearMonth}
           pickedDateInfo={pickedDateInfo}
-          onClick={pickDate}
+          onClick={this.pickDate}
           key={pickedYearMonth.string}
           markedDatesHash={markedDatesHash}
           minSupportDate={minSupportDate}
@@ -259,8 +311,8 @@ const Calendar = memo(
         };
       }
     }
-
-    const captionHtml = LOCALE[locale].weeks.map((item, key) => {
+    let captionHtml;
+    captionHtml = LOCALE[locale].weeks.map((item, key) => {
       return (
         <div className={`picky-date-time-calendar__table-caption picky-date-time-calendar__table-cel no-border ${size}`} key={key}>
           {item}
@@ -282,7 +334,7 @@ const Calendar = memo(
           className={monthItemClass}
           onClick={
             itemMonth !== pickedYearMonth.month
-              ? () => pickMonth(month, direction)
+              ? () => this.pickMonth(month, direction)
               : () => {
                   return;
                 }
@@ -308,7 +360,7 @@ const Calendar = memo(
             className={yearItemClass}
             onClick={
               item !== pickedYearMonth.year
-                ? () => pickYear(year, direction)
+                ? () => this.pickYear(year, direction)
                 : () => {
                     return;
                   }
@@ -321,38 +373,17 @@ const Calendar = memo(
       });
     }
     const classNames = direction == NEXT_TRANSITION ? 'forward' : 'backward';
-
-    const pageClick = useCallback(() => {
-      if (isMouseIsDownOnSelectorPanelClicker.current) {
-        return;
-      }
-      setShowSelectorPanel(false);
-      setShowMask(false);
-    }, []);
-
-    useEffect(() => {
-      if (document.addEventListener) {
-        window.addEventListener('mousedown', pageClick, false);
-        window.addEventListener('touchend', pageClick, false);
-      } else {
-        document.attachEvent('onmousedown', pageClick);
-        document.attachEvent('touchend', pageClick);
-      }
-    }, []);
-
-    useWillUnmount(() => {
-      if (document.removeEventListener) {
-        window.removeEventListener('mousedown', pageClick, false);
-        window.removeEventListener('touchend', pageClick, false);
-      } else {
-        document.detachEvent('onmousedown', pageClick);
-        document.detachEvent('touchend', pageClick);
-      }
-    });
     return (
       <div className={`picky-date-time-calendar`}>
         <div className={`picky-date-time-calendar__header`}>
-          <div className={`${selectorPanelClass}`} ref={$monthSelectorPanel} onMouseDown={onMouseDown} onMouseUp={onMouseUp} onTouchEnd={onMouseDown} onTouchCancel={onMouseUp}>
+          <div
+            className={`${selectorPanelClass}`}
+            ref={ref => (this.monthSelectorPanel = ref)}
+            onMouseDown={this.onMouseDown}
+            onMouseUp={this.onMouseUp}
+            onTouchEnd={this.onMouseDown}
+            onTouchCancel={this.onMouseUp}
+          >
             <div className={`picky-date-time-dropdown-calendar__menu ${[size]}`}>
               <div className={`picky-date-time-dropdown-calendar__month`}>{selectorPanelMonthHtml}</div>
               <div style={{ height: '10px' }} />
@@ -363,7 +394,7 @@ const Calendar = memo(
                   height="20"
                   viewBox="0 0 24 24"
                   style={{ verticalAlign: 'middle' }}
-                  onClick={() => changeSelectorPanelYearSet(yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER, PREV_TRANSITION)}
+                  onClick={() => this.changeSelectorPanelYearSet(yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER, PREV_TRANSITION)}
                 >
                   <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                   <path d="M0 0h24v24H0z" fill="none" />
@@ -371,7 +402,7 @@ const Calendar = memo(
               </div>
               <div className={`picky-date-time__col picky-date-time__col-9`}>
                 <TransitionGroup className="picky-date-time-calendar__selector-panel-year-set-container" childFactory={child => React.cloneElement(child, { classNames })}>
-                  <CSSTransition key={yearSelectorPanelList.join('-')} timeout={{ enter: 300, exit: 300 }} className={`picky-date-time-dropdown-calendar__year`} classNames={classNames}>
+                  <CSSTransition key={yearSelectorPanelList} timeout={{ enter: 300, exit: 300 }} className={`picky-date-time-dropdown-calendar__year`} classNames={classNames}>
                     <div>{selectorPanelYearHtml}</div>
                   </CSSTransition>
                 </TransitionGroup>
@@ -382,7 +413,7 @@ const Calendar = memo(
                   height="20"
                   viewBox="0 0 24 24"
                   style={{ verticalAlign: 'middle' }}
-                  onClick={() => changeSelectorPanelYearSet(yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}
+                  onClick={() => this.changeSelectorPanelYearSet(yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}
                 >
                   <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                   <path d="M0 0h24v24H0z" fill="none" />
@@ -391,13 +422,13 @@ const Calendar = memo(
             </div>
           </div>
           <div className={`picky-date-time__col picky-date-time__col-3`}>
-            <div className={`picky-date-time__col picky-date-time-calendar__previous`} onClick={() => pickYear(pickedYearMonth.year, PREV_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__previous`} onClick={() => this.pickYear(pickedYearMonth.year, PREV_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
                 <path fill="none" d="M24 24H0V0h24v24z" />
               </svg>
             </div>
-            <div className={`picky-date-time__col picky-date-time-calendar__sub-previous`} onClick={() => pickMonth(pickedYearMonth.month, PREV_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__sub-previous`} onClick={() => this.pickMonth(pickedYearMonth.month, PREV_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 <path d="M0 0h24v24H0z" fill="none" />
@@ -407,7 +438,7 @@ const Calendar = memo(
           <div className={`picky-date-time__col picky-date-time__col-6`}>
             <TransitionGroup className="picky-date-time-calendar__title-container" childFactory={child => React.cloneElement(child, { classNames })}>
               <CSSTransition key={pickedYearMonth.string} timeout={{ enter: 300, exit: 300 }} className={`picky-date-time-calendar__title`} style={{ left: '0' }} classNames={classNames}>
-                <span className={`picky-date-time-calendar__clicker`} onClick={handleShowSelectorPanel} onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
+                <span className={`picky-date-time-calendar__clicker`} onClick={this.showSelectorPanel} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
                   <span className={`picky-date-time-calendar__clicker`}>
                     <span>{`${LOCALE[locale].months[pickedYearMonth.month - 1]}`}</span>
                   </span>
@@ -420,13 +451,13 @@ const Calendar = memo(
             </TransitionGroup>
           </div>
           <div className={`picky-date-time__col picky-date-time__col-3`}>
-            <div className={`picky-date-time__col picky-date-time-calendar__next`} onClick={() => pickMonth(pickedYearMonth.month, NEXT_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__next`} onClick={() => this.pickMonth(pickedYearMonth.month, NEXT_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                 <path d="M0 0h24v24H0z" fill="none" />
               </svg>
             </div>
-            <div className={`picky-date-time__col picky-date-time-calendar__sub-next`} onClick={() => pickYear(pickedYearMonth.year, NEXT_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__sub-next`} onClick={() => this.pickYear(pickedYearMonth.year, NEXT_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" />
                 <path fill="none" d="M0 0h24v24H0V0z" />
@@ -444,7 +475,7 @@ const Calendar = memo(
             </CSSTransition>
           </TransitionGroup>
         </div>
-        <div className={`picky-date-time-calendar__button picky-date-time-calendar__today`} onClick={() => reset(true)}>
+        <div className={`picky-date-time-calendar__button picky-date-time-calendar__today`} onClick={() => this.reset(true)}>
           <span className={`picky-date-time-calendar__inline-span`}>{LOCALE[locale]['today']}</span>
           <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15" style={{ verticalAlign: 'middle' }}>
             <path
@@ -455,7 +486,7 @@ const Calendar = memo(
           </svg>
         </div>
         {isDefaultDateValid ? (
-          <div className={`picky-date-time-calendar__button picky-date-time-calendar__default-day`} onClick={() => reset(false)}>
+          <div className={`picky-date-time-calendar__button picky-date-time-calendar__default-day`} onClick={() => this.reset(false)}>
             <span className={`picky-date-time-calendar__inline-span`}>{LOCALE[locale]['reset-date']}</span>
             <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15" style={{ verticalAlign: 'middle' }}>
               <path
@@ -470,81 +501,108 @@ const Calendar = memo(
         )}
       </div>
     );
-  },
-);
+  }
+}
 
-const CalendarBody = memo(({ size, data, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick, markedDatesHash, minSupportDate, maxSupportDate }) => {
-  const { year, month, date } = currentYearMonthDate;
-  const pickedDateYear = pickedDateInfo.year;
-  const pickedDateMonth = pickedDateInfo.month;
-  const pickedDate = pickedDateInfo.date;
-  const pickedMonth = pickedYearMonth.month;
+class CalendarBody extends Component {
+  render() {
+    let { size, data, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick, markedDatesHash, minSupportDate, maxSupportDate } = this.props;
+    let { year, month, date } = currentYearMonthDate;
+    let pickedDateYear = pickedDateInfo.year;
+    let pickedDateMonth = pickedDateInfo.month;
+    let pickedDate = pickedDateInfo.date;
+    let pickedMonth = pickedYearMonth.month;
 
-  const content = Object.keys(data).map(key => {
-    let colHtml;
-    if (data[key].length) {
-      colHtml = data[key].map((item, key) => {
-        const itemDate = `${item.month}/${item.name}/${item.year}`;
-        const isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
-        let isDisabled = pickedMonth != item.month;
-        if (minSupportDate) {
-          if (new Date(itemDate) < new Date(minSupportDate)) {
-            isDisabled = true;
+    let content = Object.keys(data).map(key => {
+      let colHtml;
+      if (data[key].length) {
+        colHtml = data[key].map((item, key) => {
+          const itemDate = `${item.month}/${item.name}/${item.year}`;
+          let isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
+          let isDisabled = pickedMonth != item.month;
+          if (minSupportDate) {
+            if (new Date(itemDate) < new Date(minSupportDate)) {
+              isDisabled = true;
+            }
           }
-        }
-        if (maxSupportDate) {
-          if (new Date(itemDate) > new Date(maxSupportDate)) {
-            isDisabled = true;
+          if (maxSupportDate) {
+            if (new Date(itemDate) > new Date(maxSupportDate)) {
+              isDisabled = true;
+            }
           }
-        }
-        const datePickerItemClass = cx(
-          'picky-date-time-calendar__table-cel',
-          'picky-date-time-calendar__date-item',
-          size,
-          isDisabled && 'disabled',
-          date == item.name && month == item.month && year == item.year && 'today',
-          markedDatesHash[itemDate] && 'marked',
-          isPicked && 'active',
-        );
-        return <CalendarItem key={key} item={item} onClick={onClick} isPicked={isPicked} isDisabled={isDisabled} datePickerItemClass={datePickerItemClass} />;
-      });
-    }
+          const datePickerItemClass = cx(
+            'picky-date-time-calendar__table-cel',
+            'picky-date-time-calendar__date-item',
+            size,
+            isDisabled && 'disabled',
+            date == item.name && month == item.month && year == item.year && 'today',
+            markedDatesHash[itemDate] && 'marked',
+            isPicked && 'active',
+          );
+          return <CalendarItem key={key} item={item} onClick={onClick} isPicked={isPicked} isDisabled={isDisabled} datePickerItemClass={datePickerItemClass} />;
+        });
+      }
+      return (
+        <div className={`picky-date-time-calendar__table-row`} key={key}>
+          {colHtml}
+        </div>
+      );
+    });
+    return <div className={`picky-date-time-calendar__table slide`}>{content}</div>;
+  }
+}
+
+class CalendarItem extends Component {
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
+  }
+  onClick() {
+    this.props.onClick(this.props.item.name);
+  }
+  render() {
+    const { item, isPicked, isDisabled, datePickerItemClass } = this.props;
     return (
-      <div className={`picky-date-time-calendar__table-row`} key={key}>
-        {colHtml}
+      <div
+        className={`${datePickerItemClass}`}
+        onClick={
+          !isDisabled
+            ? this.onClick
+            : () => {
+                return;
+              }
+        }
+      >
+        {item.name}
+        {isPicked ? (
+          <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+          </svg>
+        ) : (
+          ''
+        )}
       </div>
     );
-  });
-  return <div className={`picky-date-time-calendar__table slide`}>{content}</div>;
-});
+  }
+}
 
-const CalendarItem = memo(({ item = {}, isPicked = false, isDisabled = false, datePickerItemClass = '', onClick = () => {} }) => {
-  const handleOnClick = useCallback(() => {
-    onClick(item.name);
-  }, [item.name]);
-  return (
-    <div
-      className={`${datePickerItemClass}`}
-      onClick={
-        !isDisabled
-          ? handleOnClick
-          : () => {
-              return;
-            }
-      }
-    >
-      {item.name}
-      {isPicked ? (
-        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15">
-          <path d="M0 0h24v24H0z" fill="none" />
-          <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-        </svg>
-      ) : (
-        ''
-      )}
-    </div>
-  );
-});
+CalendarItem.propTypes = {
+  item: PropTypes.object,
+  isPicked: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  datePickerItemClass: PropTypes.string,
+  onClick: PropTypes.func,
+};
+
+CalendarItem.defaultProps = {
+  item: {},
+  isPicked: false,
+  isDisabled: false,
+  datePickerItemClass: '',
+  onClick: () => {},
+};
+
 CalendarBody.propTypes = {
   size: PropTypes.string,
   data: PropTypes.object,
@@ -584,4 +642,5 @@ Calendar.defaultProps = {
   onResetDate: () => {},
   onResetDefaultDate: () => {},
 };
+
 export default Calendar;

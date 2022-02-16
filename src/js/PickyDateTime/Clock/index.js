@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useRef, memo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { cx } from '../utils.js';
+import { cx, usePrevious } from '../utils.js';
 import { LOCALE } from '../locale.js';
 import {
   R2D,
@@ -16,8 +16,20 @@ import {
   TIME_JUMP_CHAR_POS_LIST,
   TIME_CURSOR_POSITION_OBJECT,
   TIME_TYPE,
-  KEY_CODE,
 } from '../constValue';
+const isDragging = hash => {
+  let draggingItem = '';
+  Object.keys(hash).forEach(key => {
+    if (hash[key] === true) {
+      draggingItem = key;
+    }
+  });
+  return draggingItem;
+};
+const updateClockHandObj = (o, value, degree, startAngle, angle, isMouseOver = false) => {
+  o = { ...o, value, degree, startAngle, angle, isMouseOver };
+  return o;
+};
 
 const TRANSLATE_FIRST_SIZE = {
   l: '-2px, -1px',
@@ -84,7 +96,7 @@ const HOURS_TRANSLATE_SECOND_SIZE = {
 
 const emptyFn = () => {};
 
-const isValidTime = function(value) {
+const isValidTime = function (value) {
   // Checks if time is in HH:MM:SS AM/PM format.
   // The seconds and AM/PM are optional.
   if (value == '') {
@@ -149,7 +161,7 @@ const formatClockNumber = value => {
   return value;
 };
 
-const getTodayObj = function() {
+const getTodayObj = function () {
   let today = new Date();
   let year = today.getFullYear();
   let month = today.getMonth() + 1;
@@ -169,7 +181,7 @@ const getTodayObj = function() {
   return { year, month, date, hour, minute, second, meridiem, hourText };
 };
 
-const getInputCharSkipNum = function(pos) {
+const getInputCharSkipNum = function (pos) {
   let num = 1;
   if (TIME_JUMP_CHAR_POS_LIST.indexOf(pos) != -1) {
     num = 2;
@@ -177,611 +189,607 @@ const getInputCharSkipNum = function(pos) {
   return num;
 };
 
-class Clock extends React.Component {
-  constructor(props) {
-    super(props);
-    let todayObj = getTodayObj();
-    let { hour, minute, second, meridiem, hourText } = todayObj;
-    const defaultTimeObj = isValidTime(props.defaultTime);
-    if (defaultTimeObj) {
-      hour = defaultTimeObj.hour;
-      hourText = defaultTimeObj.hourText;
-      minute = defaultTimeObj.minute;
-      second = defaultTimeObj.second;
-      meridiem = defaultTimeObj.meridiem;
-    }
+const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime, onClearTime }) => {
+  const $clock = useRef(null);
+  const $clockCenter = useRef(null);
+  const $clockCircle = useRef(null);
+  const $clockHandSecond = useRef(null);
+  const $clockHandMinute = useRef(null);
+  const $clockHandHour = useRef(null);
+  const $timeInput = useRef(null);
+  const intervalRef = useRef(null);
+  const isDraggingHash = useRef({
+    clockHandSecond: false,
+    clockHandMinute: false,
+    clockHandHour: false,
+  });
+  const originX = useRef(null);
+  const originY = useRef(null);
+  const todayObj = getTodayObj();
 
-    this.startX = 0;
-    this.startY = 0;
-    this.originX = null;
-    this.originY = null;
+  let thour = todayObj.hour;
+  let tminute = todayObj.minute;
+  let tsecond = todayObj.second;
+  let tmeridiem = todayObj.meridiem;
+  let thourText = todayObj.hourText;
 
-    let secondDegree = second * SECOND_DEGREE_NUMBER;
-    let minuteDegree = minute * MINUTE_DEGREE_NUMBER;
-    let hourDegree = hour * HOUR_DEGREE_NUMBER;
-    let clockHandObj = {
-      value: '',
-      degree: '',
-      startAngle: '',
-      angle: '',
-      isMouseOver: false,
-      isDragging: false,
-    };
-
-    this.state = {
-      defaultTimeObj,
-      clockHandSecond: this.updateClockHandObj(clockHandObj, second, secondDegree, secondDegree, secondDegree),
-      clockHandMinute: this.updateClockHandObj(clockHandObj, minute, minuteDegree, minuteDegree, minuteDegree),
-      clockHandHour: this.updateClockHandObj(clockHandObj, hourText, hourDegree, hourDegree, hourDegree),
-      meridiem,
-      slectionRange: { start: 0, end: 0 },
-    };
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.initCoordinates = this.initCoordinates.bind(this);
-    this.updateClock = this.updateClock.bind(this);
+  // const myDefaultTimeObj = isValidTime(defaultTime);
+  const defaultTimeObj = isValidTime(defaultTime);
+  if (defaultTimeObj) {
+    thour = defaultTimeObj.hour;
+    thourText = defaultTimeObj.hourText;
+    tminute = defaultTimeObj.minute;
+    tsecond = defaultTimeObj.second;
+    tmeridiem = defaultTimeObj.meridiem;
   }
 
-  initCoordinates() {
-    if (this.clockCenter == null) {
+  const secondDegree = tsecond * SECOND_DEGREE_NUMBER;
+  const minuteDegree = tminute * MINUTE_DEGREE_NUMBER;
+  const hourDegree = thour * HOUR_DEGREE_NUMBER;
+  const clockHandObj = {
+    value: '',
+    degree: '',
+    startAngle: '',
+    angle: '',
+    isMouseOver: false,
+  };
+
+  // const [defaultTimeObj, setdefaultTimeObj] = useState(myDefaultTimeObj);
+  const [clockHandSecond, setClockHandSecond] = useState(updateClockHandObj(clockHandObj, tsecond, secondDegree, secondDegree, secondDegree));
+  const [clockHandMinute, setClockHandMinute] = useState(updateClockHandObj(clockHandObj, tminute, minuteDegree, minuteDegree, minuteDegree));
+  const [clockHandHour, setClockHandHour] = useState(updateClockHandObj(clockHandObj, thourText, hourDegree, hourDegree, hourDegree));
+  const [meridiem, setMeridiem] = useState(tmeridiem);
+  const [selectionRange, setSelectionRange] = useState({ start: 0, end: 0 });
+  const prevStateSelectionRange = usePrevious(selectionRange);
+  const [pressKey, setPressKey] = useState({ key: undefined });
+
+  const initializeClock = useCallback(() => {
+    intervalRef.current = setInterval(updateClock, 1000);
+  }, []);
+
+  const updateClock = useCallback(() => {
+    if ($clock.current == null) {
       return;
     }
-    const centerPoint = ReactDOM.findDOMNode(this.clockCenter);
-    const centerPointPos = centerPoint.getBoundingClientRect();
-    const top = centerPointPos.top,
-      left = centerPointPos.left,
-      height = centerPointPos.height,
-      width = centerPointPos.width;
-    this.originX = left + width / 2;
-    this.originY = top + height / 2;
-  }
-
-  componentDidMount() {
-    setTimeout(() => this.initCoordinates(), 1000);
-    if (document.addEventListener) {
-      document.addEventListener('resize', this.initCoordinates, true);
-      document.addEventListener('scroll', this.initCoordinates, true);
-      document.addEventListener('mousemove', this.handleMouseMove, true);
-      document.addEventListener('mouseup', this.handleMouseUp, true);
-    } else {
-      document.attachEvent('onresize', this.handleMouseMove);
-      document.attachEvent('onscroll', this.handleMouseMove);
-      document.attachEvent('onmousemove', this.handleMouseMove);
-      document.attachEvent('onmouseup', this.handleMouseUp);
-    }
-    if (!this.state.defaultTimeObj && !self.PRERENDER) {
-      this.initializeClock();
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.slectionRange != this.state.slectionRange) {
-      this.timeInput.focus();
-      this.timeInput.setSelectionRange(this.state.slectionRange.start, this.state.slectionRange.end);
-    }
-    if (this.timeinterval === false) {
-      if (prevState.clockHandSecond != this.state.clockHandSecond) {
-        this.props.onSecondChange(this.state.clockHandSecond);
-      }
-      if (prevState.clockHandMinute != this.state.clockHandMinute) {
-        this.props.onMinuteChange(this.state.clockHandMinute);
-      }
-      if (prevState.clockHandHour != this.state.clockHandHour) {
-        this.props.onHourChange(this.state.clockHandHour);
-      }
-      if (prevState.meridiem != this.state.meridiem) {
-        this.props.onMeridiemChange(this.state.meridiem);
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    if (document.removeEventListener) {
-      document.removeEventListener('resize', this.initCoordinates, true);
-      document.removeEventListener('scroll', this.initCoordinates, true);
-      document.removeEventListener('mousemove', this.handleMouseMove, true);
-      document.removeEventListener('mouseup', this.handleMouseUp, true);
-    } else {
-      document.detachEvent('onresize', this.handleMouseMove);
-      document.detachEvent('onscroll', this.handleMouseMove);
-      document.detachEvent('onmousemove', this.handleMouseMove);
-      document.detachEvent('onmouseup', this.handleMouseUp);
-    }
-  }
-
-  updateClockHandObj(o, value, degree, startAngle, angle, isMouseOver = false, isDragging = false) {
-    o = { ...o, value, degree, startAngle, angle, isMouseOver, isDragging };
-    return o;
-  }
-
-  initializeClock() {
-    this.timeinterval = setInterval(this.updateClock, 1000);
-  }
-
-  updateClock() {
-    if (this.clock == null) {
+    if (isDragging(isDraggingHash.current)) {
+      _clearInterval();
       return;
     }
-    if (this.state.clockHandSecond.isDragging || this.state.clockHandMinute.isDragging || this.state.clockHandHour.isDragging) {
-      this._clearInterval();
-      return;
-    }
-    this.resetClockHandObj();
-  }
+    resetClockHandObj();
+  }, []);
 
-  _clearInterval() {
-    clearInterval(this.timeinterval);
-    this.timeinterval = false;
-  }
+  const _clearInterval = useCallback(() => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = false;
+  }, []);
 
-  resetClockHandObj(clear = false, defaultTime = false) {
-    let { clockHandSecond, clockHandMinute, clockHandHour } = this.state;
-    let hour = '12',
-      minute = '00',
-      second = '00',
-      hourText = '12',
-      meridiem = 'AM';
-    if (!clear) {
-      let todayObj = getTodayObj();
-      hour = todayObj.hour;
-      minute = todayObj.minute;
-      second = todayObj.second;
-      hourText = todayObj.hourText;
-      meridiem = todayObj.meridiem;
-    }
+  const resetClockHandObj = useCallback(
+    (clear = false, defaultTime = false) => {
+      let hour = '12',
+        minute = '00',
+        second = '00',
+        hourText = '12',
+        meridiem = 'AM';
+      if (!clear) {
+        let todayObj = getTodayObj();
+        hour = todayObj.hour;
+        minute = todayObj.minute;
+        second = todayObj.second;
+        hourText = todayObj.hourText;
+        meridiem = todayObj.meridiem;
+      }
 
-    if (defaultTime) {
-      let defaultTimeObj = this.state.defaultTimeObj;
-      hour = defaultTimeObj.hour;
-      minute = defaultTimeObj.minute;
-      second = defaultTimeObj.second;
-      hourText = defaultTimeObj.hourText;
-      meridiem = defaultTimeObj.meridiem;
-    }
+      if (defaultTime) {
+        hour = defaultTimeObj.hour;
+        minute = defaultTimeObj.minute;
+        second = defaultTimeObj.second;
+        hourText = defaultTimeObj.hourText;
+        meridiem = defaultTimeObj.meridiem;
+      }
 
-    let secondDegree = second * SECOND_DEGREE_NUMBER;
-    let minuteDegree = minute * MINUTE_DEGREE_NUMBER;
-    let hourDegree = hour * HOUR_DEGREE_NUMBER;
-    clockHandSecond = this.updateClockHandObj(clockHandSecond, second, secondDegree, secondDegree, secondDegree);
-    clockHandMinute = this.updateClockHandObj(clockHandMinute, minute, minuteDegree, minuteDegree, minuteDegree);
-    clockHandHour = this.updateClockHandObj(clockHandHour, hourText, hourDegree, hourDegree, hourDegree);
-    this.setState({
-      clockHandSecond,
-      clockHandMinute,
-      clockHandHour,
-      meridiem,
-    });
-    return { clockHandSecond, clockHandMinute, clockHandHour, meridiem };
-  }
+      let secondDegree = second * SECOND_DEGREE_NUMBER;
+      let minuteDegree = minute * MINUTE_DEGREE_NUMBER;
+      let hourDegree = hour * HOUR_DEGREE_NUMBER;
+      const _clockHandSecond = updateClockHandObj(clockHandSecond, second, secondDegree, secondDegree, secondDegree);
+      const _clockHandMinute = updateClockHandObj(clockHandMinute, minute, minuteDegree, minuteDegree, minuteDegree);
+      const _clockHandHour = updateClockHandObj(clockHandHour, hourText, hourDegree, hourDegree, hourDegree);
+      setClockHandSecond(_clockHandSecond);
+      setClockHandMinute(_clockHandMinute);
+      setClockHandHour(_clockHandHour);
+      setMeridiem(meridiem);
+      return { clockHandSecond: _clockHandSecond, clockHandMinute: _clockHandMinute, clockHandHour: _clockHandHour, meridiem, defaultTimeObj };
+    },
+    [clockHandSecond, clockHandMinute, clockHandHour],
+  );
 
-  onFocus() {
-    this._clearInterval();
-  }
+  const onFocus = useCallback(() => {
+    _clearInterval();
+  }, []);
 
-  onClick() {}
+  const onClick = useCallback(e => {
+    setSelectionRange({ start: e.target.selectionStart, end: e.target.selectionEnd });
+  }, []);
 
-  handleMouseWheel(e) {
-    this.onKeyDown({
-      keyCode: e.deltaY > 0 ? '38' : '40',
-      type: e.type || 'unknown',
-      stopPropagation: typeof e.stopPropagation == 'function' ? () => e.stopPropagation() : emptyFn,
-      preventDefault: typeof e.preventDefault == 'function' ? () => e.preventDefault() : emptyFn,
-    });
+  const handleMouseWheel = useCallback(e => {
     e.preventDefault();
-  }
+    setPressKey({ key: e.deltaY > 0 ? 'ArrowUp' : 'ArrowDown' });
+  }, []);
 
-  onKeyDown(e) {
-    this.resetting = false;
-    let { keyCode } = e;
-    let el = this.timeInput;
-    let pos = { start: el.selectionStart, end: el.selectionEnd };
-    let key = KEY_CODE[keyCode];
+  const onKeyDown = useCallback(
+    key => {
+      const el = $timeInput.current;
+      const pos = { start: el.selectionStart, end: el.selectionEnd };
 
-    if (typeof key == 'undefined') {
-      this.setState({ slectionRange: pos });
-      return;
-    }
-
-    let range = { start: 0, end: 0 };
-    let elObj, refName;
-
-    let o = {};
-    if (TIME_CURSOR_POSITION_OBJECT[pos.start]) {
-      o[TIME_CURSOR_POSITION_OBJECT[pos.start]] = true;
-      range.start = pos.start == pos.end ? pos.start - 2 : pos.start;
-      range.end = pos.start;
-    }
-
-    TIME_TYPE.map(i => {
-      if (typeof o[i] != 'undefined' && o[i]) {
-        refName = i;
-        elObj = this.state[refName];
+      if (typeof key == 'undefined') {
+        setSelectionRange(pos);
+        return;
       }
-    });
 
-    let newValue;
-    if (key == 'ArrowUp' || key == 'ArrowDown') {
-      range.start = pos.start;
-      range.end = pos.start != pos.end ? pos.start + 2 : pos.start;
-      let val = Number(elObj.value);
-      let diff = 1;
-      if (key == 'ArrowDown') {
-        diff = -diff;
-      }
-      newValue = val + diff;
-      if (refName == 'clockHandMinute' || refName == 'clockHandSecond') {
-        if (newValue == 60) {
-          newValue = 0;
-        }
-        if (newValue == -1) {
-          newValue = 59;
-        }
-      } else if (refName == 'clockHandHour') {
-        if (newValue == 13) {
-          newValue = 1;
-        }
-        if (newValue == -1) {
-          newValue = 11;
-        }
-      }
-    } else if (!isNaN(Number(key)) || key == 'Backspace' || key == 'Delete') {
-      let number = Number(key),
-        start,
-        end;
-      let skipNum = getInputCharSkipNum(pos.start);
+      const range = { start: 0, end: 0 };
+      let elObj, refName;
 
-      if (key == 'Backspace') {
-        skipNum = -skipNum;
-        number = 0;
-        start = pos.start + skipNum;
-        end = pos.start + skipNum;
-        if (!elObj.value) {
-          this.setState({ slectionRange: { start: start, end: end } });
-          e.preventDefault();
-          return;
+      const o = {};
+      if (TIME_CURSOR_POSITION_OBJECT[pos.start]) {
+        o[TIME_CURSOR_POSITION_OBJECT[pos.start]] = true;
+        range.start = pos.start == pos.end ? pos.start - 2 : pos.start;
+        range.end = pos.start;
+      }
+      TIME_TYPE.map(i => {
+        if (typeof o[i] != 'undefined' && o[i]) {
+          refName = i;
+          switch (refName) {
+            case 'clockHandHour':
+              elObj = clockHandHour;
+              break;
+            case 'clockHandMinute':
+              elObj = clockHandMinute;
+              break;
+            case 'clockHandSecond':
+              elObj = clockHandSecond;
+              break;
+            case 'meridiem':
+              elObj = meridiem;
+              break;
+          }
         }
-      }
-      if (key == 'Delete') {
-        number = 0;
-      }
-      if (elObj.value) {
-        newValue = number;
-        let strValue = elObj.value.toString();
-        if (pos.start == pos.end) {
-          if (skipNum > 0) {
-            if (TIME_SELECTION_FIRST_CHAR_POS_LIST.indexOf(pos.start) != -1) {
-              // 0*
-              newValue = Number(number + strValue.substr(strValue.length - 1));
-            } else if (TIME_SELECTION_SECOND_CHAR_POS_LIST.indexOf(pos.start) != -1) {
-              // *0
-              newValue = Number(strValue.substr(0, 1) + number);
+      });
+
+      let newValue;
+      if (key == 'ArrowUp' || key == 'ArrowDown') {
+        range.start = pos.start;
+        range.end = pos.start != pos.end ? pos.start + 2 : pos.start;
+        let val = Number(elObj.value);
+        let diff = 1;
+        if (key == 'ArrowDown') {
+          diff = -diff;
+        }
+        newValue = val + diff;
+        if (refName == 'clockHandMinute' || refName == 'clockHandSecond') {
+          if (newValue == 60) {
+            newValue = 0;
+          }
+          if (newValue == -1) {
+            newValue = 59;
+          }
+        } else if (refName == 'clockHandHour') {
+          if (newValue == 13) {
+            newValue = 1;
+          }
+          if (newValue == -1) {
+            newValue = 11;
+          }
+        }
+      } else if (!isNaN(Number(key)) || key == 'Backspace' || key == 'Delete') {
+        let number = Number(key),
+          start,
+          end;
+        let skipNum = getInputCharSkipNum(pos.start);
+
+        if (key == 'Backspace') {
+          skipNum = -skipNum;
+          number = 0;
+          start = pos.start + skipNum;
+          end = pos.start + skipNum;
+          if (!elObj.value) {
+            setSelectionRange({ start: start, end: end });
+            return;
+          }
+        }
+        if (key == 'Delete') {
+          number = 0;
+        }
+        if (elObj.value) {
+          newValue = number;
+          let strValue = elObj.value.toString();
+          if (pos.start == pos.end) {
+            if (skipNum > 0) {
+              if (TIME_SELECTION_FIRST_CHAR_POS_LIST.indexOf(pos.start) != -1) {
+                // 0*
+                newValue = Number(number + strValue.substr(strValue.length - 1));
+              } else if (TIME_SELECTION_SECOND_CHAR_POS_LIST.indexOf(pos.start) != -1) {
+                // *0
+                newValue = Number(strValue.substr(0, 1) + number);
+              }
+            } else {
+              if (TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST.indexOf(pos.start) != -1) {
+                // 0*
+                newValue = Number(number + strValue.substr(strValue.length - 1));
+              } else if (TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST.indexOf(pos.start) != -1) {
+                // *0
+                newValue = Number(strValue.substr(0, 1) + number);
+              }
             }
+            range.start = range.end = pos.start + skipNum;
           } else {
-            if (TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST.indexOf(pos.start) != -1) {
-              // 0*
-              newValue = Number(number + strValue.substr(strValue.length - 1));
-            } else if (TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST.indexOf(pos.start) != -1) {
-              // *0
-              newValue = Number(strValue.substr(0, 1) + number);
+            if (TIME_SELECTION_FIRST_CHAR_POS_LIST.indexOf(pos.start) != -1) {
+              if (pos.end < pos.start) {
+                newValue = Number(strValue.substr(0, 1) + number);
+                range.start = range.end = pos.start;
+              } else {
+                newValue = Number(number + strValue.substr(strValue.length - 1));
+                range.start = range.end = pos.start + skipNum;
+              }
             }
           }
-          range.start = range.end = pos.start + skipNum;
-        } else {
-          if (TIME_SELECTION_FIRST_CHAR_POS_LIST.indexOf(pos.start) != -1) {
-            if (pos.end < pos.start) {
-              newValue = Number(strValue.substr(0, 1) + number);
-              range.start = range.end = pos.start;
-            } else {
-              newValue = Number(number + strValue.substr(strValue.length - 1));
+          if (refName == 'clockHandHour' && (newValue == 0 || newValue > 12)) {
+            newValue = 12;
+          } else {
+            if (newValue > 60) {
+              newValue = key;
               range.start = range.end = pos.start + skipNum;
             }
           }
         }
-        if (refName == 'clockHandHour' && (newValue == 0 || newValue > 12)) {
-          newValue = 12;
-        } else {
-          if (newValue > 60) {
-            newValue = key;
-            range.start = range.end = pos.start + skipNum;
+      }
+
+      newValue = formatClockNumber(newValue);
+      if (!isNaN(newValue) && refName != 'meridiem') {
+        let newDegree;
+        if (refName == 'clockHandSecond') {
+          newDegree = Number(newValue) * SECOND_DEGREE_NUMBER;
+        }
+        if (refName == 'clockHandMinute') {
+          newDegree = Number(newValue) * MINUTE_DEGREE_NUMBER;
+        }
+        if (refName == 'clockHandHour') {
+          if (Number(newValue) == 0) {
+            newValue = 12;
+          }
+          newDegree = Number(newValue) * HOUR_DEGREE_NUMBER;
+        }
+        elObj = { ...elObj, value: newValue, degree: newDegree, startAngle: newDegree, angle: newDegree };
+        setSelectionRange({ start: range.start, end: range.end });
+        switchSetClockState(refName, elObj);
+      }
+
+      if (key == 'ArrowUp' || key == 'ArrowDown') {
+        if (refName == 'meridiem') {
+          setMeridiem(prevState => (prevState == 'AM' ? 'PM' : 'AM'));
+          setSelectionRange({ start: range.start, end: range.end });
+        }
+      }
+    },
+    [clockHandHour, clockHandMinute, clockHandSecond, meridiem],
+  );
+  useEffect(() => {
+    if (prevStateSelectionRange != selectionRange) {
+      $timeInput.current.setSelectionRange(selectionRange.start, selectionRange.end);
+    }
+  }, [selectionRange]);
+  useEffect(() => {
+    if (pressKey.key) {
+      onKeyDown(pressKey.key);
+    }
+  }, [pressKey]);
+  const onMouseOver = useCallback(
+    refName => {
+      switchSetClockState(refName, { isMouseOver: true });
+    },
+    [clockHandSecond, clockHandMinute, clockHandHour],
+  );
+
+  const onMouseOut = useCallback(
+    refName => {
+      switchSetClockState(refName, { isMouseOver: false });
+    },
+    [clockHandSecond, clockHandMinute, clockHandHour],
+  );
+  const switchSetClockState = useCallback(
+    (refName, v) => {
+      switch (refName) {
+        case 'clockHandSecond':
+          setClockHandSecond(prevState => ({ ...prevState, ...v }));
+          break;
+        case 'clockHandMinute':
+          setClockHandMinute(prevState => ({ ...prevState, ...v }));
+          break;
+        case 'clockHandHour':
+          setClockHandHour(prevState => ({ ...prevState, ...v }));
+          break;
+      }
+    },
+    [clockHandSecond, clockHandMinute, clockHandHour],
+  );
+  const handleMouseDown = useCallback(
+    (refName, e) => {
+      let x = e.clientX - originX.current;
+      let y = e.clientY - originY.current;
+      let startAngle = R2D * Math.atan2(y, x);
+      switchSetClockState(refName, { startAngle: startAngle });
+      isDraggingHash.current[refName] = true;
+    },
+    [clockHandSecond, clockHandMinute, clockHandHour],
+  );
+  const handleMouseMove = useCallback(
+    e => {
+      const refName = isDragging(isDraggingHash.current);
+      if (refName) {
+        _clearInterval();
+        let roundingAngle;
+        let elObj;
+        switch (refName) {
+          case 'clockHandSecond':
+            roundingAngle = SECOND_DEGREE_NUMBER;
+            elObj = clockHandSecond;
+            break;
+          case 'clockHandMinute':
+            roundingAngle = SECOND_DEGREE_NUMBER;
+            elObj = clockHandMinute;
+            break;
+          case 'clockHandHour':
+            roundingAngle = HOUR_DEGREE_NUMBER;
+            elObj = clockHandHour;
+            break;
+        }
+        let x = e.clientX - originX.current;
+        let y = e.clientY - originY.current;
+        let d = R2D * Math.atan2(y, x);
+        let rotation = Number(d - elObj.startAngle);
+        rotation = Math.floor(((rotation % 360) + roundingAngle / 2) / roundingAngle) * roundingAngle;
+        let degree = elObj.angle + rotation;
+        if (degree >= 360) {
+          degree = degree - 360;
+        }
+        if (degree < 0) {
+          degree = degree + 360;
+        }
+        let value = degree / roundingAngle;
+        value = formatClockNumber(value);
+        if (refName === 'clockHandHour') {
+          if (value == '00') {
+            value = 12;
           }
         }
+        switchSetClockState(refName, { value, degree });
       }
+    },
+    [clockHandSecond, clockHandMinute, clockHandHour],
+  );
+  const handleMouseUp = useCallback(() => {
+    Object.keys(isDraggingHash.current).forEach(key => {
+      isDraggingHash.current[key] = false;
+    });
+    setClockHandSecond(prevState => ({ ...prevState, angle: clockHandSecond.degree }));
+    setClockHandMinute(prevState => ({ ...prevState, angle: clockHandMinute.degree }));
+    setClockHandHour(prevState => ({ ...prevState, angle: clockHandHour.degree }));
+  }, [clockHandSecond, clockHandMinute, clockHandHour]);
+
+  const initCoordinates = useCallback(() => {
+    if ($clockCenter.current == null) {
+      return;
     }
-
-    newValue = formatClockNumber(newValue);
-
-    let slectionRange = { start: range.start, end: range.end };
-    if (!isNaN(newValue) && refName != 'meridiem') {
-      let newDegree;
-      if (refName == 'clockHandSecond') {
-        newDegree = Number(newValue) * SECOND_DEGREE_NUMBER;
-      }
-      if (refName == 'clockHandMinute') {
-        newDegree = Number(newValue) * MINUTE_DEGREE_NUMBER;
-      }
-      if (refName == 'clockHandHour') {
-        if (Number(newValue) == 0) {
-          newValue = 12;
-        }
-        newDegree = Number(newValue) * HOUR_DEGREE_NUMBER;
-      }
-      elObj = { ...elObj, value: newValue, degree: newDegree, startAngle: newDegree, angle: newDegree };
-      this.setState({ [refName]: elObj, slectionRange });
+    const centerPointPos = $clockCenter.current.getBoundingClientRect();
+    const top = centerPointPos.top,
+      left = centerPointPos.left,
+      height = centerPointPos.height,
+      width = centerPointPos.width;
+    originX.current = left + width / 2;
+    originY.current = top + height / 2;
+  }, []);
+  useEffect(() => {
+    if (!defaultTimeObj && !self.PRERENDER) {
+      initializeClock();
     }
-
-    if (key == 'ArrowUp' || key == 'ArrowDown') {
-      if (refName == 'meridiem') {
-        let meridiem = 'AM';
-        if (elObj == 'AM') {
-          meridiem = 'PM';
-        }
-        elObj = meridiem;
-        this.setState({ [refName]: elObj, slectionRange });
-      }
+  }, []);
+  useEffect(() => {
+    setTimeout(() => initCoordinates(), 1000);
+    if (document.addEventListener) {
+      document.addEventListener('resize', initCoordinates, true);
+      document.addEventListener('scroll', initCoordinates, true);
+      document.addEventListener('mousemove', handleMouseMove, true);
+      document.addEventListener('mouseup', handleMouseUp, true);
+      $timeInput.current.addEventListener('mousewheel', handleMouseWheel, { passive: false });
+    } else {
+      document.attachEvent('onresize', initCoordinates);
+      document.attachEvent('onscroll', initCoordinates);
+      document.attachEvent('onmousemove', handleMouseMove);
+      document.attachEvent('onmouseup', handleMouseUp);
+      $timeInput.current.attachEvent('mousewheel', handleMouseWheel, { passive: false });
     }
-
-    if (!(key == 'ArrowLeft' || key == 'ArrowRight')) {
-      e.preventDefault();
-    }
-  }
-
-  onMouseOver(refName) {
-    let elObj = this.state[refName];
-    elObj = { ...elObj, isMouseOver: true };
-    this.setState({ [refName]: elObj });
-  }
-
-  onMouseOut(refName) {
-    let elObj = this.state[refName];
-    elObj = { ...elObj, isMouseOver: false };
-    this.setState({ [refName]: elObj });
-  }
-
-  handleMouseDown(refName, e) {
-    let elObj = this.state[refName];
-    let x = e.clientX - this.originX;
-    let y = e.clientY - this.originY;
-    let startAngle = R2D * Math.atan2(y, x);
-    elObj = { ...elObj, isDragging: true, startAngle: startAngle };
-    this.setState({ [refName]: elObj });
-  }
-
-  handleMouseMove(e) {
-    let { clockHandSecond, clockHandMinute, clockHandHour } = this.state;
-    if (clockHandSecond.isDragging || clockHandMinute.isDragging || clockHandHour.isDragging) {
-      this._clearInterval();
-      let refName;
-      let roundingAngle = SECOND_DEGREE_NUMBER;
-      if (clockHandSecond.isDragging) {
-        refName = 'clockHandSecond';
+    return () => {
+      if (document.removeEventListener) {
+        document.removeEventListener('resize', initCoordinates, true);
+        document.removeEventListener('scroll', initCoordinates, true);
+        document.removeEventListener('mousemove', handleMouseMove, true);
+        document.removeEventListener('mouseup', handleMouseUp, true);
+      } else {
+        document.detachEvent('onresize', () => initCoordinates());
+        document.detachEvent('onscroll', initCoordinates);
+        document.detachEvent('onmousemove', handleMouseMove);
+        document.detachEvent('onmouseup', handleMouseUp);
       }
-      if (clockHandMinute.isDragging) {
-        refName = 'clockHandMinute';
-      }
-      if (clockHandHour.isDragging) {
-        refName = 'clockHandHour';
-        roundingAngle = HOUR_DEGREE_NUMBER;
-      }
-      let elObj = this.state[refName];
-      let x = e.clientX - this.originX;
-      let y = e.clientY - this.originY;
-      let d = R2D * Math.atan2(y, x);
+    };
+  }, [clockHandSecond, clockHandMinute, clockHandHour]);
 
-      let rotation = Number(d - elObj.startAngle);
-      rotation = Math.floor(((rotation % 360) + roundingAngle / 2) / roundingAngle) * roundingAngle;
-      let degree = elObj.angle + rotation;
-      if (degree >= 360) {
-        degree = degree - 360;
-      }
-      if (degree < 0) {
-        degree = degree + 360;
-      }
-      let value = degree / roundingAngle;
-      value = formatClockNumber(value);
-      if (clockHandHour.isDragging) {
-        if (value == '00') {
-          value = 12;
-        }
-      }
-      elObj = { ...elObj, value, degree };
-      this.setState({ [refName]: elObj });
-    }
-  }
-
-  handleMouseUp() {
-    let { clockHandSecond, clockHandMinute, clockHandHour } = this.state;
-    if (clockHandSecond.isDragging || clockHandMinute.isDragging || clockHandHour.isDragging) {
-      let clockHandSecondDegree = this.state.clockHandSecond.degree;
-      let clockHandMinuteDegree = this.state.clockHandMinute.degree;
-      let clockHandHourDegree = this.state.clockHandHour.degree;
-      clockHandSecond = { ...clockHandSecond, isDragging: false, angle: clockHandSecondDegree };
-      clockHandMinute = { ...clockHandMinute, isDragging: false, angle: clockHandMinuteDegree };
-      clockHandHour = { ...clockHandHour, isDragging: false, angle: clockHandHourDegree };
-      this.setState({ clockHandSecond, clockHandMinute, clockHandHour });
-    }
-  }
-
-  changeTime(e) {
+  const changeTime = useCallback(e => {
     e.stopPropagation();
-  }
+  }, []);
 
-  reset() {
-    this.resetting = true;
-    let res = this.resetClockHandObj();
-    this.initializeClock();
-    this.props.onResetTime(res);
-  }
+  const reset = useCallback(() => {
+    const res = resetClockHandObj();
+    initializeClock();
+    onResetTime(res);
+  }, []);
 
-  defaultTime() {
-    this.resetting = true;
-    let res = this.resetClockHandObj(false, true);
-    this._clearInterval();
-    this.props.onResetDefaultTime(res);
-  }
+  const setToDefaultTime = useCallback(() => {
+    const res = resetClockHandObj(false, true);
+    _clearInterval();
+    onResetDefaultTime(res);
+  }, []);
 
-  clear() {
-    this.resetting = true;
-    let res = this.resetClockHandObj(true);
-    this._clearInterval();
-    this.props.onClearTime(res);
-  }
+  const clear = useCallback(() => {
+    const res = resetClockHandObj(true);
+    _clearInterval();
+    onClearTime(res);
+  }, []);
 
-  render() {
-    let { size, locale } = this.props;
-    let { defaultTimeObj, clockHandSecond, clockHandMinute, clockHandHour, meridiem } = this.state;
+  const secondStyle = {
+    transform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
+    WebkitTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
+    MozTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
+    msTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
+    OTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
+  };
+  const minuteStyle = {
+    transform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
+    WebkitTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE})`,
+    MozTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
+    msTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
+    OTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
+  };
+  const hourStyle = {
+    transform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
+    WebkitTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
+    MozTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
+    msTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
+    OTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
+  };
 
-    let secondStyle = {
-      transform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
-      WebkitTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
-      MozTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
-      msTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
-      OTransform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
-    };
-    let minuteStyle = {
-      transform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
-      WebkitTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE})`,
-      MozTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
-      msTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
-      OTransform: `translate(${MINUTES_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandMinute.degree}deg) translate(${MINUTES_TRANSLATE_SECOND_SIZE[size]})`,
-    };
-    let hourStyle = {
-      transform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
-      WebkitTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
-      MozTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
-      msTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
-      OTransform: `translate(${HOURS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandHour.degree}deg) translate(${HOURS_TRANSLATE_SECOND_SIZE[size]})`,
-    };
+  const minutesItem = [];
 
-    let minutesItem = [];
+  for (let i = 0; i < 60; i++) {
+    let isQuarter = false;
+    let isFive = false;
 
-    for (let i = 0; i < 60; i++) {
-      let isQuarter = false;
-      let isFive = false;
-
-      let translateFirst = TRANSLATE_FIRST_SIZE[size];
-      let translateSecond = TRANSLATE_SECOND_SIZE[size];
-      if (QUARTER.indexOf(i) != -1) {
-        isQuarter = true;
-        translateFirst = TRANSLATE_QUARTER_SECOND_SIZE[size];
-      }
-      if (i % 5 == 0) {
-        isFive = true;
-      }
-      let minutesItemClass = cx('picky-date-time-clock__clock-minute', isQuarter && 'picky-date-time-clock__clock-minute--quarter', isFive && 'picky-date-time-clock__clock-minute--five');
-      let degree = i * 6 + 180;
-      let minutesItemStyle = {
-        transform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
-        WebkitTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
-        MozTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
-        msTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
-        OTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
-      };
-      minutesItem.push(<div key={i} className={minutesItemClass} style={minutesItemStyle} />);
+    let translateFirst = TRANSLATE_FIRST_SIZE[size];
+    let translateSecond = TRANSLATE_SECOND_SIZE[size];
+    if (QUARTER.indexOf(i) != -1) {
+      isQuarter = true;
+      translateFirst = TRANSLATE_QUARTER_SECOND_SIZE[size];
     }
-    return (
-      <div className={`picky-date-time-clock ${size}`} ref={ref => (this.clock = ref)}>
-        <div className={`picky-date-time-clock__circle ${size}`} ref={ref => (this.clockCircle = ref)}>
-          <div
-            className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--second`}
-            style={secondStyle}
-            onMouseOver={e => this.onMouseOver('clockHandSecond', e)}
-            onMouseOut={e => this.onMouseOut('clockHandSecond', e)}
-            onMouseDown={e => this.handleMouseDown('clockHandSecond', e)}
-            ref={ref => (this.clockHandSecond = ref)}
-          />
-          <div
-            className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--minute`}
-            style={minuteStyle}
-            onMouseOver={e => this.onMouseOver('clockHandMinute', e)}
-            onMouseOut={e => this.onMouseOut('clockHandMinute', e)}
-            onMouseDown={e => this.handleMouseDown('clockHandMinute', e)}
-            ref={ref => (this.clockHandMinute = ref)}
-          />
-          <div
-            className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--hour`}
-            style={hourStyle}
-            onMouseOver={e => this.onMouseOver('clockHandHour', e)}
-            onMouseOut={e => this.onMouseOut('clockHandHour', e)}
-            onMouseDown={e => this.handleMouseDown('clockHandHour', e)}
-            ref={ref => (this.clockHandHour = ref)}
-          />
-          {minutesItem}
-          <div className={`picky-date-time-clock__clock-center`} ref={ref => (this.clockCenter = ref)} />
-        </div>
-        <div className={`picky-date-time-clock__inputer-wrapper`}>
-          <div className={`picky-date-time-clock__inputer`}>
-            <input
-              className={`picky-date-time-clock__input`}
-              value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
-              onFocus={() => this.onFocus()}
-              onKeyDown={e => this.onKeyDown(e)}
-              onChange={e => this.changeTime(e)}
-              onClick={e => this.onClick(e)}
-              onWheel={e => this.handleMouseWheel(e)}
-              ref={ref => (this.timeInput = ref)}
-            />
-            <svg
-              className={`picky-date-time-clock__inline-span picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`}
-              xmlns="http://www.w3.org/2000/svg"
-              height="15"
-              viewBox="0 0 24 24"
-              width="15"
-              onClick={() => this.clear()}
-              title={LOCALE[locale]['clear']}
-            >
-              <path d="M0 0h24v24H0z" fill="none" />
-              <path fill="#868e96" d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-            </svg>
-          </div>
-          <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
-            <svg
-              className={`picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`}
-              xmlns="http://www.w3.org/2000/svg"
-              height="15"
-              viewBox="0 0 24 24"
-              width="15"
-              onClick={
-                this.timeinterval === false || defaultTimeObj
-                  ? () => this.reset(false)
-                  : () => {
-                      return;
-                    }
-              }
-              title={LOCALE[locale]['now']}
-              style={{ verticalAlign: 'middle' }}
-            >
-              <path fill="#868e96" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
-              <path d="M0 0h24v24H0z" fill="none" />
-              <path fill="#868e96" d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
-            </svg>
-          </div>
-          {defaultTimeObj ? (
-            <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="15"
-                viewBox="0 0 24 24"
-                width="15"
-                style={{ verticalAlign: 'middle' }}
-                onClick={() => this.defaultTime(true)}
-                title={LOCALE[locale]['reset']}
-              >
-                <path
-                  fill="#868e96"
-                  d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-                />
-                <path d="M0 0h24v24H0z" fill="none" />
-              </svg>
-            </div>
-          ) : (
-            ``
-          )}
-        </div>
-      </div>
-    );
+    if (i % 5 == 0) {
+      isFive = true;
+    }
+    let minutesItemClass = cx('picky-date-time-clock__clock-minute', isQuarter && 'picky-date-time-clock__clock-minute--quarter', isFive && 'picky-date-time-clock__clock-minute--five');
+    let degree = i * 6 + 180;
+    let minutesItemStyle = {
+      transform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+      WebkitTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+      MozTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+      msTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+      OTransform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+    };
+    minutesItem.push(<div key={i} className={minutesItemClass} style={minutesItemStyle} />);
   }
-}
+  return (
+    <div className={`picky-date-time-clock ${size}`} ref={$clock}>
+      <div className={`picky-date-time-clock__circle ${size}`} ref={$clockCircle}>
+        <div
+          className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--second`}
+          style={secondStyle}
+          onMouseOver={e => onMouseOver('clockHandSecond', e)}
+          onMouseOut={e => onMouseOut('clockHandSecond', e)}
+          onMouseDown={e => handleMouseDown('clockHandSecond', e)}
+          ref={$clockHandSecond}
+        />
+        <div
+          className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--minute`}
+          style={minuteStyle}
+          onMouseOver={e => onMouseOver('clockHandMinute', e)}
+          onMouseOut={e => onMouseOut('clockHandMinute', e)}
+          onMouseDown={e => handleMouseDown('clockHandMinute', e)}
+          ref={$clockHandMinute}
+        />
+        <div
+          className={`picky-date-time-clock__clock-hand picky-date-time-clock__clock-hand--hour`}
+          style={hourStyle}
+          onMouseOver={e => onMouseOver('clockHandHour', e)}
+          onMouseOut={e => onMouseOut('clockHandHour', e)}
+          onMouseDown={e => handleMouseDown('clockHandHour', e)}
+          ref={$clockHandHour}
+        />
+        {minutesItem}
+        <div className={`picky-date-time-clock__clock-center`} ref={$clockCenter} />
+      </div>
+      <div className={`picky-date-time-clock__inputer-wrapper`}>
+        <div className={`picky-date-time-clock__inputer`}>
+          <input
+            className={`picky-date-time-clock__input`}
+            value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
+            onFocus={() => onFocus()}
+            onKeyDown={e => {
+              setPressKey({ key: e.key });
+              if (!(e.key == 'ArrowLeft' || e.key == 'ArrowRight')) {
+                e.preventDefault();
+              }
+            }}
+            onChange={e => changeTime(e)}
+            onClick={e => onClick(e)}
+            // onWheel={e => handleMouseWheel(e)}
+            ref={$timeInput}
+          />
+          <svg
+            className={`picky-date-time-clock__inline-span picky-date-time-clock__icon--remove_circle_outline picky-date-time-remove_circle_outline`}
+            xmlns="http://www.w3.org/2000/svg"
+            height="15"
+            viewBox="0 0 24 24"
+            width="15"
+            onClick={() => clear()}
+            title={LOCALE[locale]['clear']}
+          >
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path fill="#868e96" d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+          </svg>
+        </div>
+        <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
+          <svg
+            className={`picky-date-time-clock__icon picky-date-time-clock__icon--schedule picky-date-time-schedule`}
+            xmlns="http://www.w3.org/2000/svg"
+            height="15"
+            viewBox="0 0 24 24"
+            width="15"
+            onClick={
+              intervalRef.current === false || defaultTimeObj
+                ? () => reset(false)
+                : () => {
+                    return;
+                  }
+            }
+            title={LOCALE[locale]['now']}
+            style={{ verticalAlign: 'middle' }}
+          >
+            <path fill="#868e96" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path fill="#868e96" d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+          </svg>
+        </div>
+        {defaultTimeObj ? (
+          <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15" style={{ verticalAlign: 'middle' }} onClick={() => setToDefaultTime()} title={LOCALE[locale]['reset']}>
+              <path
+                fill="#868e96"
+                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+              />
+              <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
+          </div>
+        ) : (
+          ``
+        )}
+      </div>
+    </div>
+  );
+});
 
 Clock.propTypes = {
   size: PropTypes.string,

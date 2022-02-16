@@ -39,7 +39,8 @@
   }
 }
 
-.picky-date-time-clock__header {}
+.picky-date-time-clock__header {
+}
 
 .picky-date-time-clock__inputer-wrapper {
   margin-top: 30px;
@@ -65,6 +66,7 @@
   border: none;
   outline: 0;
   background: transparent;
+  touch-action: none;
 }
 
 .picky-date-time-clock__input::-ms-clear {
@@ -79,7 +81,8 @@
   color: var(--oc-gray-6);
 }
 
-.picky-date-time-clock__icon--schedule {}
+.picky-date-time-clock__icon--schedule {
+}
 
 .picky-date-time-clock__icon--remove_circle_outline {
   position: absolute;
@@ -212,7 +215,7 @@
   cursor: pointer;
   padding: 5px 10px;
   border: 1px solid var(--oc-gray-4);
-  transition: all .3s;
+  transition: all 0.3s;
   background: var(--oc-white);
   &:hover {
     border: 1px solid var(--oc-blue-4);
@@ -221,4 +224,5 @@
   }
 }
 
-@media only screen and (max-width: 550px) {}
+@media only screen and (max-width: 550px) {
+}

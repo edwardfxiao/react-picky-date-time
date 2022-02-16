@@ -1,39 +1,40 @@
 {
+  "parser": "@babel/eslint-parser",
   // Extend existing configuration
   // from ESlint and eslint-plugin-react defaults.
-  "extends": [
-    "eslint:recommended", "plugin:react/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   // Enable ES6 support. If you want to use custom Babel
   // features, you will need to enable a custom parser
   // as described in a section below.
-  "parserOptions":
-  {
+  "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
   },
-  "env":
-  {
+  "env": {
     "es6": true,
     "browser": true,
     "node": true,
     "jquery": true
   },
   // Enable custom plugin known as eslint-plugin-react
-  "plugins": [
-    "react"
-  ],
-  "rules":
-  {
+  "plugins": ["react", "react-hooks"],
+  "rules": {
     // Disable `no-console` rule
     "no-console": 0,
     // Give a warning if identifiers contain underscores
     "no-underscore-dangle": 0,
-    "react/no-find-dom-node": 0,
-    "no-debugger": 0,
-    "no-empty": ["error",
-    {
-      "allowEmptyCatch": true
-    }]
+    "no-empty-pattern": 0,
+    "react/prop-types": [0],
+    "react-hooks/rules-of-hooks": "error",
+    "no-empty": [
+      "error",
+      {
+        "allowEmptyCatch": true
+      }
+    ],
+    "react/display-name": [0, { "ignoreTranspilerName": true }]
   }
 }

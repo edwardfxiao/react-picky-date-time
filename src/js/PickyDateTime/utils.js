@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 export const cx = (...params) => {
   const classes = [];
   for (let i = 0; i < params.length; i += 1) {
@@ -44,4 +45,13 @@ export const isValidDates = arr => {
     });
   }
   return isValid;
+};
+
+export const useWillUnmount = f => useEffect(() => () => f && f(), []);
+export const usePrevious = value => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
 };
