@@ -1,6 +1,5 @@
 import React, { useState, useRef, memo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
 import { cx, usePrevious } from '../utils.js';
 import { LOCALE } from '../locale.js';
 import {
@@ -93,8 +92,6 @@ const HOURS_TRANSLATE_SECOND_SIZE = {
   s: '0px, -14.5px',
   xs: '0px, -14.5px',
 };
-
-const emptyFn = () => {};
 
 const isValidTime = function (value) {
   // Checks if time is in HH:MM:SS AM/PM format.
@@ -189,7 +186,7 @@ const getInputCharSkipNum = function (pos) {
   return num;
 };
 
-const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime, onClearTime }) => {
+const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime, onClearTime, onSecondChange, onMinuteChange, onHourChange, onMeridiemChange }) => {
   const $clock = useRef(null);
   const $clockCenter = useRef(null);
   const $clockCircle = useRef(null);
@@ -239,6 +236,10 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
   const [clockHandMinute, setClockHandMinute] = useState(updateClockHandObj(clockHandObj, tminute, minuteDegree, minuteDegree, minuteDegree));
   const [clockHandHour, setClockHandHour] = useState(updateClockHandObj(clockHandObj, thourText, hourDegree, hourDegree, hourDegree));
   const [meridiem, setMeridiem] = useState(tmeridiem);
+  const prevStateClockHandSecond = usePrevious(clockHandSecond);
+  const prevStateClockHandMinute = usePrevious(clockHandMinute);
+  const prevStateClockHandHour = usePrevious(clockHandHour);
+  const prevStateMeridiem = usePrevious(meridiem);
   const [selectionRange, setSelectionRange] = useState({ start: 0, end: 0 });
   const prevStateSelectionRange = usePrevious(selectionRange);
   const [pressKey, setPressKey] = useState({ key: undefined });
@@ -477,6 +478,26 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
     }
   }, [selectionRange]);
   useEffect(() => {
+    if (prevStateClockHandSecond != clockHandSecond) {
+      onSecondChange && onSecondChange(clockHandSecond);
+    }
+  }, [clockHandSecond]);
+  useEffect(() => {
+    if (prevStateClockHandMinute != clockHandMinute) {
+      onMinuteChange && onMinuteChange(clockHandMinute);
+    }
+  }, [clockHandMinute]);
+  useEffect(() => {
+    if (prevStateClockHandHour != clockHandHour) {
+      onHourChange && onHourChange(clockHandHour);
+    }
+  }, [clockHandHour]);
+  useEffect(() => {
+    if (prevStateMeridiem != meridiem) {
+      onMeridiemChange && onMeridiemChange(meridiem);
+    }
+  }, [meridiem]);
+  useEffect(() => {
     if (pressKey.key) {
       onKeyDown(pressKey.key);
     }
@@ -487,7 +508,6 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
     },
     [clockHandSecond, clockHandMinute, clockHandHour],
   );
-
   const onMouseOut = useCallback(
     refName => {
       switchSetClockState(refName, { isMouseOver: false });
@@ -604,7 +624,7 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
       document.attachEvent('onscroll', initCoordinates);
       document.attachEvent('onmousemove', handleMouseMove);
       document.attachEvent('onmouseup', handleMouseUp);
-      $timeInput.current.attachEvent('mousewheel', handleMouseWheel, { passive: false });
+      $timeInput.current.attachEvent('onmousewheel', handleMouseWheel, { passive: false });
     }
     return () => {
       if (document.removeEventListener) {
@@ -612,11 +632,13 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
         document.removeEventListener('scroll', initCoordinates, true);
         document.removeEventListener('mousemove', handleMouseMove, true);
         document.removeEventListener('mouseup', handleMouseUp, true);
+        $timeInput.current.removeEventListener('mousewheel', handleMouseWheel, { passive: false });
       } else {
         document.detachEvent('onresize', () => initCoordinates());
         document.detachEvent('onscroll', initCoordinates);
         document.detachEvent('onmousemove', handleMouseMove);
         document.detachEvent('onmouseup', handleMouseUp);
+        $timeInput.current.detachEvent('onmousewheel', handleMouseWheel, { passive: false });
       }
     };
   }, [clockHandSecond, clockHandMinute, clockHandHour]);
