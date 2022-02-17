@@ -16,8 +16,27 @@ import {
   TIME_JUMP_CHAR_POS_LIST,
   TIME_CURSOR_POSITION_OBJECT,
   TIME_TYPE,
-  KEY_CODE,
 } from '../constValue';
+
+const  KEY_CODE = {
+  8: 'Backspace',
+  46: 'Delete',
+  38: 'ArrowUp',
+  37: 'ArrowLeft',
+  39: 'ArrowRight',
+  40: 'ArrowDown',
+  48: '0',
+  49: '1',
+  50: '2',
+  51: '3',
+  52: '4',
+  53: '5',
+  54: '6',
+  55: '7',
+  56: '8',
+  57: '9',
+};
+
 
 const TRANSLATE_FIRST_SIZE = {
   l: '-2px, -1px',
@@ -256,7 +275,6 @@ class Clock extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.state.slectionRange)
     if (prevState.slectionRange != this.state.slectionRange) {
       this.timeInput.focus();
       this.timeInput.setSelectionRange(this.state.slectionRange.start, this.state.slectionRange.end);
@@ -492,7 +510,7 @@ class Clock extends React.Component {
     newValue = formatClockNumber(newValue);
 
     let slectionRange = { start: range.start, end: range.end };
-    // console.log(slectionRange)
+    console.log(slectionRange)
     if (!isNaN(newValue) && refName != 'meridiem') {
       let newDegree;
       if (refName == 'clockHandSecond') {

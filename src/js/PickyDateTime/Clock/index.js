@@ -1,6 +1,6 @@
 import React, { useState, useRef, memo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { cx, usePrevious } from '../utils.js';
+import { cx, usePrevious, animationInterval, isValidTime, formatClockNumber } from '../utils.js';
 import { LOCALE } from '../locale.js';
 import {
   R2D,
@@ -93,88 +93,22 @@ const HOURS_TRANSLATE_SECOND_SIZE = {
   xs: '0px, -14.5px',
 };
 
-const isValidTime = function (value) {
-  // Checks if time is in HH:MM:SS AM/PM format.
-  // The seconds and AM/PM are optional.
-  if (value == '') {
-    return false;
-  }
-  let timePat = /^(\d{1,2}):(\d{2})(:(\d{2}))?(\s?(AM|am|PM|pm))?$/;
-
-  let matchArray = value.match(timePat);
-  if (matchArray == null) {
-    console.error('Time is not in a valid format.');
-    return false;
-  }
-  let hour = matchArray[1];
-  let minute = matchArray[2];
-  let second = matchArray[4];
-  let meridiem = matchArray[6];
-
-  if (second == '') {
-    second = null;
-  }
-  if (meridiem == '') {
-    meridiem = null;
-  }
-
-  if (hour < 0 || hour > 23) {
-    console.error('Hour must be between 1 and 12.');
-    return false;
-  }
-  if (hour <= 12 && meridiem == null) {
-    console.error('You must specify AM or PM.');
-    return false;
-  }
-  if (hour > 12 && meridiem != null) {
-    console.error("You can't specify AM or PM for military time.");
-    return false;
-  }
-  if (minute < 0 || minute > 59) {
-    console.error('Minute must be between 0 and 59.');
-    return false;
-  }
-  if (second != null && (second < 0 || second > 59)) {
-    console.error('Second must be between 0 and 59.');
-    return false;
-  }
-  second = formatClockNumber(second);
-  minute = formatClockNumber(minute);
-  const hourText = formatClockNumber(hour);
-  return {
-    hour,
-    minute,
-    second,
-    meridiem,
-    hourText,
-  };
-};
-
-const formatClockNumber = value => {
-  value = Number(value);
-  if (value < 10 && value >= 0) {
-    return (value = '0' + value);
-  }
-  return value;
-};
-
 const getTodayObj = function () {
-  let today = new Date();
-  let year = today.getFullYear();
-  let month = today.getMonth() + 1;
-  let date = today.getDate();
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const date = today.getDate();
 
   let hour = today.getHours();
   let minute = today.getMinutes();
   let second = today.getSeconds();
 
-  let meridiem = Number(hour) < 12 ? 'AM' : 'PM';
+  const meridiem = Number(hour) < 12 ? 'AM' : 'PM';
   let hourText = hour > 12 ? hour - 12 : hour;
 
   second = formatClockNumber(second);
   minute = formatClockNumber(minute);
   hourText = formatClockNumber(hourText);
-
   return { year, month, date, hour, minute, second, meridiem, hourText };
 };
 
@@ -194,14 +128,14 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
   const $clockHandMinute = useRef(null);
   const $clockHandHour = useRef(null);
   const $timeInput = useRef(null);
-  const intervalRef = useRef(null);
-  const isDraggingHash = useRef({
+  const startIntervalRef = useRef(null);
+  const isDraggingHashRef = useRef({
     clockHandSecond: false,
     clockHandMinute: false,
     clockHandHour: false,
   });
-  const originX = useRef(null);
-  const originY = useRef(null);
+  const originXRef = useRef(null);
+  const originYRef = useRef(null);
   const todayObj = getTodayObj();
 
   let thour = todayObj.hour;
@@ -210,7 +144,6 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
   let tmeridiem = todayObj.meridiem;
   let thourText = todayObj.hourText;
 
-  // const myDefaultTimeObj = isValidTime(defaultTime);
   const defaultTimeObj = isValidTime(defaultTime);
   if (defaultTimeObj) {
     thour = defaultTimeObj.hour;
@@ -230,8 +163,6 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
     angle: '',
     isMouseOver: false,
   };
-
-  // const [defaultTimeObj, setdefaultTimeObj] = useState(myDefaultTimeObj);
   const [clockHandSecond, setClockHandSecond] = useState(updateClockHandObj(clockHandObj, tsecond, secondDegree, secondDegree, secondDegree));
   const [clockHandMinute, setClockHandMinute] = useState(updateClockHandObj(clockHandObj, tminute, minuteDegree, minuteDegree, minuteDegree));
   const [clockHandHour, setClockHandHour] = useState(updateClockHandObj(clockHandObj, thourText, hourDegree, hourDegree, hourDegree));
@@ -243,26 +174,48 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
   const [selectionRange, setSelectionRange] = useState({ start: 0, end: 0 });
   const prevStateSelectionRange = usePrevious(selectionRange);
   const [pressKey, setPressKey] = useState({ key: undefined });
-
-  const initializeClock = useCallback(() => {
-    intervalRef.current = setInterval(updateClock, 1000);
+  const [counter, setCounter] = useState(0);
+  // initial call from here
+  const [abortController, setAbortController] = useState(new AbortController());
+  const isAborted = useCallback(() => abortController.signal.aborted, [abortController]);
+  // counter here
+  const initializeClock = useCallback(abortController => {
+    animationInterval(1000, abortController.signal, time => {
+      setCounter(time);
+    });
   }, []);
+  // initiate the ticking here
+  useEffect(() => {
+    if (abortController && abortController.signal.aborted === false) {
+      startIntervalRef.current = setInterval(() => {
+        if (new Date().getMilliseconds() > 100 && new Date().getMilliseconds() < 200) {
+          resetTime();
+          initializeClock(abortController);
+          clearInterval(startIntervalRef.current);
+        }
+      }, 4);
+    }
+  }, [abortController]);
+
+  useEffect(() => {
+    // actual ticking updated every second
+    updateClock();
+  }, [counter]);
 
   const updateClock = useCallback(() => {
     if ($clock.current == null) {
       return;
     }
-    if (isDragging(isDraggingHash.current)) {
-      _clearInterval();
+    if (isDragging(isDraggingHashRef.current)) {
+      abortController.abort();
       return;
     }
     resetClockHandObj();
-  }, []);
+  }, [abortController]);
 
-  const _clearInterval = useCallback(() => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = false;
-  }, []);
+  const abortInterval = useCallback(() => {
+    abortController.abort();
+  }, [abortController]);
 
   const resetClockHandObj = useCallback(
     (clear = false, defaultTime = false) => {
@@ -272,7 +225,7 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
         hourText = '12',
         meridiem = 'AM';
       if (!clear) {
-        let todayObj = getTodayObj();
+        const todayObj = getTodayObj();
         hour = todayObj.hour;
         minute = todayObj.minute;
         second = todayObj.second;
@@ -302,10 +255,6 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
     },
     [clockHandSecond, clockHandMinute, clockHandHour],
   );
-
-  const onFocus = useCallback(() => {
-    _clearInterval();
-  }, []);
 
   const onClick = useCallback(e => {
     setSelectionRange({ start: e.target.selectionStart, end: e.target.selectionEnd });
@@ -478,23 +427,31 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
     }
   }, [selectionRange]);
   useEffect(() => {
-    if (prevStateClockHandSecond != clockHandSecond) {
-      onSecondChange && onSecondChange(clockHandSecond);
+    if (isAborted()) {
+      if (prevStateClockHandSecond != clockHandSecond) {
+        onSecondChange && onSecondChange(clockHandSecond);
+      }
     }
   }, [clockHandSecond]);
   useEffect(() => {
-    if (prevStateClockHandMinute != clockHandMinute) {
-      onMinuteChange && onMinuteChange(clockHandMinute);
+    if (isAborted()) {
+      if (prevStateClockHandMinute != clockHandMinute) {
+        onMinuteChange && onMinuteChange(clockHandMinute);
+      }
     }
   }, [clockHandMinute]);
   useEffect(() => {
-    if (prevStateClockHandHour != clockHandHour) {
-      onHourChange && onHourChange(clockHandHour);
+    if (isAborted()) {
+      if (prevStateClockHandHour != clockHandHour) {
+        onHourChange && onHourChange(clockHandHour);
+      }
     }
   }, [clockHandHour]);
   useEffect(() => {
-    if (prevStateMeridiem != meridiem) {
-      onMeridiemChange && onMeridiemChange(meridiem);
+    if (isAborted()) {
+      if (prevStateMeridiem != meridiem) {
+        onMeridiemChange && onMeridiemChange(meridiem);
+      }
     }
   }, [meridiem]);
   useEffect(() => {
@@ -532,19 +489,18 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
   );
   const handleMouseDown = useCallback(
     (refName, e) => {
-      let x = e.clientX - originX.current;
-      let y = e.clientY - originY.current;
+      let x = e.clientX - originXRef.current;
+      let y = e.clientY - originYRef.current;
       let startAngle = R2D * Math.atan2(y, x);
       switchSetClockState(refName, { startAngle: startAngle });
-      isDraggingHash.current[refName] = true;
+      isDraggingHashRef.current[refName] = true;
     },
     [clockHandSecond, clockHandMinute, clockHandHour],
   );
   const handleMouseMove = useCallback(
     e => {
-      const refName = isDragging(isDraggingHash.current);
+      const refName = isDragging(isDraggingHashRef.current);
       if (refName) {
-        _clearInterval();
         let roundingAngle;
         let elObj;
         switch (refName) {
@@ -561,8 +517,8 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
             elObj = clockHandHour;
             break;
         }
-        let x = e.clientX - originX.current;
-        let y = e.clientY - originY.current;
+        let x = e.clientX - originXRef.current;
+        let y = e.clientY - originYRef.current;
         let d = R2D * Math.atan2(y, x);
         let rotation = Number(d - elObj.startAngle);
         rotation = Math.floor(((rotation % 360) + roundingAngle / 2) / roundingAngle) * roundingAngle;
@@ -586,8 +542,8 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
     [clockHandSecond, clockHandMinute, clockHandHour],
   );
   const handleMouseUp = useCallback(() => {
-    Object.keys(isDraggingHash.current).forEach(key => {
-      isDraggingHash.current[key] = false;
+    Object.keys(isDraggingHashRef.current).forEach(key => {
+      isDraggingHashRef.current[key] = false;
     });
     setClockHandSecond(prevState => ({ ...prevState, angle: clockHandSecond.degree }));
     setClockHandMinute(prevState => ({ ...prevState, angle: clockHandMinute.degree }));
@@ -603,14 +559,25 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
       left = centerPointPos.left,
       height = centerPointPos.height,
       width = centerPointPos.width;
-    originX.current = left + width / 2;
-    originY.current = top + height / 2;
+    originXRef.current = left + width / 2;
+    originYRef.current = top + height / 2;
   }, []);
-  useEffect(() => {
-    if (!defaultTimeObj && !self.PRERENDER) {
-      initializeClock();
-    }
+
+  const resetTime = useCallback(() => {
+    const resetedTime = resetClockHandObj();
+    onResetTime && onResetTime(resetedTime);
   }, []);
+
+  const resetToDefaultTime = useCallback(() => {
+    const resetedTime = resetClockHandObj(false, true);
+    onResetDefaultTime && onResetDefaultTime(resetedTime);
+  }, []);
+
+  const clear = useCallback(() => {
+    const res = resetClockHandObj(true);
+    onClearTime && onClearTime(res);
+  }, [abortController]);
+
   useEffect(() => {
     setTimeout(() => initCoordinates(), 1000);
     if (document.addEventListener) {
@@ -642,28 +609,6 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
       }
     };
   }, [clockHandSecond, clockHandMinute, clockHandHour]);
-
-  const changeTime = useCallback(e => {
-    e.stopPropagation();
-  }, []);
-
-  const reset = useCallback(() => {
-    const res = resetClockHandObj();
-    initializeClock();
-    onResetTime(res);
-  }, []);
-
-  const setToDefaultTime = useCallback(() => {
-    const res = resetClockHandObj(false, true);
-    _clearInterval();
-    onResetDefaultTime(res);
-  }, []);
-
-  const clear = useCallback(() => {
-    const res = resetClockHandObj(true);
-    _clearInterval();
-    onClearTime(res);
-  }, []);
 
   const secondStyle = {
     transform: `translate(${SECONDS_TRANSLATE_FIRST_SIZE[size]}) rotate(${clockHandSecond.degree}deg) translate(${SECONDS_TRANSLATE_SECOND_SIZE[size]})`,
@@ -748,16 +693,15 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
           <input
             className={`picky-date-time-clock__input`}
             value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
-            onFocus={() => onFocus()}
+            onFocus={() => abortInterval()}
             onKeyDown={e => {
               setPressKey({ key: e.key });
               if (!(e.key == 'ArrowLeft' || e.key == 'ArrowRight')) {
                 e.preventDefault();
               }
             }}
-            onChange={e => changeTime(e)}
+            onChange={() => {}}
             onClick={e => onClick(e)}
-            // onWheel={e => handleMouseWheel(e)}
             ref={$timeInput}
           />
           <svg
@@ -766,7 +710,10 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
             height="15"
             viewBox="0 0 24 24"
             width="15"
-            onClick={() => clear()}
+            onClick={() => {
+              abortInterval();
+              clear();
+            }}
             title={LOCALE[locale]['clear']}
           >
             <path d="M0 0h24v24H0z" fill="none" />
@@ -780,13 +727,12 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
             height="15"
             viewBox="0 0 24 24"
             width="15"
-            onClick={
-              intervalRef.current === false || defaultTimeObj
-                ? () => reset(false)
-                : () => {
-                    return;
-                  }
-            }
+            onClick={() => {
+              resetTime();
+              if (abortController.signal.aborted) {
+                setAbortController(new AbortController());
+              }
+            }}
             title={LOCALE[locale]['now']}
             style={{ verticalAlign: 'middle' }}
           >
@@ -797,7 +743,18 @@ const Clock = memo(({ size, locale, defaultTime, onResetTime, onResetDefaultTime
         </div>
         {defaultTimeObj ? (
           <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15" style={{ verticalAlign: 'middle' }} onClick={() => setToDefaultTime()} title={LOCALE[locale]['reset']}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="15"
+              viewBox="0 0 24 24"
+              width="15"
+              style={{ verticalAlign: 'middle' }}
+              onClick={() => {
+                abortInterval();
+                resetToDefaultTime();
+              }}
+              title={LOCALE[locale]['reset']}
+            >
               <path
                 fill="#868e96"
                 d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
