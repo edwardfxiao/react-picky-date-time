@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import PropTypes from 'prop-types';
 import { cx, isValidDates, useWillUnmount } from '../utils.js';
 import { LOCALE } from '../locale.js';
 import { WEEK_NUMBER, PREV_TRANSITION, NEXT_TRANSITION, SELECTOR_YEAR_SET_NUMBER, getDaysArray, getYearSet, formatDateString } from '../constValue';
@@ -8,13 +7,13 @@ const TODAY = new Date();
 const YEAR = TODAY.getFullYear();
 const MONTH = TODAY.getMonth() + 1;
 const DATE = TODAY.getDate();
-const isValidDate = function (value, userFormat) {
-  userFormat = userFormat || 'mm/dd/yyyy';
+const isValidDate = (value: string) => {
+  const userFormat = 'mm/dd/yyyy';
   const delimiter = /[^mdy]/.exec(userFormat)[0];
   const theFormat = userFormat.split(delimiter);
   const theDate = value.split(delimiter);
 
-  function isDate(date, format) {
+  function isDate(date: Array<string>, format: Array<string>) {
     let m,
       d,
       y,
@@ -27,19 +26,46 @@ const isValidDate = function (value, userFormat) {
       if (/d/.test(f)) d = date[i];
       if (/y/.test(f)) y = date[i];
     }
+    const nm = Number(m);
+    const nd = Number(d);
+    const ny = Number(y);
     return (
-      m > 0 &&
-      m < 13 &&
+      nm > 0 &&
+      nm < 13 &&
       y &&
       y.length === 4 &&
-      d > 0 &&
+      nd > 0 &&
       // Is it a valid day of the month?
-      d <= new Date(y, m, 0).getDate()
+      nd <= new Date(ny, nm, 0).getDate()
     );
   }
   return isDate(theDate, theFormat);
 };
-const Calendar = memo(
+interface IObjectKeysAny {
+  [key: string]: any;
+}
+interface IObjectKeysObject {
+  [key: string]: object;
+}
+interface IObjectKeysBool {
+  [key: string]: boolean;
+}
+interface IObjectKeysArray {
+  [key: string]: Array<object>;
+}
+interface CalendarProps {
+  size: string;
+  locale: string;
+  defaultDate: string;
+  markedDates: Array<string>;
+  supportDateRange: Array<string>;
+  onYearPicked?: (res: object) => void;
+  onMonthPicked?: (res: object) => void;
+  onDatePicked?: (res: object) => void;
+  onResetDate?: (res: object) => void;
+  onResetDefaultDate?: (res: object) => void;
+}
+const Calendar: React.FC<CalendarProps> = memo(
   ({ size, locale, defaultDate, markedDates, supportDateRange, onYearPicked = () => {}, onMonthPicked = () => {}, onDatePicked = () => {}, onResetDate = () => {}, onResetDefaultDate = () => {} }) => {
     const isMouseIsDownOnSelectorPanelClicker = useRef(false);
     let defaultDateDate = DATE;
@@ -81,7 +107,7 @@ const Calendar = memo(
     const [showMask, setShowMask] = useState(false);
     const [showSelectorPanel, setShowSelectorPanel] = useState(false);
 
-    const markedDatesHash = {};
+    const markedDatesHash: IObjectKeysBool = {};
     if (markedDates && isValidDates(markedDates)) {
       markedDates.forEach(d => {
         markedDatesHash[d] = true;
@@ -214,7 +240,7 @@ const Calendar = memo(
     if (dates.length) {
       let row = dates.length / WEEK_NUMBER;
       let rowIndex = 1;
-      let rowObj = {};
+      let rowObj: IObjectKeysArray = {};
       dates.map((item, key) => {
         if (key < rowIndex * WEEK_NUMBER) {
           if (!rowObj[rowIndex]) {
@@ -260,7 +286,7 @@ const Calendar = memo(
       }
     }
 
-    const captionHtml = LOCALE[locale].weeks.map((item, key) => {
+    const captionHtml = LOCALE[locale].weeks.map((item: string, key: string) => {
       return (
         <div className={`picky-date-time-calendar__table-caption picky-date-time-calendar__table-cel no-border ${size}`} key={key}>
           {item}
@@ -268,12 +294,13 @@ const Calendar = memo(
       );
     });
     let selectorPanelClass = cx('picky-date-time-dropdown', 'picky-date-time-calendar__selector-panel', showSelectorPanel && 'visible');
-    let selectorPanelMonthHtml = LOCALE[locale].months.map((item, key) => {
-      let itemMonth = key + 1;
-      let monthItemClass = cx('picky-date-time-dropdown-calendar__month-item', itemMonth == pickedYearMonth.month && 'active');
+    let selectorPanelMonthHtml = LOCALE[locale].months.map((item: string, key: string) => {
+      let itemMonth: number = Number(key) + 1;
+      const numberMonth = Number(pickedYearMonth.month);
+      let monthItemClass = cx('picky-date-time-dropdown-calendar__month-item', itemMonth == numberMonth && 'active');
       let month = itemMonth - 1;
       let direction = NEXT_TRANSITION;
-      if (itemMonth < pickedYearMonth.month) {
+      if (itemMonth < numberMonth) {
         direction = PREV_TRANSITION;
         month = itemMonth + 1;
       }
@@ -281,7 +308,7 @@ const Calendar = memo(
         <div
           className={monthItemClass}
           onClick={
-            itemMonth !== pickedYearMonth.month
+            itemMonth !== numberMonth
               ? () => pickMonth(month, direction)
               : () => {
                   return;
@@ -296,10 +323,11 @@ const Calendar = memo(
     let selectorPanelYearHtml;
     if (yearSelectorPanelList.length) {
       selectorPanelYearHtml = yearSelectorPanelList.map((item, key) => {
-        let yearItemClass = cx('picky-date-time-dropdown-calendar__year-item', item == pickedYearMonth.year && 'active');
+        const numberYearMonth = Number(pickedYearMonth.year);
+        let yearItemClass = cx('picky-date-time-dropdown-calendar__year-item', item == numberYearMonth && 'active');
         let year = item - 1;
         let direction = NEXT_TRANSITION;
-        if (item < pickedYearMonth.year) {
+        if (item < numberYearMonth) {
           direction = PREV_TRANSITION;
           year = item + 1;
         }
@@ -307,7 +335,7 @@ const Calendar = memo(
           <div
             className={yearItemClass}
             onClick={
-              item !== pickedYearMonth.year
+              item !== numberYearMonth
                 ? () => pickYear(year, direction)
                 : () => {
                     return;
@@ -331,23 +359,13 @@ const Calendar = memo(
     }, []);
 
     useEffect(() => {
-      if (document.addEventListener) {
-        window.addEventListener('mousedown', pageClick, false);
-        window.addEventListener('touchend', pageClick, false);
-      } else {
-        document.attachEvent('onmousedown', pageClick);
-        document.attachEvent('touchend', pageClick);
-      }
+      window.addEventListener('mousedown', pageClick, false);
+      window.addEventListener('touchend', pageClick, false);
     }, []);
 
     useWillUnmount(() => {
-      if (document.removeEventListener) {
-        window.removeEventListener('mousedown', pageClick, false);
-        window.removeEventListener('touchend', pageClick, false);
-      } else {
-        document.detachEvent('onmousedown', pageClick);
-        document.detachEvent('touchend', pageClick);
-      }
+      window.removeEventListener('mousedown', pageClick, false);
+      window.removeEventListener('touchend', pageClick, false);
     });
     return (
       <div className={`picky-date-time-calendar`}>
@@ -409,7 +427,7 @@ const Calendar = memo(
               <CSSTransition key={pickedYearMonth.string} timeout={{ enter: 300, exit: 300 }} className={`picky-date-time-calendar__title`} style={{ left: '0' }} classNames={classNames}>
                 <span className={`picky-date-time-calendar__clicker`} onClick={handleShowSelectorPanel} onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
                   <span className={`picky-date-time-calendar__clicker`}>
-                    <span>{`${LOCALE[locale].months[pickedYearMonth.month - 1]}`}</span>
+                    <span>{`${LOCALE[locale].months[Number(pickedYearMonth.month) - 1]}`}</span>
                   </span>
                   <span>&nbsp;</span>
                   <span className={`picky-date-time-calendar__clicker`}>
@@ -472,8 +490,27 @@ const Calendar = memo(
     );
   },
 );
-
-const CalendarBody = memo(({ size, data, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick, markedDatesHash, minSupportDate, maxSupportDate }) => {
+interface pickedDateInfo {
+  date: string;
+  month: string;
+  year: string;
+}
+interface pickedYearMonth {
+  month: string;
+  year: string;
+}
+interface CalendarBodyProps {
+  size?: string;
+  data?: IObjectKeysArray;
+  currentYearMonthDate: pickedDateInfo;
+  pickedDateInfo?: pickedDateInfo;
+  pickedYearMonth?: pickedYearMonth;
+  markedDatesHash: IObjectKeysBool;
+  minSupportDate: string;
+  maxSupportDate: string;
+  onClick?: (res: string) => void;
+}
+const CalendarBody: React.FC<CalendarBodyProps> = memo(({ size = 'm', data = {}, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick, markedDatesHash, minSupportDate, maxSupportDate }) => {
   const { year, month, date } = currentYearMonthDate;
   const pickedDateYear = pickedDateInfo.year;
   const pickedDateMonth = pickedDateInfo.month;
@@ -483,7 +520,7 @@ const CalendarBody = memo(({ size, data, currentYearMonthDate, pickedDateInfo, p
   const content = Object.keys(data).map(key => {
     let colHtml;
     if (data[key].length) {
-      colHtml = data[key].map((item, key) => {
+      colHtml = data[key].map((item: { [k: string]: any }, key: any) => {
         const itemDate = `${item.month}/${item.name}/${item.year}`;
         const isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
         let isDisabled = pickedMonth != item.month;
@@ -517,8 +554,14 @@ const CalendarBody = memo(({ size, data, currentYearMonthDate, pickedDateInfo, p
   });
   return <div className={`picky-date-time-calendar__table slide`}>{content}</div>;
 });
-
-const CalendarItem = memo(({ item = {}, isPicked = false, isDisabled = false, datePickerItemClass = '', onClick = () => {} }) => {
+interface CalendarItemProps {
+  item?: IObjectKeysAny;
+  isPicked?: boolean;
+  isDisabled?: boolean;
+  datePickerItemClass?: string;
+  onClick?: (res: string) => void;
+}
+const CalendarItem: React.FC<CalendarItemProps> = memo(({ item = {}, isPicked = false, isDisabled = false, datePickerItemClass = '', onClick = () => {} }) => {
   const handleOnClick = useCallback(() => {
     onClick(item.name);
   }, [item.name]);
@@ -545,43 +588,4 @@ const CalendarItem = memo(({ item = {}, isPicked = false, isDisabled = false, da
     </div>
   );
 });
-CalendarBody.propTypes = {
-  size: PropTypes.string,
-  data: PropTypes.object,
-  currentYearMonthDate: PropTypes.object,
-  pickedDateInfo: PropTypes.object,
-  pickedYearMonth: PropTypes.object,
-  onClick: PropTypes.func,
-};
-
-CalendarBody.defaultProps = {
-  size: 'm',
-  data: {},
-  currentYearMonthDate: {},
-  pickedDateInfo: {},
-  pickedYearMonth: {},
-  onClick: () => {},
-};
-
-Calendar.propTypes = {
-  size: PropTypes.string,
-  locale: PropTypes.string,
-  defaultDate: PropTypes.string,
-  onYearPicked: PropTypes.func,
-  onMonthPicked: PropTypes.func,
-  onDatePicked: PropTypes.func,
-  onResetDate: PropTypes.func,
-  onResetDefaultDate: PropTypes.func,
-};
-
-Calendar.defaultProps = {
-  size: 'm',
-  locale: 'en-US',
-  defaultDate: '',
-  onYearPicked: () => {},
-  onMonthPicked: () => {},
-  onDatePicked: () => {},
-  onResetDate: () => {},
-  onResetDefaultDate: () => {},
-};
 export default Calendar;

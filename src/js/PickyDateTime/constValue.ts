@@ -12,7 +12,7 @@ const POINTER_ROTATE = 0;
 
 const WEEK_NUMBER = 7;
 
-const getDaysArray = (year, month) => {
+const getDaysArray = (year: number, month: number) => {
   let prevMonth;
   let nextMonth;
   let prevYear;
@@ -57,10 +57,9 @@ const getDaysArray = (year, month) => {
   return res;
 };
 
-const getDaysListByMonth = (year, month) => {
+const getDaysListByMonth = (year: number, month: number) => {
   const date = new Date(year, month - 1, 1);
   let res = [];
-  year = String(year);
   const monthName = formatDateString(month);
   while (date.getMonth() == month - 1) {
     const dayName = formatDateString(date.getDate());
@@ -77,14 +76,14 @@ const getDaysListByMonth = (year, month) => {
   return res;
 };
 
-const formatDateString = val => {
-  if (Number(val) < 10) {
-    return String('0' + Number(val));
+const formatDateString = (value: number) => {
+  if (Number(value) < 10) {
+    return '0' + String(value);
   }
-  return String(val);
+  return String(value);
 };
 
-const getYearSet = year => {
+const getYearSet = (year: number) => {
   let res = [];
   let itemNumber;
   let startOffset;
@@ -125,7 +124,7 @@ const TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST = [1, 4, 7];
 const TIME_SELECTION_SECOND_CHAR_POS_LIST = [1, 4, 7];
 const TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST = [2, 5, 8];
 const TIME_JUMP_CHAR_POS_LIST = [1, 4, 7];
-const TIME_CURSOR_POSITION_OBJECT = {
+const TIME_CURSOR_POSITION_OBJECT: { [k: number]: string } = {
   0: 'clockHandHour',
   1: 'clockHandHour',
   2: 'clockHandHour',
