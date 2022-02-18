@@ -21,6 +21,14 @@ Attention: <a href="https://github.com/edwardfxiao/react-picky-date-time/blob/gh
 * <a href="https://codesandbox.io/s/y29w6p6krj">Online demo example playground</a>
 * <a href="https://codesandbox.io/s/l3n2ypvrzl">Custom locales</a>(when providing ```window.REACT_PICKY_DATE_TIME['customLocale']```)
 
+###  :tada: For version >= 2.0.0, please update react and react-dom to at least ```16.8.6```, since it is rewrited with hooks.
+```js
+  "peerDependencies": {
+    "react": ">= 16.8.6",
+    "react-dom": ">= 16.8.6"
+  }
+```
+
 # Docs Link
 [Custom Locale Guid(can be multiple locales)](#custom-locale)
 
