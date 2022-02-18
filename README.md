@@ -34,7 +34,7 @@ Attention: <a href="https://github.com/edwardfxiao/react-picky-date-time/blob/gh
 
 # Usage
 ```js
-import PickyDateTime from 'react-picky-date-time';
+import ReactPickyDateTime from 'react-picky-date-time';
 
 ...
 class YourOwnComponent extends Component {
@@ -65,7 +65,7 @@ class YourOwnComponent extends Component {
     } = this.state;
 
     return(
-      <PickyDateTime
+      <ReactPickyDateTime
         size="m"// 'xs', 's', 'm', 'l'
         mode={0} //0: calendar only, 1: calendar and clock, 2: clock only; default is 0
         locale={`zh-cn`}// 'en-us' or 'zh-cn'; default is en-us

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import PickyDateTime from '../src/js/component/ReactPickyDateTime';
+import ReactPickyDateTime from '../src/js/component/ReactPickyDateTime';
 import Markdown from 'react-markdown';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';
@@ -128,7 +128,7 @@ class Index extends Component {
             </span>
             <div>
               <div style={{ marginTop: '10px' }}>
-                <PickyDateTime
+                <ReactPickyDateTime
                   size="xs"
                   mode={1}
                   show={showPickyDateTime}
@@ -145,7 +145,7 @@ class Index extends Component {
                   onResetTime={res => this.onResetTime(res)}
                   onClearTime={res => this.onClearTime(res)}
                   markedDates={[`${todayM}/${todayD - 1}/${todayY}`, `${todayM}/${todayD}/${todayY}`, `${todayM}/${todayD + 1}/${todayY}`]}
-                  // supportDateRange={[`12/03/2021`, `12/05/2021`]} // "MM/DD/YYYY"
+                  // supportDateRange={[`02/10/2022`, `12/05/2022`]} // "MM/DD/YYYY"
                 />
               </div>
             </div>
@@ -197,7 +197,7 @@ import PickyDateTime from 'react-inputs-validation';
                 onClick={() => this.setState({ showPickyDateTime: true })}
               />
               <div style={{ marginTop: '10px' }}>
-                <PickyDateTime
+                <ReactPickyDateTime
                   size="xs"
                   mode={1}
                   show={showPickyDateTime}
@@ -263,7 +263,7 @@ import PickyDateTime from 'react-inputs-validation';
           <div style={{ margin: '10px' }}>
             <div style={{ color: '#4a4a4a', margin: '10px' }}></div>
             <div>
-              <PickyDateTime
+              <ReactPickyDateTime
                 size="m"
                 mode={0}
                 locale="en-us"
@@ -324,7 +324,7 @@ import PickyDateTime from 'react-inputs-validation';
           <div style={{ margin: '10px' }}>
             <div style={{ color: '#4a4a4a', margin: '10px' }}>{`//size="xs" mode={2}`}</div>
             <div>
-              <PickyDateTime
+              <ReactPickyDateTime
                 size="xs"
                 mode={2}
                 locale="en-us"
