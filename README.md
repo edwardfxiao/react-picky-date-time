@@ -104,12 +104,14 @@ npm install react-picky-date-time --save
 # Browser support
 Tested on IE9+ and Chrome and Safari(10.0.3)
 
-This library relies ```new AbortController```, so if you are developing for IE9+ you should include the polyfill like below
+This library relies ```new AbortController```, so if you are developing for IE10+ you should include the polyfill like below
 ```js
 import 'promise-polyfill/src/polyfill';
 import 'unfetch/polyfill';
 import 'abortcontroller-polyfill';
 ```
+
+For IE9, you also need ```performance``` ```requestAnimationFrame``` polyfill for clock ticking
 
 # Events
 
