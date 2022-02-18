@@ -1,11 +1,13 @@
 const REACT_PICKY_DATE_TIME_CUSTOM_LOCALE_EXAMPLE =
   "Invalid window.REACT_PICKY_DATE_TIME['customErrorMessage']. EXAMPLE: window.REACT_PICKY_DATE_TIME={customErrorMessage:{'en-US':{textbox:{empty:function empty(name){return getEnglishName(name)+'cannot be empty'},invalid:function invalid(name){return getEnglishName(name)+'invalid format'},invalidFormat:function invalidFormat(name){return getEnglishName(name)+'is not a number'},inBetween:function inBetween(name){return function(min){return function(max){return getEnglishName(name)+'must be '+min+'-'+max}}},lessThan:function lessThan(name){return function(min){return getEnglishName(name)+'cannot less than '+min}},greaterThan:function greaterThan(name){return function(max){return getEnglishName(name)+'cannot greater than '+max}},lengthEqual:function lengthEqual(name){return function(length){return getEnglishName(name)+'length must be '+length}},twoInputsNotEqual:function twoInputsNotEqual(){return'two inputs are not equal'}},radiobox:{empty:function empty(name){return'Please choose one '+getEnglishName(name)}},checkbox:{unchecked:function unchecked(name){return getEnglishName(name)+'must be checked'}},select:{empty:function empty(name){return'Please select a '+getEnglishName(name)}},textarea:{empty:function empty(name){return getEnglishName(name)+'cannot be empty'},invalid:function invalid(name){return getEnglishName(name)+'invalid format'},invalidFormat:function invalidFormat(name){return getEnglishName(name)+'is not a number'},inBetween:function inBetween(name){return function(min){return function(max){return getEnglishName(name)+'must be '+min+'-'+max}}},lessThan:function lessThan(name){return function(min){return getEnglishName(name)+'cannot less than '+min}},greaterThan:function greaterThan(name){return function(max){return getEnglishName(name)+'cannot greater than '+max}},lengthEqual:function lengthEqual(name){return function(length){return getEnglishName(name)+'length must be '+length}},twoInputsNotEqual:function twoInputsNotEqual(){return'two inputs are not equal'}}}}};";
 
-// const LOCALE_RANGE = ['en-us', 'zh-cn'];
+interface IObjectKeys {
+  [key: string]: any;
+}
 
 const DEFAULT_LACALE = 'en-us';
 
-let locale = {
+let locale: IObjectKeys = {
   'en-us': {
     today: 'Today',
     reset: 'Reset',
@@ -26,7 +28,7 @@ let locale = {
   },
 };
 
-const getCustomLocale = (o, m) => {
+const getCustomLocale = (o: any, m: any) => {
   if (!o || typeof o !== 'object' || o.constructor !== Object || !Object.keys(o).length) {
     console.error(REACT_PICKY_DATE_TIME_CUSTOM_LOCALE_EXAMPLE);
     return false;
@@ -45,7 +47,13 @@ const getCustomLocale = (o, m) => {
   return m;
 };
 
-const handleCustomLocale = (locale, w) => {
+declare global {
+  interface Window {
+    REACT_PICKY_DATE_TIME: any;
+  }
+}
+
+const handleCustomLocale = (locale: any, w: Window) => {
   let res;
   if (typeof w !== 'undefined') {
     if (w.REACT_PICKY_DATE_TIME && w.REACT_PICKY_DATE_TIME['customLocale']) {

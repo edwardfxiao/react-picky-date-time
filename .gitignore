@@ -1,10 +1,6 @@
 /node_modules
 /*.log
 /log/*.log
-/build
-/public/assets
-/public/uploads
-/*-compiled.js
-/*-compiled.js.map
-*-compiled.js
-*-compiled.js.map
+coverage
+/notes
+/lib

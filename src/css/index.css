@@ -25,7 +25,7 @@
 .picky-date-time {
   opacity: 0;
   position: relative;
-  box-shadow: $shadowInput;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.10), 0 0 4px 0 rgba(0, 0, 0, 0.08);
   display: inline-block;
   transition: all 0.3s;
   transform: translateY(-1em) perspective(600px) rotateX(10deg);
