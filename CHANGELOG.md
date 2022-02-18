@@ -1,3 +1,7 @@
+# 2.0.1
+
+- Fix markedDates not showing correctly bug
+
 # 2.0.0
 
 - Rewite with React Hooks

@@ -516,12 +516,11 @@ const CalendarBody: React.FC<CalendarBodyProps> = memo(({ size = 'm', data = {},
   const pickedDateMonth = pickedDateInfo.month;
   const pickedDate = pickedDateInfo.date;
   const pickedMonth = pickedYearMonth.month;
-
   const content = Object.keys(data).map(key => {
     let colHtml;
     if (data[key].length) {
       colHtml = data[key].map((item: { [k: string]: any }, key: any) => {
-        const itemDate = `${item.month}/${item.name}/${item.year}`;
+        const itemDate = `${Number(item.month)}/${Number(item.name)}/${item.year}`;
         const isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
         let isDisabled = pickedMonth != item.month;
         if (minSupportDate) {
