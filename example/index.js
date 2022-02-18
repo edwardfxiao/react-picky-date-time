@@ -4,6 +4,7 @@ import 'abortcontroller-polyfill';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+// performance polyfill from https://gist.github.com/paulirish/5438650
 (function () {
   if ('performance' in window == false) {
     window.performance = {};
@@ -28,6 +29,33 @@ import 'regenerator-runtime/runtime';
     };
   }
 })();
+
+// requestAnimationFrame polyfill from https://stackoverflow.com/questions/24676874/error-requestanimationframe-in-ie9-any-alternate-solution
+(function() {
+  var lastTime = 0;
+  var vendors = ['webkit', 'moz'];
+  for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+      window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+      window.cancelAnimationFrame =
+        window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame)
+      window.requestAnimationFrame = function(callback, element) {
+          var currTime = new Date().getTime();
+          var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+          var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+            timeToCall);
+          lastTime = currTime + timeToCall;
+          return id;
+      };
+
+  if (!window.cancelAnimationFrame)
+      window.cancelAnimationFrame = function(id) {
+          clearTimeout(id);
+      };
+}());
+
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactPickyDateTime from '../src/js/component/ReactPickyDateTime';
