@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import PickyDateTime from '../src/js/PickyDateTime';
-// import PickyDateTime from '../index.js';
+import PickyDateTime from '../src/js/component/ReactPickyDateTime';
 import Markdown from 'react-markdown';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';

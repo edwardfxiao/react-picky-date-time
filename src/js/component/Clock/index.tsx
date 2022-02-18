@@ -294,10 +294,13 @@ const Clock: React.FC<ClockProps> = memo(
       [clockHandSecond, clockHandMinute, clockHandHour, defaultTimeObj],
     );
 
-    const onClick = useCallback(e => {
-      abortInterval();
-      setSelectionRange({ start: e.target.selectionStart, end: e.target.selectionEnd });
-    }, [abortController]);
+    const onClick = useCallback(
+      e => {
+        abortInterval();
+        setSelectionRange({ start: e.target.selectionStart, end: e.target.selectionEnd });
+      },
+      [abortController],
+    );
 
     const handleMouseWheel = useCallback(e => {
       e.preventDefault();
@@ -722,7 +725,7 @@ const Clock: React.FC<ClockProps> = memo(
           <div className={`picky-date-time-clock__inputer`}>
             <input
               className={`picky-date-time-clock__input`}
-              value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
+              value={`${formatClockNumber(Number(clockHandHour.value))}:${formatClockNumber(Number(clockHandMinute.value))}:${formatClockNumber(Number(clockHandSecond.value))} ${meridiem}`}
               onKeyDown={e => {
                 setPressKey({ key: e.key });
                 if (!(e.key == 'ArrowLeft' || e.key == 'ArrowRight')) {

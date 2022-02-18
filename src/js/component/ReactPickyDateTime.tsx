@@ -61,9 +61,6 @@ const Index: React.FC<IndexProps> = memo(
       onClose && onClose();
     }, []);
     const componentClass = cx('picky-date-time', show && 'visible');
-    let calendarHtml;
-    let breakerHtml;
-    let clockHtml;
 
     size = size.toLowerCase();
     if (SIZE_RANGE.indexOf(size) == -1) {
