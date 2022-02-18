@@ -1,6 +1,5 @@
 import React, { useState, useRef, memo, useCallback, useEffect } from 'react';
-import { cx, usePrevious, animationInterval, isValidTime, formatClockNumber } from '../utils.js';
-import { LOCALE } from '../locale.js';
+import { cx, usePrevious, useWillUnmount, animationInterval, isValidTime, formatClockNumber } from '../utils';
 import {
   R2D,
   SECOND_DEGREE_NUMBER,
@@ -118,6 +117,7 @@ const getInputCharSkipNum = (pos: number) => {
   }
   return num;
 };
+
 interface clockHandObj {
   value: string;
   degree: string;
@@ -125,6 +125,7 @@ interface clockHandObj {
   angle: string;
   isMouseOver: boolean;
 }
+
 interface ClockProps {
   size: string;
   locale: string;
@@ -207,17 +208,27 @@ const Clock: React.FC<ClockProps> = memo(
     // initial call from here
     const [abortController, setAbortController] = useState(new AbortController());
     const isAborted = useCallback(() => abortController.signal.aborted, [abortController]);
+
     // counter here
     const initializeClock = useCallback(abortController => {
       animationInterval(1000, abortController.signal, (time: number) => {
+        if (!$clock.current) {
+          abortController.abort();
+          return;
+        }
         setCounter(time);
       });
     }, []);
+
+    useWillUnmount(() => {
+      abortController.abort();
+    });
+
     // initiate the ticking here
     useEffect(() => {
       if (abortController && abortController.signal.aborted === false) {
         startIntervalRef.current = setInterval(() => {
-          if (new Date().getMilliseconds() > 100 && new Date().getMilliseconds() < 200) {
+          if (new Date().getMilliseconds() > 0 && new Date().getMilliseconds() < 99) {
             resetTime();
             initializeClock(abortController);
             clearInterval(startIntervalRef.current);
@@ -232,11 +243,11 @@ const Clock: React.FC<ClockProps> = memo(
     }, [counter]);
 
     const updateClock = useCallback(() => {
-      if ($clock.current == null) {
+      if (!$clock.current) {
         return;
       }
       if (isDragging(isDraggingHashRef.current)) {
-        abortController.abort();
+        abortInterval();
         return;
       }
       resetClockHandObj();
@@ -261,7 +272,6 @@ const Clock: React.FC<ClockProps> = memo(
           hourText = String(todayObj.hourText);
           meridiem = String(todayObj.meridiem);
         }
-
         if (defaultTime) {
           hour = String(defaultTimeObj.hour);
           minute = String(defaultTimeObj.minute);
@@ -269,7 +279,6 @@ const Clock: React.FC<ClockProps> = memo(
           hourText = String(defaultTimeObj.hourText);
           meridiem = String(defaultTimeObj.meridiem);
         }
-
         let secondDegree = String(Number(second) * SECOND_DEGREE_NUMBER);
         let minuteDegree = String(Number(minute) * MINUTE_DEGREE_NUMBER);
         let hourDegree = String(Number(hour) * HOUR_DEGREE_NUMBER);
@@ -286,8 +295,9 @@ const Clock: React.FC<ClockProps> = memo(
     );
 
     const onClick = useCallback(e => {
+      abortInterval();
       setSelectionRange({ start: e.target.selectionStart, end: e.target.selectionEnd });
-    }, []);
+    }, [abortController]);
 
     const handleMouseWheel = useCallback(e => {
       e.preventDefault();
@@ -298,15 +308,12 @@ const Clock: React.FC<ClockProps> = memo(
       key => {
         const el = $timeInput.current;
         const pos = { start: el.selectionStart, end: el.selectionEnd };
-
         if (typeof key == 'undefined') {
           setSelectionRange(pos);
           return;
         }
-
         const range = { start: 0, end: 0 };
         let elObj, refName;
-
         const o: { [k: string]: boolean } = {};
         if (TIME_CURSOR_POSITION_OBJECT[pos.start]) {
           o[TIME_CURSOR_POSITION_OBJECT[pos.start]] = true;
@@ -423,7 +430,6 @@ const Clock: React.FC<ClockProps> = memo(
             }
           }
         }
-
         if (!isNaN(newValue) && refName != 'meridiem') {
           let newDegree;
           if (refName == 'clockHandSecond') {
@@ -450,32 +456,37 @@ const Clock: React.FC<ClockProps> = memo(
       },
       [clockHandHour, clockHandMinute, clockHandSecond, meridiem],
     );
+
     useEffect(() => {
       if (prevStateSelectionRange != selectionRange) {
         $timeInput.current.setSelectionRange(selectionRange.start, selectionRange.end);
       }
     }, [selectionRange]);
+
     useEffect(() => {
       if (isAborted()) {
         if (prevStateClockHandSecond != clockHandSecond) {
-          onSecondChange && onSecondChange(clockHandSecond);
+          onSecondChange && onSecondChange({ ...clockHandSecond, value: formatClockNumber(Number(clockHandSecond.value)) });
         }
       }
     }, [clockHandSecond]);
+
     useEffect(() => {
       if (isAborted()) {
         if (prevStateClockHandMinute != clockHandMinute) {
-          onMinuteChange && onMinuteChange(clockHandMinute);
+          onMinuteChange && onMinuteChange({ ...clockHandMinute, value: formatClockNumber(Number(clockHandMinute.value)) });
         }
       }
     }, [clockHandMinute]);
+
     useEffect(() => {
       if (isAborted()) {
         if (prevStateClockHandHour != clockHandHour) {
-          onHourChange && onHourChange(clockHandHour);
+          onHourChange && onHourChange({ ...clockHandHour, value: formatClockNumber(Number(clockHandHour.value)) });
         }
       }
     }, [clockHandHour]);
+
     useEffect(() => {
       if (isAborted()) {
         if (prevStateMeridiem != meridiem) {
@@ -483,23 +494,27 @@ const Clock: React.FC<ClockProps> = memo(
         }
       }
     }, [meridiem]);
+
     useEffect(() => {
       if (pressKey.key) {
         onKeyDown(pressKey.key);
       }
     }, [pressKey]);
+
     const onMouseOver = useCallback(
       refName => {
         switchSetClockState(refName, { isMouseOver: true });
       },
       [clockHandSecond, clockHandMinute, clockHandHour],
     );
+
     const onMouseOut = useCallback(
       refName => {
         switchSetClockState(refName, { isMouseOver: false });
       },
       [clockHandSecond, clockHandMinute, clockHandHour],
     );
+
     const switchSetClockState = useCallback(
       (refName, v) => {
         switch (refName) {
@@ -516,16 +531,19 @@ const Clock: React.FC<ClockProps> = memo(
       },
       [clockHandSecond, clockHandMinute, clockHandHour],
     );
+
     const handleMouseDown = useCallback(
       (refName, e) => {
+        abortInterval();
         let x = e.clientX - originXRef.current;
         let y = e.clientY - originYRef.current;
         let startAngle = R2D * Math.atan2(y, x);
         switchSetClockState(refName, { startAngle: startAngle });
         isDraggingHashRef.current[refName] = true;
       },
-      [clockHandSecond, clockHandMinute, clockHandHour],
+      [clockHandSecond, clockHandMinute, clockHandHour, abortController],
     );
+
     const handleMouseMove = useCallback(
       e => {
         const refName = isDragging(isDraggingHashRef.current);
@@ -569,6 +587,7 @@ const Clock: React.FC<ClockProps> = memo(
       },
       [clockHandSecond, clockHandMinute, clockHandHour],
     );
+
     const handleMouseUp = useCallback(() => {
       Object.keys(isDraggingHashRef.current).forEach(key => {
         isDraggingHashRef.current[key] = false;
@@ -645,11 +664,9 @@ const Clock: React.FC<ClockProps> = memo(
     };
 
     const minutesItem = [];
-
     for (let i = 0; i < 60; i++) {
       let isQuarter = false;
       let isFive = false;
-
       let translateFirst = TRANSLATE_FIRST_SIZE[size];
       let translateSecond = TRANSLATE_SECOND_SIZE[size];
       if (QUARTER.indexOf(i) != -1) {
@@ -670,6 +687,7 @@ const Clock: React.FC<ClockProps> = memo(
       };
       minutesItem.push(<div key={i} className={minutesItemClass} style={minutesItemStyle} />);
     }
+
     return (
       <div className={`picky-date-time-clock ${size}`} ref={$clock}>
         <div className={`picky-date-time-clock__circle ${size}`} ref={$clockCircle}>
@@ -705,7 +723,6 @@ const Clock: React.FC<ClockProps> = memo(
             <input
               className={`picky-date-time-clock__input`}
               value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
-              onFocus={() => abortInterval()}
               onKeyDown={e => {
                 setPressKey({ key: e.key });
                 if (!(e.key == 'ArrowLeft' || e.key == 'ArrowRight')) {
@@ -751,7 +768,7 @@ const Clock: React.FC<ClockProps> = memo(
               <path fill="#868e96" d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
             </svg>
           </div>
-          {defaultTimeObj ? (
+          {Object.keys(defaultTimeObj).length > 0 ? (
             <div className={`picky-date-time-clock__inline-div picky-date-time-clock__inline-div--middle`}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

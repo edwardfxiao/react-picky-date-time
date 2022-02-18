@@ -123,6 +123,7 @@ export const isValidTime = (value: string) => {
     hourText,
   };
 };
+// Using https://gist.github.com/jakearchibald/cb03f15670817001b1157e62a076fe95 method
 export const animationInterval = (ms: number, signal: any, callback: Function) => {
   // Prefer currentTime, as it'll better sync animtions queued in the
   // same frame, but if it isn't supported, performance.now() is fine.

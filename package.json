@@ -48,6 +48,7 @@
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.17.0",
     "@swc/core": "^1.2.139",
     "@swc/wasm": "^1.2.139",

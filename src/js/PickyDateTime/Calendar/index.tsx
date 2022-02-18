@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { cx, isValidDates, useWillUnmount } from '../utils.js';
-import { LOCALE } from '../locale.js';
+import { cx, isValidDates, useWillUnmount } from '../utils';
+import { LOCALE } from '../locale';
 import { WEEK_NUMBER, PREV_TRANSITION, NEXT_TRANSITION, SELECTOR_YEAR_SET_NUMBER, getDaysArray, getYearSet, formatDateString } from '../constValue';
 const TODAY = new Date();
 const YEAR = TODAY.getFullYear();
