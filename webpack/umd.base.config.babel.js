@@ -106,4 +106,5 @@ module.exports = {
     globalObject: 'this',
   },
   plugins,
+  target: ['web', 'es5'],
 };

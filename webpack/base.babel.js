@@ -134,4 +134,5 @@ export default {
       output: 'manifest-rev.json',
     }),
   ],
+  target: ['web', 'es5'],
 };

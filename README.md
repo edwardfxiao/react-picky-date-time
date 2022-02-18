@@ -102,7 +102,14 @@ npm install react-picky-date-time --save
 <a href="https://www.paypal.me/XIAOMENGXIAO/0.99" target="_blank" alt="PayPal Donate">Thanks for donating me a donut!&nbsp;&nbsp;⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄</a>
 
 # Browser support
-~~Tested on IE9+ and Chrome and Safari(10.0.3)~~(Not supporting IE since v2.0.0)
+Tested on IE9+ and Chrome and Safari(10.0.3)
+
+This library relies ```new AbortController```, so if you are developing for IE9+ you should include the polyfill like below
+```js
+import 'promise-polyfill/src/polyfill';
+import 'unfetch/polyfill';
+import 'abortcontroller-polyfill';
+```
 
 # Events
 
