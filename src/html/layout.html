@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
+  <head>
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-</head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.customStyle %>" />
+  </head>
+
   <body>
-    <div class="modal-mask modal-mask--normal"></div>
-    <div class="modal-mask modal-mask--unclickable"></div>
-    <div class="spin-loader" id="spin-loader"></div>
-    <div class="spin-loader" id="mask-loader"></div>
-    <div class="share-helper">
-      <img
-        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-        srcSet="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-        class="share-helper__img"
-      />
+    <script>
+      window.onload = new (function () {
+        setTimeout(function () {
+          (window.ActiveXObject || 'ActiveXObject' in window) && ((window.UNSUPPORTED = !0), (document.body.innerHTML = '<H1 style="text-align:center;">Not supporting IE anymore...</H1>'));
+        }, 0);
+      })();
+    </script>
+    <div style="margin: 0 auto; text-align: center">
+      <h1>react-picky-date-time</h1>
+      <a href="https://github.com/edwardfxiao/react-picky-date-time">fork me on Github@edwardfxiao</a>
     </div>
+    <br />
+    <br />
     <div class="root" id="root"></div>
     <%= htmlWebpackPlugin.options.customJs %>
   </body>

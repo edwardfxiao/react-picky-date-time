@@ -2,23 +2,22 @@ const env = require('yargs').argv.env; // use --env with webpack 2
 const path = require('path');
 const PATH = require('./build_path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const styleVariables = require(path.join(PATH.SOURCE_PATH, 'css/variables'));
+
 let libraryName = 'react-picky-date-time';
 
 let plugins = [],
   outputFile;
 
-if (env === 'build') {
-  plugins.push(new MiniCssExtractPlugin({ filename: libraryName + '.min.css' }));
-  outputFile = libraryName + '.min.js';
-} else {
-  plugins.push(new MiniCssExtractPlugin({ filename: libraryName + '.css' }));
-  outputFile = libraryName + '.js';
-}
+  if (env === 'minify') {
+    plugins.push(new MiniCssExtractPlugin({ filename: libraryName + '.min.css' }));
+    outputFile = libraryName + '.min.js';
+  } else {
+    plugins.push(new MiniCssExtractPlugin({ filename: libraryName + '.css' }));
+    outputFile = libraryName + '.js';
+  }
 
 module.exports = {
   mode: 'production',
-  entry: PATH.ROOT_PATH + 'src/js/PickyDateTime/index.umd.js',
   context: PATH.ROOT_PATH,
   module: {
     rules: [
@@ -26,48 +25,44 @@ module.exports = {
         test: /\.mp3?$/,
         include: [PATH.ROOT_PATH],
         exclude: [PATH.NODE_MODULES_PATH],
-        loader: 'file-loader?name=audio/[name]-[hash].[ext]',
+        loader: 'file-loader',
+        options: {
+          name: 'audio/[name]-[hash].[ext]',
+        },
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)\??.*$/,
         include: [PATH.ROOT_PATH],
         // exclude: [PATH.NODE_MODULES_PATH],
-        loader: 'url-loader?limit=1&name=font/[name]-[hash].[ext]',
+        loader: 'url-loader',
+        options: {
+          limit: 1,
+          name: 'font/[name]-[hash].[ext]',
+        },
       },
       {
         test: /\.(jpe?g|png|gif|svg)\??.*$/,
         include: [PATH.ROOT_PATH],
         // exclude: [PATH.NODE_MODULES_PATH],
-        loader: 'url-loader?limit=1&name=img/[name]-[hash].[ext]',
-      },
-      {
-        test: /\.(ts|tsx)$/,
-        enforce: 'pre',
-        use: [
-          {
-            loader: 'tslint-loader',
-            options: {
-              // emitWarning: true
-            },
-          },
-        ],
-      },
-      { test: /\.(ts|tsx)$/, loader: 'awesome-typescript-loader' },
-      {
-        test: /\.jsx?$/,
-        include: [PATH.ROOT_PATH],
-        exclude: [PATH.NODE_MODULES_PATH],
-        enforce: 'post',
-        loader: 'eslint-loader',
+        loader: 'url-loader',
         options: {
-          emitWarning: true,
+          limit: 1,
+          name: 'img/[name]-[hash].[ext]',
         },
       },
       {
         test: /\.jsx?$/,
         include: [PATH.ROOT_PATH],
         exclude: [PATH.NODE_MODULES_PATH],
+        enforce: 'post',
         loader: 'babel-loader',
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        include: [PATH.ROOT_PATH],
+        exclude: [PATH.NODE_MODULES_PATH],
+        enforce: 'post',
+        loader: 'ts-loader',
       },
       {
         test: /\.css$/,
@@ -78,26 +73,20 @@ module.exports = {
             loader: 'css-loader',
             options: {
               // modules: {
-              //   context: path.resolve(__dirname, 'src'),
-              //   localIdentName: '[name]__[local]',
+              //   localIdentName: '[path][name]__[local]--[hash:base64:5]',
               // },
-              importLoaders: 1,
             },
           },
           {
             loader: 'postcss-loader',
             options: {
-              plugins: loader => [
-                require('postcss-import')({
-                  root: loader.resourcePath,
-                }),
-                require('postcss-cssnext')(),
-                require('autoprefixer')(),
-                require('cssnano')({ safe: true }),
-                require('postcss-simple-vars')({
-                  variables: styleVariables,
-                }),
-              ],
+              postcssOptions: {
+                plugins: [
+                  ['postcss-import', {}],
+                  ['postcss-preset-env', { stage: 0 }],
+                  ['cssnano', { safe: true }],
+                ],
+              },
             },
           },
         ],

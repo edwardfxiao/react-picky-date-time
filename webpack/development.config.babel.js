@@ -1,16 +1,26 @@
-const base = require('./base.js');
-const objectAssign = require('object-assign');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+import webpack from 'webpack';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ESLintPlugin from 'eslint-webpack-plugin';
+import base from './base.babel.js';
 const PATH = require('./build_path');
-const config = objectAssign(base, {
+const config = {
+  ...base,
   mode: 'development',
   output: {
     publicPath: '/',
     filename: '[name].js',
   },
-});
+};
+config.plugins.push(
+  new ESLintPlugin({
+    context: 'src',
+    emitWarning: true,
+    failOnError: false,
+    exclude: ['data', 'locales'],
+    extensions: ['airbnb-typescript'],
+  }),
+);
 config.plugins.push(
   new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
   new HtmlWebpackPlugin({
@@ -19,7 +29,7 @@ config.plugins.push(
     page: 'index',
     filename: 'index.html',
     hash: false,
-    chunksSortMode: function(chunk1, chunk2) {
+    chunksSortMode: function (chunk1, chunk2) {
       var orders = ['index'];
       var order1 = orders.indexOf(chunk1.names[0]);
       var order2 = orders.indexOf(chunk2.names[0]);

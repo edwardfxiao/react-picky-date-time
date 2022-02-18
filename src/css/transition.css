@@ -78,24 +78,6 @@
   position: absolute;
 }
 
-.slide-enter {
-  transform: translateX(100%);
-  transition: 0.3s transform ease-in-out;
-}
-
-.slide-enter-active {
-  transform: translateX(0);
-}
-
-.slide-exit {
-  transform: translateX(0);
-  transition: 0.3s transform ease-in-out;
-}
-
-.slide-exit-active {
-  transform: translateX(-100%);
-}
-
 .forward-enter {
   transform: translateX(100%);
   transition: 0.3s transform ease-in-out;
