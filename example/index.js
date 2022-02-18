@@ -1,26 +1,11 @@
+import 'promise-polyfill/src/polyfill';
+import 'unfetch/polyfill';
+import 'abortcontroller-polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import ReactPickyDateTime from '../src/js/component/ReactPickyDateTime';
-import Markdown from 'react-markdown';
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css';
-
-const CodeBlock = ({ literal, language }) => {
-  var html = Prism.highlight(literal, Prism.languages[language]);
-  var cls = 'language-' + language;
-
-  return (
-    <pre className={cls}>
-      <code dangerouslySetInnerHTML={{ __html: html }} className={cls} />
-    </pre>
-  );
-};
-
-CodeBlock.propTypes = {
-  literal: PropTypes.string,
-  language: PropTypes.string,
-};
 
 class Index extends Component {
   constructor(props) {
@@ -157,34 +142,7 @@ class Index extends Component {
                 padding: '20px',
                 whiteSpace: 'pre',
               }}
-            >
-              <Markdown
-                source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
-
-<PickyDateTime
-  size="xs"
-  mode={1}
-  show={showPickyDateTime}
-  locale="en-us"
-  onClose={() => this.setState({ showPickyDateTime: false })}
-  onYearPicked={res => this.onYearPicked(res)}
-  onMonthPicked={res => this.onMonthPicked(res)}
-  onDatePicked={res => this.onDatePicked(res)}
-  onResetDate={res => this.onResetDate(res)}
-  onSecondChange={res => this.onSecondChange(res)}
-  onMinuteChange={res => this.onMinuteChange(res)}
-  onHourChange={res => this.onHourChange(res)}
-  onMeridiemChange={res => this.onMeridiemChange(res)}
-  onResetTime={res => this.onResetTime(res)}
-  onClearTime={res => this.onClearTime(res)}
-  markedDates={[todayM + '/' + (todayD - 1) + '/' + todayY, todayM + '/' + todayD + '/' + todayY,, todayM + '/' + (todayD + 1) + '/' + todayY,]}
-  // supportDateRange={['12/03/2021', '12/05/2021']} // OPTIONAL. min date and max date. format: "MM/DD/YYYY"
-/>
-\`\`\``}
-                renderers={{ CodeBlock }}
-              />
-            </div>
+            ></div>
           </div>
           <div>
             <div style={{ color: '#4a4a4a', margin: '10px' }} />
@@ -228,36 +186,7 @@ import PickyDateTime from 'react-inputs-validation';
                 padding: '20px',
                 whiteSpace: 'pre',
               }}
-            >
-              <Markdown
-                source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
-
-<PickyDateTime
-  size="xs"
-  mode={1}
-  show={showPickyDateTime}
-  locale="en-us"
-  defaultTime={hour:minute:second meridiem} // "HH:MM:SS AM"
-  defaultDate={month/date/year} // "MM/DD/YYYY"
-  onClose={() => this.setState({ showPickyDateTime: false })}
-  onYearPicked={res => this.onYearPicked(res)}
-  onMonthPicked={res => this.onMonthPicked(res)}
-  onDatePicked={res => this.onDatePicked(res)}
-  onResetDate={res => this.onResetDate(res)}
-  onResetDefaultDate={res => this.onResetDefaultDate(res)}
-  onSecondChange={res => this.onSecondChange(res)}
-  onMinuteChange={res => this.onMinuteChange(res)}
-  onHourChange={res => this.onHourChange(res)}
-  onMeridiemChange={res => this.onMeridiemChange(res)}
-  onResetTime={res => this.onResetTime(res)}
-  onResetDefaultTime={res => this.onResetDefaultTime(res)}
-  onClearTime={res => this.onClearTime(res)}
-/>
-\`\`\``}
-                renderers={{ CodeBlock }}
-              />
-            </div>
+            ></div>
           </div>
           <h2>Example 3 DEMO: Calendar only (with size of M)</h2>
           <div style={{ margin: '10px' }}>
@@ -292,34 +221,7 @@ import PickyDateTime from 'react-inputs-validation';
               padding: '20px',
               whiteSpace: 'pre',
             }}
-          >
-            <Markdown
-              source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
-
-<PickyDateTime
-  size="m"
-  mode={0}
-  locale="en-us"
-  show={true}
-  onClose={() => this.onClose()}
-  onYearPicked={res => this.onYearPicked(res)}
-  onMonthPicked={res => this.onMonthPicked(res)}
-  onDatePicked={res => this.onDatePicked(res)}
-  onResetDate={res => this.onResetDate(res)}
-  onResetDefaultDate={res => this.onResetDefaultDate(res)}
-  onSecondChange={res => this.onSecondChange(res)}
-  onMinuteChange={res => this.onMinuteChange(res)}
-  onHourChange={res => this.onHourChange(res)}
-  onMeridiemChange={res => this.onMeridiemChange(res)}
-  onResetTime={res => this.onResetTime(res)}
-  onResetDefaultTime={res => this.onResetDefaultTime(res)}
-  onClearTime={res => this.onClearTime(res)}
-/>
-\`\`\``}
-              renderers={{ CodeBlock }}
-            />
-          </div>
+          ></div>
           <h2>Example 4 DEMO: Clock only</h2>
           <div style={{ margin: '10px' }}>
             <div style={{ color: '#4a4a4a', margin: '10px' }}>{`//size="xs" mode={2}`}</div>
@@ -353,34 +255,7 @@ import PickyDateTime from 'react-inputs-validation';
               padding: '20px',
               whiteSpace: 'pre',
             }}
-          >
-            <Markdown
-              source={`\`\`\`javascript
-import PickyDateTime from 'react-inputs-validation';
-
-<PickyDateTime
-  size="xs"
-  mode={2}
-  locale="en-us"
-  show={true}
-  onClose={() => this.onClose()}
-  onYearPicked={res => this.onYearPicked(res)}
-  onMonthPicked={res => this.onMonthPicked(res)}
-  onDatePicked={res => this.onDatePicked(res)}
-  onResetDate={res => this.onResetDate(res)}
-  onResetDefaultDate={res => this.onResetDefaultDate(res)}
-  onSecondChange={res => this.onSecondChange(res)}
-  onMinuteChange={res => this.onMinuteChange(res)}
-  onHourChange={res => this.onHourChange(res)}
-  onMeridiemChange={res => this.onMeridiemChange(res)}
-  onResetTime={res => this.onResetTime(res)}
-  onResetDefaultTime={res => this.onResetDefaultTime(res)}
-  onClearTime={res => this.onClearTime(res)}
-/>
-\`\`\``}
-              renderers={{ CodeBlock }}
-            />
-          </div>
+          ></div>
           <div style={{ margin: '10px' }} />
         </div>
       </div>

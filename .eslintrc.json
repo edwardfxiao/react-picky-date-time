@@ -27,7 +27,7 @@
     // Give a warning if identifiers contain underscores
     "no-underscore-dangle": 0,
     "no-empty-pattern": 0,
-    "react/prop-types": [0],
+    "react/prop-types": 0,
     "react-hooks/rules-of-hooks": "error",
     "no-empty": [
       "error",

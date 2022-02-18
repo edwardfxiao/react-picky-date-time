@@ -1,3 +1,7 @@
+# 2.0.2
+
+- Support IE9+
+
 # 2.0.1
 
 - Fix markedDates not showing correctly bug

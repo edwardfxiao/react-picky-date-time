@@ -1,6 +1,6 @@
 {
   "name": "react-picky-date-time",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A react component for date time picker.",
   "main": "index.js",
   "types": "./lib/index.d.ts",
@@ -56,6 +56,7 @@
     "@types/react": "^16.8.14",
     "@types/react-dom": "^16.8.4",
     "@types/react-transition-group": "^4.4.4",
+    "abortcontroller-polyfill": "^1.7.3",
     "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.3",
     "babel-plugin-css-modules-transform": "^1.6.2",
@@ -87,6 +88,7 @@
     "postcss-preset-env": "^7.3.1",
     "postcss-simple-vars": "^6.0.3",
     "prismjs": "^1.16.0",
+    "promise-polyfill": "^8.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-markdown": "^8.0.0",
