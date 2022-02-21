@@ -1,3 +1,7 @@
+# 2.0.3
+
+- Change animationInterval to 200 from 1000
+
 # 2.0.2
 
 - Support IE9+

@@ -211,7 +211,7 @@ const Clock: React.FC<ClockProps> = memo(
 
     // counter here
     const initializeClock = useCallback(abortController => {
-      animationInterval(1000, abortController.signal, (time: number) => {
+      animationInterval(200, abortController.signal, (time: number) => {
         if (!$clock.current) {
           abortController.abort();
           return;
