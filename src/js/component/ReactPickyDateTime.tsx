@@ -6,7 +6,7 @@ import '../../css/index.css';
 import { SIZE_RANGE, DEFAULT_SIZE } from './constValue';
 import { LOCALE, DEFAULT_LACALE } from './locale';
 
-interface IndexProps {
+export interface ReactPickyDateTimeProps {
   mode: number;
   size: string;
   locale: string;
@@ -30,7 +30,7 @@ interface IndexProps {
   onResetDefaultTime?: (res: object) => void;
 }
 
-const Index: React.FC<IndexProps> = memo(
+const ReactPickyDateTime: React.FC<ReactPickyDateTimeProps> = memo(
   ({
     locale = DEFAULT_LACALE,
     size = DEFAULT_SIZE,
@@ -123,4 +123,4 @@ const Index: React.FC<IndexProps> = memo(
   },
 );
 
-export default Index;
+export default ReactPickyDateTime;
