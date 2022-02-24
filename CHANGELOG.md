@@ -1,3 +1,7 @@
+# 2.0.5
+
+- Potential Calendar bugfix
+
 # 2.0.4
 
 - Better TypeScript support (export interface ReactPickyDateTimeProps)
