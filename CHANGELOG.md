@@ -1,3 +1,11 @@
+# 2.0.5
+
+- Potential Calendar bugfix
+
+# 2.0.4
+
+- Better TypeScript support (export interface ReactPickyDateTimeProps)
+
 # 2.0.3
 
 - Change animationInterval to 200 from 1000

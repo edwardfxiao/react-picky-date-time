@@ -1,3 +1,2 @@
-import ReactPickyDateTime from './ReactPickyDateTime';
-
-export default ReactPickyDateTime;
+export * from './ReactPickyDateTime';
+export { default } from './ReactPickyDateTime';

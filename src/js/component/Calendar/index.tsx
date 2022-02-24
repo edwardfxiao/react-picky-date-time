@@ -512,16 +512,14 @@ interface CalendarBodyProps {
 }
 const CalendarBody: React.FC<CalendarBodyProps> = memo(({ size = 'm', data = {}, currentYearMonthDate, pickedDateInfo, pickedYearMonth, onClick, markedDatesHash, minSupportDate, maxSupportDate }) => {
   const { year, month, date } = currentYearMonthDate;
-  const pickedDateYear = pickedDateInfo.year;
-  const pickedDateMonth = pickedDateInfo.month;
-  const pickedDate = pickedDateInfo.date;
+  const pickedDate = `${Number(pickedDateInfo.month)}/${Number(pickedDateInfo.date)}/${Number(pickedDateInfo.year)}`;
   const pickedMonth = pickedYearMonth.month;
   const content = Object.keys(data).map(key => {
     let colHtml;
     if (data[key].length) {
       colHtml = data[key].map((item: { [k: string]: any }, key: any) => {
         const itemDate = `${Number(item.month)}/${Number(item.name)}/${item.year}`;
-        const isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
+        const isPicked = pickedDate === itemDate;
         let isDisabled = pickedMonth != item.month;
         if (minSupportDate) {
           if (new Date(itemDate) < new Date(minSupportDate)) {
