@@ -30,7 +30,7 @@ Attention: <a href="https://github.com/edwardfxiao/react-picky-date-time/blob/gh
 ```
 
 # Docs Link
-[Custom Locale Guid(can be multiple locales)](#custom-locale)
+[Custom Locale Guide(can be multiple locales)](#custom-locale)
 
 # Usage
 ```js
