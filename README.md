@@ -102,13 +102,13 @@ npm install react-picky-date-time --save
 ```html
 <head>
  ...
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-picky-date-time/1.9.1/react-picky-date-time.min.css"/>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-picky-date-time/2.0.5/react-picky-date-time.min.css"/>
 </head>
 <body>
  <div id="root"></div>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.13.1/umd/react.production.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.1/umd/react-dom.production.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/react-picky-date-time/1.9.1/react-picky-date-time.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react-picky-date-time/2.0.5/react-picky-date-time.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
  <script type="text/babel">
     const App = React.memo(() => {
