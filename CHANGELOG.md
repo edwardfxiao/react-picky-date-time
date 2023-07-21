@@ -1,3 +1,7 @@
+# 2.0.6
+
+- Update README
+
 # 2.0.5
 
 - Potential Calendar bugfix
