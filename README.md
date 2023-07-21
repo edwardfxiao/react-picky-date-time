@@ -2,7 +2,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-[![npm version](https://badge.fury.io/js/react-picky-date-time.svg)](https://badge.fury.io/js/react-picky-date-time) ![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-picky-date-time.svg) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/edwardfxiao/react-picky-date-time/master/LICENSE)[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![npm version](https://badge.fury.io/js/react-picky-date-time.svg)](https://badge.fury.io/js/react-picky-date-time) ![Cdnjs](https://img.shields.io/cdnjs/v/react-picky-date-time) ![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/react-picky-date-time.svg) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/edwardfxiao/react-picky-date-time/master/LICENSE) [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE) [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
 A react component for date time picker.
 
@@ -30,72 +30,82 @@ Attention: <a href="https://github.com/edwardfxiao/react-picky-date-time/blob/gh
 ```
 
 # Docs Link
-[Custom Locale Guid(can be multiple locales)](#custom-locale)
+[Custom Locale Guide(can be multiple locales)](#custom-locale)
 
 # Usage
+
 ```js
 import ReactPickyDateTime from 'react-picky-date-time';
 
 ...
-class YourOwnComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showPickyDateTime: true,
-      date: '30',
-      month: '01',
-      year: '2000',
-      hour: '03',
-      minute: '10',
-      second: '40',
-      meridiem: 'PM'
-    };
-  }
+const Index = memo(() => {
+  const [showPickyDateTime, setShowPickyDateTime] = useState(true);
+  const [date, setDate] = useState('30');
+  const [month, setMonth] = useState('01');
+  const [year, setYear] = useState('2000');
+  const [hour, setHour] = useState('03');
+  const [minute, setMinute] = useState('10');
+  const [second, setSecond] = useState('40');
+  const [meridiem, setMeridiem] = useState('PM');
   ...
-  render() {
-    const {
-      showPickyDateTime,
-      date,
-      month,
-      year,
-      hour,
-      minute,
-      second,
-      meridiem
-    } = this.state;
-
-    return(
-      <ReactPickyDateTime
-        size="m"// 'xs', 's', 'm', 'l'
-        mode={0} //0: calendar only, 1: calendar and clock, 2: clock only; default is 0
-        locale={`zh-cn`}// 'en-us' or 'zh-cn'; default is en-us
-        show={showPickyDateTime} //default is false
-        onClose={() => this.setState({ showPickyDateTime: false })}
-        defaultTime={`${hour}:${minute}:${second} ${meridiem}`} // OPTIONAL. format: "HH:MM:SS AM"
-        defaultDate={`${month}/${date}/${year}`} // OPTIONAL. format: "MM/DD/YYYY"
-        onYearPicked={res => this.onYearPicked(res)}
-        onMonthPicked={res => this.onMonthPicked(res)}
-        onDatePicked={res => this.onDatePicked(res)}
-        onResetDate={res => this.onResetDate(res)}
-        onResetDefaultDate={res => this.onResetDefaultDate(res)}
-        onSecondChange={res => this.onSecondChange(res)}
-        onMinuteChange={res => this.onMinuteChange(res)}
-        onHourChange={res => this.onHourChange(res)}
-        onMeridiemChange={res => this.onMeridiemChange(res)}
-        onResetTime={res => this.onResetTime(res)}
-        onResetDefaultTime={res => this.onResetDefaultTime(res)}
-        onClearTime={res => this.onClearTime(res)}
-        // markedDates={['10/19/2021']} // OPTIONAL. format: "MM/DD/YYYY"
-        // supportDateRange={['12/03/2021', '12/05/2021']} // OPTIONAL. min date and max date. format: "MM/DD/YYYY"
-      />
-    );
-  }
-}
+  // See events section
+  ...
+  return (
+    <ReactPickyDateTime
+      size="m" // 'xs', 's', 'm', 'l'
+      mode={0} //0: calendar only, 1: calendar and clock, 2: clock only; default is 0
+      locale="en-us" // 'en-us' or 'zh-cn'; default is en-us
+      show={showPickyDateTime} //default is false
+      onClose={() => setShowPickyDateTime(false)}
+      defaultTime={`${hour}:${minute}:${second} ${meridiem}`} // OPTIONAL. format: "HH:MM:SS AM"
+      defaultDate={`${month}/${date}/${year}`} // OPTIONAL. format: "MM/DD/YYYY"
+      onYearPicked={res => onYearPicked(res)}
+      onMonthPicked={res => onMonthPicked(res)}
+      onDatePicked={res => onDatePicked(res)}
+      onResetDate={res => onResetDate(res)}
+      onResetDefaultDate={res => onResetDefaultDate(res)}
+      onSecondChange={res => onSecondChange(res)}
+      onMinuteChange={res => onMinuteChange(res)}
+      onHourChange={res => onHourChange(res)}
+      onMeridiemChange={res => onMeridiemChange(res)}
+      onResetTime={res => onResetTime(res)}
+      onResetDefaultTime={res => onResetDefaultTime(res)}
+      onClearTime={res => onClearTime(res)}
+      // markedDates={['10/19/2021']} // OPTIONAL. format: "MM/DD/YYYY"
+      // supportDateRange={['12/03/2021', '12/05/2021']} // OPTIONAL. min date and max date. format: "MM/DD/YYYY"
+    />
+  );
+});
 ```
+
+##### <a name="class-components"></a>[Class components version example goes here ->](/CLASS-VERSION.md)
 
 # Installation
 ```sh
 npm install react-picky-date-time --save
+```
+
+#### By CDN (starting from v1.9.1)
+```html
+<head>
+ ...
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-picky-date-time/2.0.5/react-picky-date-time.min.css"/>
+</head>
+<body>
+ <div id="root"></div>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.13.1/umd/react.production.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.1/umd/react-dom.production.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react-picky-date-time/2.0.5/react-picky-date-time.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
+ <script type="text/babel">
+    const App = React.memo(() => {
+      return (<ReactPickyDateTime .../>)
+    });
+    ReactDOM.render(<App />, document.getElementById('root'));
+ </script>
+</body>
+
+
 ```
 
 # Donate
@@ -118,78 +128,85 @@ For IE9, you also need ```performance``` ```requestAnimationFrame``` polyfill fo
 Also consoled out on the demo page examples
 
 ```js
-  onYearPicked(res) {
+  const onYearPicked = res => {
     const { year } = res;
-    this.setState({ year: year});
-  }
+    setYear(year);
+  };
 
-  onMonthPicked(res) {
+  const onMonthPicked = res => {
     const { month, year } = res;
-    this.setState({ year: year, month: month});
-  }
+    setMonth(month);
+    setYear(year);
+  };
 
-  onDatePicked(res) {
+  const onDatePicked = res => {
     const { date, month, year } = res;
-    this.setState({ year: year, month: month, date: date });
-  }
+    setDate(date);
+    setMonth(month);
+    setYear(year);
+  };
 
-  onResetDate(res) {
+  const onResetDate = res => {
     const { date, month, year } = res;
-    this.setState({ year: year, month: month, date: date });
-  }
+    setDate(date);
+    setMonth(month);
+    setYear(year);
+  };
 
-  onResetDefaultDate(res) {
+  const onResetDefaultDate = res => {
     const { date, month, year } = res;
-    this.setState({ year: year, month: month, date: date });
-  }
+    setDate(date);
+    setMonth(month);
+    setYear(year);
+  };
 
-  onSecondChange(res) {
-    this.setState({ second: res.value });
-  }
+  const onSecondChange = res => {
+    const { value } = res;
+    setSecond(value);
+  };
 
-  onMinuteChange(res) {
-    this.setState({ minute: res.value });
-  }
+  const onMinuteChange = res => {
+    const { value } = res;
+    setMinute(value);
+  };
 
-  onHourChange(res) {
-    this.setState({ hour: res.value });
-  }
+  const onHourChange = res => {
+    const { value } = res;
+    setHour(value);
+  };
 
-  onMeridiemChange(res) {
-    this.setState({ meridiem: res });
-  }
+  const onMeridiemChange = res => {
+    setMeridiem(res);
+  };
 
-  onResetTime(res) {
-    this.setState({
-      second: res.clockHandSecond.value,
-      minute: res.clockHandMinute.value,
-      hour: res.clockHandHour.value
-    });
-  }
+  const onResetTime = res => {
+    const { clockHandSecond, clockHandMinute, clockHandHour } = res;
+    setSecond(clockHandSecond.value);
+    setMinute(clockHandMinute.value);
+    setHour(clockHandHour.value);
+  };
 
-  onResetDefaultTime(res) {
-    this.setState({
-      second: res.clockHandSecond.value,
-      minute: res.clockHandMinute.value,
-      hour: res.clockHandHour.value
-    });
-  }
+  const onResetDefaultTime = res => {
+    const { clockHandSecond, clockHandMinute, clockHandHour } = res;
+    setSecond(clockHandSecond.value);
+    setMinute(clockHandMinute.value);
+    setHour(clockHandHour.value);
+  };
 
-  onClearTime(res) {
-    this.setState({
-      second: res.clockHandSecond.value,
-      minute: res.clockHandMinute.value,
-      hour: res.clockHandHour.value
-    });
-  }
+  const onClearTime = res => {
+    const { clockHandSecond, clockHandMinute, clockHandHour } = res;
+    setSecond(clockHandSecond.value);
+    setMinute(clockHandMinute.value);
+    setHour(clockHandHour.value);
+  };
 
   // just toggle your outter component state to true or false to show or hide <PickyDateTime/>
   openPickyDateTime() {
-    this.setState({showPickyDateTime: true});
+    setShowPickyDateTime(true)
   }
 
   onClose() {
-    this.setState({showPickyDateTime: false});
+    setShowPickyDateTime(false)
   }
 
 ```
