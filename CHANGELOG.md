@@ -1,3 +1,7 @@
+# 2.0.7
+
+- Add tea.yaml
+
 # 2.0.6
 
 - Update README
