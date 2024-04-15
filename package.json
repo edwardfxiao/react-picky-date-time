@@ -1,6 +1,6 @@
 {
   "name": "react-picky-date-time",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "A react component for date time picker.",
   "main": "index.js",
   "types": "./lib/index.d.ts",
@@ -26,7 +26,7 @@
   "bugs": {
     "url": "https://github.com/edwardfxiao/react-picky-date-time/issues"
   },
-  "homepage": "https://github.com/edwardfxiao/react-picky-date-time#readme",
+  "homepage": "https://github.com/edwardfxiao/react-picky-date-time",
   "scripts": {
     "tslint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "build_gh_page": "rm -rf lib && rm -rf dist && NODE_ENV=production ./node_modules/.bin/webpack --config ./webpack/production.config.babel.js --progress",
