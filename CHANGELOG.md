@@ -1,3 +1,7 @@
+# 2.0.8
+
+- Update package.json
+
 # 2.0.7
 
 - Add tea.yaml
