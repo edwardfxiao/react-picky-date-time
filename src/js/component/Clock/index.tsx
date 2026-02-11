@@ -143,13 +143,13 @@ const Clock: React.FC<ClockProps> = memo(
     size = 'm',
     locale = 'en-US',
     defaultTime = '',
-    onSecondChange = () => {},
-    onMinuteChange = () => {},
-    onHourChange = () => {},
-    onMeridiemChange = () => {},
-    onResetTime = () => {},
-    onClearTime = () => {},
-    onResetDefaultTime = () => {},
+    onSecondChange = () => { },
+    onMinuteChange = () => { },
+    onHourChange = () => { },
+    onMeridiemChange = () => { },
+    onResetTime = () => { },
+    onClearTime = () => { },
+    onResetDefaultTime = () => { },
   }) => {
     const $clock = useRef(null);
     const $clockCenter = useRef(null);
@@ -210,7 +210,7 @@ const Clock: React.FC<ClockProps> = memo(
     const isAborted = useCallback(() => abortController.signal.aborted, [abortController]);
 
     // counter here
-    const initializeClock = useCallback(abortController => {
+    const initializeClock = useCallback((abortController: AbortController) => {
       animationInterval(200, abortController.signal, (time: number) => {
         if (!$clock.current) {
           abortController.abort();
@@ -295,20 +295,20 @@ const Clock: React.FC<ClockProps> = memo(
     );
 
     const onClick = useCallback(
-      e => {
+      (e: React.MouseEvent<HTMLInputElement>) => {
         abortInterval();
-        setSelectionRange({ start: e.target.selectionStart, end: e.target.selectionEnd });
+        setSelectionRange({ start: (e.target as HTMLInputElement).selectionStart, end: (e.target as HTMLInputElement).selectionEnd });
       },
       [abortController],
     );
 
-    const handleMouseWheel = useCallback(e => {
+    const handleMouseWheel = useCallback((e: React.WheelEvent<HTMLInputElement>) => {
       e.preventDefault();
       setPressKey({ key: e.deltaY > 0 ? 'ArrowUp' : 'ArrowDown' });
     }, []);
 
     const onKeyDown = useCallback(
-      key => {
+      (key: string) => {
         const el = $timeInput.current;
         const pos = { start: el.selectionStart, end: el.selectionEnd };
         if (typeof key == 'undefined') {
@@ -433,7 +433,7 @@ const Clock: React.FC<ClockProps> = memo(
             }
           }
         }
-        if (!isNaN(newValue) && refName != 'meridiem') {
+        if (!isNaN(Number(newValue)) && refName != 'meridiem') {
           let newDegree;
           if (refName == 'clockHandSecond') {
             newDegree = Number(newValue) * SECOND_DEGREE_NUMBER;
@@ -448,7 +448,7 @@ const Clock: React.FC<ClockProps> = memo(
             newDegree = Number(newValue) * HOUR_DEGREE_NUMBER;
           }
           setSelectionRange({ start: range.start, end: range.end });
-          switchSetClockState(refName, { ...obj, value: formatClockNumber(newValue), degree: newDegree, startAngle: newDegree, angle: newDegree });
+          switchSetClockState(refName, { ...obj, value: formatClockNumber(Number(newValue)), degree: newDegree, startAngle: newDegree, angle: newDegree });
         }
         if (key == 'ArrowUp' || key == 'ArrowDown') {
           if (refName == 'meridiem') {
@@ -505,21 +505,21 @@ const Clock: React.FC<ClockProps> = memo(
     }, [pressKey]);
 
     const onMouseOver = useCallback(
-      refName => {
+      (refName: string) => {
         switchSetClockState(refName, { isMouseOver: true });
       },
       [clockHandSecond, clockHandMinute, clockHandHour],
     );
 
     const onMouseOut = useCallback(
-      refName => {
+      (refName: string) => {
         switchSetClockState(refName, { isMouseOver: false });
       },
       [clockHandSecond, clockHandMinute, clockHandHour],
     );
 
     const switchSetClockState = useCallback(
-      (refName, v) => {
+      (refName: string, v: { [k: string]: any }) => {
         switch (refName) {
           case 'clockHandSecond':
             setClockHandSecond(prevState => ({ ...prevState, ...v }));
@@ -536,7 +536,7 @@ const Clock: React.FC<ClockProps> = memo(
     );
 
     const handleMouseDown = useCallback(
-      (refName, e) => {
+      (refName: string, e: React.MouseEvent<HTMLInputElement>) => {
         abortInterval();
         let x = e.clientX - originXRef.current;
         let y = e.clientY - originYRef.current;
@@ -548,7 +548,7 @@ const Clock: React.FC<ClockProps> = memo(
     );
 
     const handleMouseMove = useCallback(
-      e => {
+      (e: React.MouseEvent<HTMLInputElement>) => {
         const refName = isDragging(isDraggingHashRef.current);
         if (refName) {
           let roundingAngle;
@@ -632,15 +632,15 @@ const Clock: React.FC<ClockProps> = memo(
       setTimeout(() => initCoordinates(), 1000);
       document.addEventListener('resize', initCoordinates, true);
       document.addEventListener('scroll', initCoordinates, true);
-      document.addEventListener('mousemove', handleMouseMove, true);
+      document.addEventListener('mousemove', handleMouseMove as unknown as (this: Document, ev: MouseEvent) => any, true);
       document.addEventListener('mouseup', handleMouseUp, true);
-      $timeInput.current.addEventListener('mousewheel', handleMouseWheel, { passive: false });
+      $timeInput.current && $timeInput.current.addEventListener('mousewheel', handleMouseWheel, { passive: false });
       return () => {
         document.removeEventListener('resize', initCoordinates, true);
         document.removeEventListener('scroll', initCoordinates, true);
-        document.removeEventListener('mousemove', handleMouseMove, true);
+        document.removeEventListener('mousemove', handleMouseMove as unknown as (this: Document, ev: MouseEvent) => any, true);
         document.removeEventListener('mouseup', handleMouseUp, true);
-        $timeInput.current.removeEventListener('mousewheel', handleMouseWheel, { passive: false });
+        $timeInput.current && $timeInput.current.removeEventListener('mousewheel', handleMouseWheel, { passive: false });
       };
     }, [clockHandSecond, clockHandMinute, clockHandHour]);
 
@@ -699,7 +699,7 @@ const Clock: React.FC<ClockProps> = memo(
             style={secondStyle}
             onMouseOver={() => onMouseOver('clockHandSecond')}
             onMouseOut={() => onMouseOut('clockHandSecond')}
-            onMouseDown={e => handleMouseDown('clockHandSecond', e)}
+            onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => handleMouseDown('clockHandSecond', e)}
             ref={$clockHandSecond}
           />
           <div
@@ -707,7 +707,7 @@ const Clock: React.FC<ClockProps> = memo(
             style={minuteStyle}
             onMouseOver={() => onMouseOver('clockHandMinute')}
             onMouseOut={() => onMouseOut('clockHandMinute')}
-            onMouseDown={e => handleMouseDown('clockHandMinute', e)}
+            onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => handleMouseDown('clockHandMinute', e)}
             ref={$clockHandMinute}
           />
           <div
@@ -715,7 +715,7 @@ const Clock: React.FC<ClockProps> = memo(
             style={hourStyle}
             onMouseOver={() => onMouseOver('clockHandHour')}
             onMouseOut={() => onMouseOut('clockHandHour')}
-            onMouseDown={e => handleMouseDown('clockHandHour', e)}
+            onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => handleMouseDown('clockHandHour', e)}
             ref={$clockHandHour}
           />
           {minutesItem}
@@ -732,7 +732,7 @@ const Clock: React.FC<ClockProps> = memo(
                   e.preventDefault();
                 }
               }}
-              onChange={() => {}}
+              onChange={() => { }}
               onClick={e => onClick(e)}
               ref={$timeInput}
             />

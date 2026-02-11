@@ -1,4 +1,4 @@
-const env = require('yargs').argv.env; // use --env with webpack 2
+const env = require('yargs')(process.argv.slice(2)).argv?.env; // use --env with webpack (e.g. --env minify)
 const path = require('path');
 const PATH = require('./build_path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');

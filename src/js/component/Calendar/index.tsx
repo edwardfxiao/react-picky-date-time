@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef, memo, forwardRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { cx, isValidDates, useWillUnmount } from '../utils';
 import { LOCALE } from '../locale';
@@ -7,6 +7,35 @@ const TODAY = new Date();
 const YEAR = TODAY.getFullYear();
 const MONTH = TODAY.getMonth() + 1;
 const DATE = TODAY.getDate();
+
+// Wrapper components for CSSTransition that forward refs (React 19 + smooth transitions, per react-minimal-datetime-range)
+interface FadeTransitionProps {
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  [key: string]: any;
+}
+const FadeDiv = forwardRef<HTMLDivElement, FadeTransitionProps>(({ children, className, style, ...props }, ref) => (
+  <div ref={ref} className={className} style={style}>{children}</div>
+));
+const FadeSpan = forwardRef<HTMLSpanElement, FadeTransitionProps>(({ children, className, style, onClick, onMouseDown, onMouseUp, ...props }, ref) => (
+  <span ref={ref} className={className} style={style} onClick={onClick} onMouseDown={onMouseDown} onMouseUp={onMouseUp}>{children}</span>
+));
+
+interface CSSTransitionWithRefProps {
+  children: React.ReactElement;
+  classNames?: string | { [key: string]: string };
+  [key: string]: any;
+}
+const CSSTransitionWithRef: React.FC<CSSTransitionWithRefProps> = ({ children, ...props }) => {
+  const nodeRef = useRef<HTMLElement>(null);
+  return (
+    <CSSTransition {...props} nodeRef={nodeRef} addEndListener={() => {}}>
+      {React.cloneElement(children as any, { ref: nodeRef as any })}
+    </CSSTransition>
+  );
+};
+
 const isValidDate = (value: string) => {
   const userFormat = 'mm/dd/yyyy';
   const delimiter = /[^mdy]/.exec(userFormat)[0];
@@ -127,21 +156,21 @@ const Calendar: React.FC<CalendarProps> = memo(
     const maxSupportDate = supportDateRange.length > 1 && isValidDate(supportDateRange[1]) ? supportDateRange[1] : '';
 
     const pickYear = useCallback(
-      (year, direction) => {
+      (year: number, direction: string) => {
         year = Number(year);
         if (direction === PREV_TRANSITION) {
           year = year - 1;
         } else {
           year = year + 1;
         }
-        setPickedYearMonth({ ...pickedYearMonth, year, string: `${year}-${pickedYearMonth.month}` });
+        setPickedYearMonth({ ...pickedYearMonth, year: String(year), string: `${String(year)}-${pickedYearMonth.month}` });
         setDirection(direction);
         onYearPicked({ year });
       },
       [pickedYearMonth],
     );
     const pickMonth = useCallback(
-      (month, direction) => {
+      (month: number, direction: string) => {
         month = Number(month);
         let year = Number(pickedYearMonth.year);
         if (direction === PREV_TRANSITION) {
@@ -168,7 +197,7 @@ const Calendar: React.FC<CalendarProps> = memo(
       [pickedYearMonth],
     );
     const pickDate = useCallback(
-      pickedDate => {
+      (pickedDate: string) => {
         const newPickedDateInfo = {
           ...pickedDateInfo,
           year: pickedYearMonth.year,
@@ -224,7 +253,7 @@ const Calendar: React.FC<CalendarProps> = memo(
       },
       [pickedYearMonth],
     );
-    const changeSelectorPanelYearSet = useCallback((yearSelectorPanel, direction) => {
+    const changeSelectorPanelYearSet = useCallback((yearSelectorPanel: number, direction: string) => {
       setDirection(direction);
       setYearSelectorPanel(yearSelectorPanel);
       setYearSelectorPanelList(getYearSet(yearSelectorPanel));
@@ -388,10 +417,10 @@ const Calendar: React.FC<CalendarProps> = memo(
                 </svg>
               </div>
               <div className={`picky-date-time__col picky-date-time__col-9`}>
-                <TransitionGroup className="picky-date-time-calendar__selector-panel-year-set-container" childFactory={child => React.cloneElement(child, { classNames })}>
-                  <CSSTransition key={yearSelectorPanelList.join('-')} timeout={{ enter: 300, exit: 300 }} className={`picky-date-time-dropdown-calendar__year`} classNames={classNames}>
-                    <div>{selectorPanelYearHtml}</div>
-                  </CSSTransition>
+                <TransitionGroup className="picky-date-time-calendar__selector-panel-year-set-container" childFactory={(child: any) => React.cloneElement(child, { classNames })}>
+                  <CSSTransitionWithRef key={yearSelectorPanelList.join('-')} timeout={{ enter: 300, exit: 300 }} classNames={classNames}>
+                    <FadeDiv className={`picky-date-time-dropdown-calendar__year`}>{selectorPanelYearHtml}</FadeDiv>
+                  </CSSTransitionWithRef>
                 </TransitionGroup>
               </div>
               <div className={`picky-date-time__col picky-date-time__col-0-5`}>
@@ -409,13 +438,13 @@ const Calendar: React.FC<CalendarProps> = memo(
             </div>
           </div>
           <div className={`picky-date-time__col picky-date-time__col-3`}>
-            <div className={`picky-date-time__col picky-date-time-calendar__previous`} onClick={() => pickYear(pickedYearMonth.year, PREV_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__previous`} onClick={() => pickYear(Number(pickedYearMonth.year), PREV_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
                 <path fill="none" d="M24 24H0V0h24v24z" />
               </svg>
             </div>
-            <div className={`picky-date-time__col picky-date-time-calendar__sub-previous`} onClick={() => pickMonth(pickedYearMonth.month, PREV_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__sub-previous`} onClick={() => pickMonth(Number(pickedYearMonth.month), PREV_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 <path d="M0 0h24v24H0z" fill="none" />
@@ -423,9 +452,9 @@ const Calendar: React.FC<CalendarProps> = memo(
             </div>
           </div>
           <div className={`picky-date-time__col picky-date-time__col-6`}>
-            <TransitionGroup className="picky-date-time-calendar__title-container" childFactory={child => React.cloneElement(child, { classNames })}>
-              <CSSTransition key={pickedYearMonth.string} timeout={{ enter: 300, exit: 300 }} className={`picky-date-time-calendar__title`} style={{ left: '0' }} classNames={classNames}>
-                <span className={`picky-date-time-calendar__clicker`} onClick={handleShowSelectorPanel} onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
+            <TransitionGroup className="picky-date-time-calendar__title-container" childFactory={(child: any) => React.cloneElement(child, { classNames })}>
+              <CSSTransitionWithRef key={pickedYearMonth.string} timeout={{ enter: 300, exit: 300 }} classNames={classNames}>
+                <FadeSpan className={`picky-date-time-calendar__title picky-date-time-calendar__clicker`} style={{ left: '0' }} onClick={handleShowSelectorPanel} onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
                   <span className={`picky-date-time-calendar__clicker`}>
                     <span>{`${LOCALE[locale].months[Number(pickedYearMonth.month) - 1]}`}</span>
                   </span>
@@ -433,18 +462,18 @@ const Calendar: React.FC<CalendarProps> = memo(
                   <span className={`picky-date-time-calendar__clicker`}>
                     <span>{`${pickedYearMonth.year}`}</span>
                   </span>
-                </span>
-              </CSSTransition>
+                </FadeSpan>
+              </CSSTransitionWithRef>
             </TransitionGroup>
           </div>
           <div className={`picky-date-time__col picky-date-time__col-3`}>
-            <div className={`picky-date-time__col picky-date-time-calendar__next`} onClick={() => pickMonth(pickedYearMonth.month, NEXT_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__next`} onClick={() => pickMonth(Number(pickedYearMonth.month), NEXT_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                 <path d="M0 0h24v24H0z" fill="none" />
               </svg>
             </div>
-            <div className={`picky-date-time__col picky-date-time-calendar__sub-next`} onClick={() => pickYear(pickedYearMonth.year, NEXT_TRANSITION)}>
+            <div className={`picky-date-time__col picky-date-time-calendar__sub-next`} onClick={() => pickYear(Number(pickedYearMonth.year), NEXT_TRANSITION)}>
               <svg width="20" height="20" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
                 <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" />
                 <path fill="none" d="M0 0h24v24H0V0z" />
@@ -456,10 +485,10 @@ const Calendar: React.FC<CalendarProps> = memo(
           <div className={`picky-date-time-calendar__table`}>
             <div className={`picky-date-time-calendar__table-row`}>{captionHtml}</div>
           </div>
-          <TransitionGroup className={`picky-date-time-calendar__body-container ${size}`} style={transitionContainerStyle} childFactory={child => React.cloneElement(child, { classNames })}>
-            <CSSTransition key={pickedYearMonth.string} timeout={{ enter: 300, exit: 300 }} classNames={classNames}>
-              {content}
-            </CSSTransition>
+          <TransitionGroup className={`picky-date-time-calendar__body-container ${size}`} style={transitionContainerStyle} childFactory={(child: any) => React.cloneElement(child, { classNames })}>
+            <CSSTransitionWithRef key={pickedYearMonth.string} timeout={{ enter: 300, exit: 300 }} classNames={classNames}>
+              <FadeDiv className="slide">{content}</FadeDiv>
+            </CSSTransitionWithRef>
           </TransitionGroup>
         </div>
         <div className={`picky-date-time-calendar__button picky-date-time-calendar__today`} onClick={() => reset(true)}>
@@ -549,7 +578,7 @@ const CalendarBody: React.FC<CalendarBodyProps> = memo(({ size = 'm', data = {},
       </div>
     );
   });
-  return <div className={`picky-date-time-calendar__table slide`}>{content}</div>;
+  return <div className={`picky-date-time-calendar__table`}>{content}</div>;
 });
 interface CalendarItemProps {
   item?: IObjectKeysAny;

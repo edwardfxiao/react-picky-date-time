@@ -1,5 +1,4 @@
 import 'promise-polyfill/src/polyfill';
-import 'unfetch/polyfill';
 import 'abortcontroller-polyfill';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -57,7 +56,7 @@ import 'regenerator-runtime/runtime';
 })();
 
 import React, { useState, memo } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import ReactPickyDateTime from '../src/js/component/ReactPickyDateTime';
 
 const Index = memo(() => {
@@ -280,4 +279,5 @@ const Index = memo(() => {
   );
 });
 
-ReactDOM.render(<Index />, document.getElementById('root'));
+createRoot(document.getElementById('root')).render(<Index />);
+

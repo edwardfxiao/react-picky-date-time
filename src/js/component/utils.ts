@@ -50,7 +50,7 @@ export const isValidDates = (arr: Array<string>) => {
 
 export const useWillUnmount = (f: Function) => useEffect(() => () => f && f(), []);
 export const usePrevious = (value: any) => {
-  const ref = useRef();
+  const ref = useRef<any>(null);
   useEffect(() => {
     ref.current = value;
   });
@@ -136,12 +136,12 @@ export const animationInterval = (ms: number, signal: any, callback: Function) =
   }
 
   function scheduleFrame(time: number) {
-    const elapsed = time - start;
+    const elapsed = time - (start as number);
     const roundedElapsed = Math.round(elapsed / ms) * ms;
-    const targetNext = start + roundedElapsed + ms;
+    const targetNext = (start as number) + roundedElapsed + ms;
     const delay = targetNext - performance.now();
     setTimeout(() => requestAnimationFrame(frame), delay);
   }
 
-  scheduleFrame(start);
+  scheduleFrame(start as number);
 };

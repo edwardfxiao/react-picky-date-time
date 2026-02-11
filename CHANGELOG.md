@@ -1,3 +1,9 @@
+# 3.0.0
+
+- React 19 compatibility: replace `findDOMNode` usage in calendar transitions with `nodeRef` on `CSSTransition` (required because React 19 removed `findDOMNode`)
+- Smooth calendar transitions: add `FadeDiv`/`FadeSpan` forwardRef wrappers so transition classes apply to the correct DOM nodes for month, year, and body panels
+- Fix calendar body slide animation: remove duplicate `slide` class from inner calendar table so the sliding wrapper keeps correct dimensions; add `left`, `top`, and `width` to `.slide` for proper slide positioning
+
 # 2.0.9
 
 - Update package.json
